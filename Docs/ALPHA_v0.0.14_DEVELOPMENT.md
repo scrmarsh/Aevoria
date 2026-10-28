@@ -1,3 +1,38 @@
+# Current development checkpoint — 2026-10-28
+
+Source is now versioned at https://github.com/scrmarsh/Aevoria on `main`.
+Initial import: `c11ae4c`. Bulk captures, generated players, historical local
+archives and player-save backups remain local; see `GITHUB_WORKFLOW.md`.
+
+Latest clean candidate: `Temp/Alpha014Atlas12/Aevoria.exe`. Its regional Full
+and Interface native audits are running against isolated copies of saved worlds.
+Atlas12 initially caught a compass local-variable compiler error; corrected
+source built successfully. Rejected build log retained separately.
+
+Completed checks:
+
+- Eight Unity editor tests pass: all14 material-family GPU rebase/finite checks,
+  existing numerical GPU origin checks, map fitting and marker silhouettes,
+  finite habitat meshes, deterministic walkable resident paths.
+- Recipe library6:38 CPU checks,1792 packed bytes; salt crust has a physical
+  near-field polygon scale. New recipe identity:
+  `2187999AF19E016FDF2DD025A872AAD39ABF8C6E7328F711A5151B2F4988187F`.
+- Atlas9 revision1: native Full including36 collider samples and production
+  save/reload passed. Atlas10: four-option pause and production Save & Quit to
+  Home plus reload passed. Its inspected compass/pause captures exposed needle
+  clipping and one-frame F3 leakage; Atlas12 contains fixes awaiting inspection.
+- Atlas11 matched native cliff captures with ambient occlusion enabled/disabled
+  pass runtime/manifest checks. Facets remain visible with AO disabled. No visual
+  acceptance or confirmed faceting fix is claimed.
+- Preservation check:101 protected character files, Chronicles and126 original
+  player save/settings files unchanged.
+
+Near-field cosmetic plants, fern leaflets/crown leaves, physically checked road
+curves, continuous road cross-sections, stable river wave phase and expanded
+cloud/dune/road audits are implemented. Actual appearance, sustained performance,
+remaining water/terrain issues, native all-size/high-relief review, subsequent
+audio investigation and release packaging remain open. Official milestone is v12.
+
 # Historical Genesis ledger - read current handoff first
 
 Atlas changes are now implemented in development. The supplied concept image was

@@ -153,7 +153,7 @@ namespace Aevoria.Presentation
                 compassYaw=yaw;float radians=yaw*Mathf.Deg2Rad,sin=Mathf.Sin(radians),cos=Mathf.Cos(radians);
                 for(int py=0;py<64;py++)for(int px=0;px<64;px++)
                 {
-                    float x=px+.5f-32,y=py+.5f-32,across=x*cos+y*sin,along=-x*sin+y*cos;
+                    float pixelX=px+.5f-32,pixelY=py+.5f-32,across=pixelX*cos+pixelY*sin,along=-pixelX*sin+pixelY*cos;
                     float width=(25-Mathf.Abs(along))*.19f,alpha=Mathf.Abs(along)<25?Mathf.Clamp01(width-Mathf.Abs(across)+.5f):0;
                     compassPixels[py*64+px]=along>=0?new Color(.83f,.21f,.13f,alpha):new Color(.69f,.77f,.79f,alpha);
                 }

@@ -2,6 +2,13 @@ Cross-account copy-and-paste prompt: `Docs/CODEX_ACCOUNT_HANDOFF_PROMPT.md`.
 
 # ACTIVE CONTINUATION — 2026-10-28, GitHub authorized
 
+Latest update: initial commit c11ae4c pushed and remote main verified. Atlas12
+clean build passed after fixing a compass variable shadowing compiler error;
+rejected log retained. Atlas12-Regional-Full and Atlas12-Interface are running.
+Eight Unity tests pass (atlas-current-source-tests.xml);38 library6 CPU recipe
+checks pass (material-recipe-checks8.json). Atlas11 AO-off comparison passed
+native checks, but facets remain; do not disable AO as an asserted fix.
+
 User explicitly requested committing the project to https://github.com/scrmarsh/Aevoria.
 This supersedes older instructions against staging/committing. The empty PUBLIC
 repository is connected as origin; branch main. Current project/source assets,
