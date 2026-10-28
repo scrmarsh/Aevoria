@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><EnableDefaultCompileItems>false</EnableDefaultCompileItems><UseAppHost>false</UseAppHost>
+    <GeographySourceRoot Condition="'$(GeographySourceRoot)'==''">$(MSBuildThisFileDirectory)../..</GeographySourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(GeographySourceRoot)/Assets/Scripts/Core/*.cs" />
+    <Compile Include="$(GeographySourceRoot)/Assets/Scripts/World/*.cs" />
+    <Compile Include="$(GeographySourceRoot)/Assets/Scripts/Simulation/*.cs" />
+    <Compile Include="$(GeographySourceRoot)/Assets/Scripts/Persistence/*.cs" />
+    <Compile Include="Program.cs" />
+  </ItemGroup>
+</Project>

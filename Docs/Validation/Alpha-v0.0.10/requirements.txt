@@ -1,0 +1,1405 @@
+# AEVORIA — ALPHA v0.0.10
+# THE LIVING WORLD UPDATE
+## Complete Autonomous Codex Development Specification
+
+**Project:** Aevoria  
+**Engine:** Unity 6.3 LTS — Universal Render Pipeline  
+**Project directory:** `M:\Aevoria`  
+**Platform:** Windows Desktop  
+**Target version:** Alpha v0.0.10  
+**Previous version:** Alpha v0.0.9 — The Natural World Update
+
+# MISSION
+
+Transform Aevoria from a largely uninhabited procedural landscape into the beginning of a living, populated, historically evolving world.
+
+Introduce the foundational systems for civilizations, settlements, populations, resource economies, territorial expansion, political entities, and world history.
+
+These systems must become the foundation for future kingdoms, armies, wars, diplomacy, family dynasties, and fully simulated societies.
+
+Also replace the temporary character architecture with an expandable humanoid framework and include the previously specified secret doctor Easter egg.
+
+**The civilization simulation is the primary purpose of this update. The doctor is a secondary character feature.**
+
+---
+
+# PHASE 0 — COMPLETE AND PRESERVE v0.0.9
+
+This instruction is being submitted while Alpha v0.0.9 may still be in development.
+
+DO NOT INTERRUPT THE CURRENT UPDATE.
+
+Before beginning v0.0.10:
+
+1. Finish v0.0.9's approved scope.
+2. Resolve outstanding bugs wherever reasonably possible.
+3. Run Editor tests.
+4. Run Play Mode tests.
+5. Produce a validated Windows standalone build.
+6. Preserve all v0.0.9 artifacts.
+7. Generate the final development report.
+8. Clearly identify remaining incomplete functionality.
+
+Do not incorrectly mark unfinished features as completed.
+
+Do not move partially implemented v0.0.9 systems into v0.0.10 without documenting their status and dependencies.
+
+Do not overwrite historical builds or saves.
+
+### Overnight autonomous work
+
+The user may be asleep.
+
+Continue through normal, permitted development operations without unnecessary questions.
+
+You may autonomously:
+
+- Inspect and edit source code.
+- Generate procedural assets.
+- Run tests and benchmarks.
+- Compile and build Unity projects.
+- Diagnose and fix errors.
+- Generate project documentation.
+- Create versioned development artifacts.
+
+Avoid unnecessary interruptions.
+
+Do not bypass required tool permissions or approval mechanisms.
+
+Never perform destructive operations outside the project workspace.
+
+If a task is blocked by required approval or unavailable tooling, document the blocker and continue other safe work.
+
+There are no user-imposed storage constraints. Prioritize quality, stability, and performance.
+
+---
+
+# PHASE 1 — AUDIT THE EXISTING SIMULATION
+
+Before implementing new systems, examine the Unity project's existing architecture.
+
+Determine which components are already functional, illustrative, incomplete, or placeholders.
+
+Inspect:
+
+- World generator.
+- Geography and terrain metadata.
+- Climate and biome generation.
+- Resource distribution.
+- Simulation clock.
+- Existing population and food scaffolding.
+- World data structures.
+- Save and load systems.
+- Deterministic random number generation.
+- World-origin shifting.
+- Rendering and chunk streaming.
+- Top-Down Mode.
+- Player and camera controllers.
+
+The previous Aevoria desktop implementation may contain reusable civilization and simulation ideas.
+
+Treat the original repository as read-only.
+
+Selectively study reusable algorithms and data structures where available, but do not blindly migrate outdated rendering, terrain generation, or persistence.
+
+Do not replace the newly constructed Unity world with the original desktop terrain implementation.
+
+Produce an architectural summary identifying which systems can support the new simulation.
+
+---
+
+# PHASE 2 — CIVILIZATION GENERATION
+
+Aevoria must begin supporting procedurally generated civilizations.
+
+The long-term goal is for civilizations to emerge, expand, compete, develop cultures, and produce their own histories.
+
+For this release, implement the foundational simulation.
+
+## 2.1 Civilization identities
+
+Each generated civilization should have:
+
+- Unique persistent ID.
+- Procedurally generated name.
+- Distinct identifying color.
+- Origin location.
+- Population.
+- Settlement collection.
+- Territorial influence.
+- Available resources.
+- Development level.
+- Political identity.
+- Cultural identity data.
+- Historical record.
+
+Names must be sufficiently varied to avoid excessive repetition.
+
+Civilization colors should remain consistent across sessions and save/load.
+
+## 2.2 Geographic suitability
+
+Civilizations should not spawn arbitrarily.
+
+Evaluate terrain suitability using:
+
+- Elevation.
+- Slope.
+- Climate.
+- Freshwater accessibility.
+- Nearby food resources.
+- Habitable land.
+- Biome type.
+- Temperature.
+- Other available geographic information.
+
+Favor plausible locations such as fertile valleys, rivers, grasslands, and suitable coastal regions.
+
+Avoid spawning ordinary settlements:
+
+- Beneath oceans.
+- On extreme cliff faces.
+- Inside inaccessible terrain.
+- On permanently submerged land.
+- At positions that cannot be restored after world loading.
+
+Allow the system to evolve later to support mountain, desert, coastal, and other specialized civilizations.
+
+## 2.3 Civilization separation
+
+Generated civilizations should have reasonable geographic spacing.
+
+Avoid clustering every civilization into a single small region unless the geography meaningfully supports dense settlement.
+
+Support worlds with multiple independent population centers.
+
+Scale the number of generated civilizations according to world size and available habitable area.
+
+Expose generation parameters for testing.
+
+---
+
+# PHASE 3 — PROCEDURAL SETTLEMENTS
+
+Introduce functioning settlements.
+
+Initially support foundational settlement categories such as:
+
+- Small camps.
+- Villages.
+- Towns.
+- Emerging regional centers.
+
+A settlement is not merely a decorative label.
+
+It must have simulation data.
+
+Each settlement should maintain:
+
+- Name.
+- Geographic position.
+- Population.
+- Parent civilization.
+- Food stores.
+- Resource stores.
+- Development stage.
+- Local territory.
+- Growth rate.
+- Founding date.
+- Historical events.
+
+## 3.1 Settlement placement
+
+Use actual world geography to position settlements.
+
+Settlements should favor usable terrain and appropriate proximity to resources.
+
+Avoid buildings floating above the ground.
+
+Avoid settlements intersecting steep terrain or water surfaces.
+
+Integrate settlement positioning with geographic coordinates and world-origin rebasing.
+
+## 3.2 Settlement rendering
+
+Add an initial visual settlement representation.
+
+At minimum, provide a recognizable cluster of buildings or structures.
+
+Initial procedural building types may include:
+
+- Simple dwellings.
+- Storage buildings.
+- Communal structures.
+- Resource-production structures.
+
+Use inexpensive reusable meshes or prefabs.
+
+The art may be relatively simple for Alpha v0.0.10, but settlements should look like intentional inhabited locations rather than random colored cubes.
+
+Settlement rendering should scale with development.
+
+A tiny camp should look different from a growing town.
+
+## 3.3 Terrain integration
+
+Buildings should adapt to local slopes where possible.
+
+Flatten only small construction footprints when necessary.
+
+Do not destructively reshape major geological features to force settlements into inappropriate terrain.
+
+Avoid corrupting rivers, shorelines, caves, and excavation data.
+
+## 3.4 Settlement growth
+
+Settlements should change over simulated time.
+
+When resources and population permit:
+
+- Population increases.
+- Additional structures appear.
+- Settlement footprints expand.
+- Development level rises.
+
+When conditions become unfavorable:
+
+- Growth may slow.
+- Resources may decline.
+- Population may shrink.
+- Settlements may enter decline.
+
+Avoid allowing all settlements to grow endlessly regardless of available resources.
+
+---
+
+# PHASE 4 — POPULATION SIMULATION
+
+Implement aggregate population simulation as the initial foundation.
+
+Each settlement should have a population quantity affected by:
+
+- Food availability.
+- Resource constraints.
+- Environmental suitability.
+- Births.
+- Deaths.
+- Migration where supported.
+- Settlement capacity.
+
+Do not require an individual rendered person for every simulated inhabitant.
+
+Use aggregate simulation for large populations.
+
+The population system must scale to large worlds.
+
+## 4.1 Population development
+
+Population growth should be gradual and influenced by settlement conditions.
+
+Avoid:
+
+- Instant exponential growth.
+- Negative population values.
+- Populations increasing without food.
+- Settlements supporting absurd populations despite having no resources.
+
+## 4.2 Migration
+
+If feasible, support simple population transfers.
+
+Examples:
+
+- People move toward better-supported settlements.
+- Crowded settlements lose some population.
+- Declining settlements may experience emigration.
+
+Maintain conservation of population where the modeled mechanism requires it.
+
+## 4.3 Individual citizens — foundational architecture
+
+Prepare for future individual-level inhabitants.
+
+Define an extensible population representation supporting future:
+
+- Individual identity.
+- Age.
+- Household.
+- Occupation.
+- Social relationships.
+- Family lineage.
+- Leadership roles.
+
+Do not build a fully simulated personal life for every citizen in this milestone.
+
+That is a future system.
+
+The goal is an expandable, efficient foundation.
+
+---
+
+# PHASE 5 — RESOURCES AND EARLY ECONOMY
+
+The world should contain geographically meaningful resources.
+
+Use existing world-generation resource data where available.
+
+Initial categories may include:
+
+- Food.
+- Timber.
+- Stone.
+- Ore or metal-bearing resources.
+- Basic production supplies.
+
+Do not introduce arbitrary inventories disconnected from the actual geography.
+
+## 5.1 Resource distribution
+
+Different biomes and terrain types should provide different resource opportunities.
+
+For example:
+
+Forests can provide timber.
+
+Fertile land can support food production.
+
+Rocky and mountainous terrain may provide stone and ore.
+
+Rivers and coasts may support future fishing and trade systems.
+
+Resource availability should be consistent with the generated world.
+
+## 5.2 Settlement production
+
+Settlements should produce resources based on:
+
+- Nearby land.
+- Population.
+- Development.
+- Available resource deposits.
+- Production capacity.
+
+Use a manageable aggregate production model initially.
+
+## 5.3 Consumption
+
+Settlements consume resources.
+
+Food should be required for population support.
+
+Construction and development should require suitable materials.
+
+Inventories must persist between simulation ticks.
+
+## 5.4 Resource shortage
+
+Resource shortages should have consequences.
+
+Possible effects:
+
+- Reduced population growth.
+- Stalled construction.
+- Declining settlement prosperity.
+- Migration.
+- Population reduction during prolonged food scarcity.
+
+Avoid implementing resource scarcity as a purely cosmetic statistic.
+
+## 5.5 Trade foundation
+
+Create a data model for future trade between settlements.
+
+If time permits, implement a basic resource transfer mechanism between connected or geographically accessible settlements.
+
+Do not pretend to have a complete trading economy if only inventory transfers are supported.
+
+Preserve a clear distinction between implemented production, exchange, and future market systems.
+
+---
+
+# PHASE 6 — TERRITORIAL EXPANSION
+
+Civilizations should establish territories.
+
+Territory must correspond to meaningful geographic regions, not arbitrary decorative circles.
+
+Implement a geographic ownership or influence representation that supports:
+
+- Civilization territory.
+- Settlement influence.
+- Unclaimed land.
+- Territory growth.
+- Territory contraction.
+- Contested regions as a future extension.
+
+## 6.1 Territory growth
+
+As civilizations develop, their influence should spread into nearby suitable areas.
+
+Expansion should consider:
+
+- Distance.
+- Geography.
+- Existing settlements.
+- Population strength.
+- Development level.
+- Neighboring territorial claims.
+
+Avoid territory spreading equally across mountain ranges, oceans, and impassable features without geographic justification.
+
+## 6.2 Political map
+
+In Top-Down Mode, add a toggleable political territory overlay.
+
+Requirements:
+
+- Each civilization has a distinct color.
+- Unclaimed land remains neutral.
+- Overlay remains subtle and readable.
+- Terrain remains visible underneath.
+- Boundaries update as influence changes.
+- Colors persist consistently across save/load.
+- Overlay works across streamed terrain chunks.
+
+Avoid abrupt seams between chunks.
+
+Support zooming between local and global views.
+
+## 6.3 Territory information
+
+Selecting a civilization's territory should allow the player to inspect basic data.
+
+Display:
+
+- Civilization name.
+- Population.
+- Settlements.
+- Controlled area.
+- Development level.
+- Major resources.
+
+Do not invent values in the user interface; read them from active simulation state.
+
+---
+
+# PHASE 7 — KINGDOMS AND POLITICAL ENTITIES
+
+Establish the foundational model for organized political entities.
+
+Initially, civilizations may function as simple independent polities.
+
+Create extensible state for:
+
+- Government or political structure.
+- Leadership identity.
+- Capital settlement.
+- Controlled territory.
+- Political relationships.
+- Stability or cohesion.
+- Founding date.
+- Historical transitions.
+
+Not every civilization needs to be a kingdom.
+
+The architecture should accommodate future:
+
+- Tribes.
+- City-states.
+- Kingdoms.
+- Empires.
+- Republics.
+- Other political systems.
+
+For v0.0.10, implement only the political behavior that can be tested meaningfully.
+
+Do not fabricate a complete political simulation.
+
+Prepare the data architecture for future leadership changes, succession, rebellions, and dynasties.
+
+---
+
+# PHASE 8 — DIPLOMACY AND CONFLICT FOUNDATION
+
+Introduce basic relationships between civilizations.
+
+Potential relationship states include:
+
+- Neutral.
+- Friendly.
+- Hostile.
+
+Track persistent relationship values or states.
+
+Relationships may evolve over simulated time based on simple documented rules.
+
+If feasible, incorporate:
+
+- Shared borders.
+- Resource competition.
+- Expansion pressure.
+- Geographic proximity.
+
+Do not implement arbitrary random hostility without an understandable causal model.
+
+## 8.1 Warfare architecture
+
+Prepare for future army and warfare simulation.
+
+Define data structures capable of representing:
+
+- Military strength.
+- Army ownership.
+- Army location.
+- Movement orders.
+- Targets.
+- Campaigns.
+- Territorial claims.
+- Battle outcomes.
+
+However, fully simulated armies, campaigns, sieges, tactics, and wars are not mandatory for completion of this milestone.
+
+Prioritize correct foundations rather than shallow placeholder battles.
+
+If a minimal conflict simulation is implemented, it must have coherent rules and observable consequences.
+
+Clearly label any simplified warfare behavior.
+
+---
+
+# PHASE 9 — WORLD HISTORY AND CHRONICLES
+
+This is a major long-term feature of Aevoria.
+
+The world should develop its own history as time passes.
+
+Create a persistent historical event system.
+
+Each event should record:
+
+- Event ID.
+- Event type.
+- Date.
+- Location.
+- Participating civilizations or settlements.
+- Relevant quantitative changes.
+- Human-readable description.
+
+## 9.1 Initial historical events
+
+Record events such as:
+
+- Civilization founded.
+- Settlement established.
+- Settlement grows into a new development stage.
+- Population milestone reached.
+- Settlement decline.
+- Territory expansion.
+- Civilization collapse, if implemented.
+- Significant resource crisis.
+- Political transition, if implemented.
+
+Events must originate from actual simulation changes.
+
+Do not generate fictional event descriptions claiming something happened when no corresponding state transition occurred.
+
+## 9.2 Chronicles interface
+
+Create an accessible chronological event viewer.
+
+The player should be able to inspect:
+
+- Recent history.
+- Older historical events.
+- Individual civilization histories.
+- Settlement history.
+
+Include date, event title, and description.
+
+Keep the presentation suitable for an evolving mythic or historical world.
+
+Do not force a real-world religious framework onto the Chronicles.
+
+## 9.3 Persistence
+
+Historical records should remain available after save/load.
+
+Avoid duplicating historical events when restoring a save.
+
+Define a scalable history-storage strategy for worlds simulated over long periods.
+
+---
+
+# PHASE 10 — WORLD SIMULATION CLOCK
+
+Extend the existing simulation clock to support the new systems.
+
+The player should be able to observe social development over time.
+
+Support the existing time-speed controls where present.
+
+Ensure:
+
+- Population production follows simulated time.
+- Resource consumption follows simulated time.
+- Settlement growth follows simulated time.
+- Territory expansion follows simulated time.
+- Historical events use correct simulation dates.
+
+## 10.1 Deterministic simulation
+
+Given the same world state, seed, configuration, and input timeline, simulation results should be reproducible.
+
+Use deterministic random streams where needed.
+
+Separate civilization simulation randomness from visual-only randomness.
+
+Do not make civilization results depend unpredictably on camera position or rendered frame rate.
+
+## 10.2 Performance at high time speed
+
+Aggregate updates sensibly.
+
+Avoid performing expensive individual-agent work every rendered frame.
+
+World simulation should function independently of camera rendering.
+
+Use bounded or scheduled simulation ticks.
+
+Test accelerated time progression.
+
+---
+
+# PHASE 11 — TOP-DOWN MODE AS A WORLD OBSERVATION TOOL
+
+Top-Down Mode must become increasingly useful as a world simulation interface.
+
+Preserve the established **T** control for switching between Explore and Top-Down Mode.
+
+Do not reintroduce the old player-facing "God Mode" terminology.
+
+Add or improve observation tools for:
+
+- Civilizations.
+- Settlements.
+- Population.
+- Territory.
+- Resources.
+- Development.
+- Historical events.
+
+## 11.1 Map overlays
+
+Implement practical toggleable overlays where feasible:
+
+- Political ownership.
+- Population density.
+- Settlement locations.
+- Resource distribution.
+
+Keep overlay colors consistent and readable.
+
+Allow overlays to be disabled.
+
+## 11.2 Inspecting settlements
+
+Clicking or selecting a settlement should display a compact information panel.
+
+Show real simulation values, such as:
+
+- Settlement name.
+- Civilization.
+- Population.
+- Resources.
+- Development.
+- Location.
+- Founding date.
+
+## 11.3 Civilization overview
+
+Allow selecting a civilization and viewing its core statistics and settlements.
+
+The interface should make it possible to observe the world's development without requiring the player to visit every location manually.
+
+---
+
+# PHASE 12 — WORLD-SCALE PERFORMANCE
+
+The user wants large procedural worlds and has substantial local storage available.
+
+Focus optimization on runtime performance, memory behavior, and simulation scalability.
+
+Test on:
+
+- Miniature worlds.
+- Small worlds.
+- Medium worlds.
+- Large worlds.
+- Colossal worlds.
+
+Use the actual supported world sizes and their existing definitions.
+
+## 12.1 Simulation scalability
+
+Do not simulate every citizen individually.
+
+Use aggregate populations and efficient spatial indexing.
+
+Avoid scanning every settlement against every terrain sample on every update.
+
+## 12.2 Rendering scalability
+
+Use distance-aware rendering for settlements.
+
+Avoid rendering every building in the world at once.
+
+Use culling and LOD where practical.
+
+## 12.3 Memory
+
+Avoid unbounded event accumulation in active runtime memory.
+
+Maintain a strategy for persistent history without repeatedly loading every historical event into active simulation.
+
+## 12.4 Profiling
+
+Measure:
+
+- Simulation tick time.
+- Main-thread frame time.
+- Settlement rendering overhead.
+- Memory usage.
+- Save/load duration.
+- High-speed simulation behavior.
+
+Target the user's hardware:
+
+- Intel Core i7-8700K.
+- RTX 3060 Ti 8 GB.
+- 64 GB RAM.
+- Windows 11.
+- 2560 × 1440 gameplay resolution.
+
+Do not reduce world complexity purely to minimize storage usage.
+
+---
+
+# PHASE 13 — HUMAN CHARACTER FOUNDATION
+
+The existing primitive player model is a temporary placeholder.
+
+Implement a reusable humanoid character framework that can support:
+
+- The default explorer.
+- Optional character appearances.
+- Future NPC inhabitants.
+- Distinct equipment.
+- Animation controllers.
+- Character-specific movement presentations.
+- Character dialogue.
+- Facial expressions where feasible.
+
+The character rendering system must be separate from the simulation and movement-physics logic.
+
+Preserve:
+
+- First-person view.
+- Third-person rear view.
+- F5 reverse third-person front-facing view.
+- Stable movement.
+- Digging and mining.
+- Flying.
+- Realistic freefall.
+- World-origin rebasing.
+
+## 13.1 Roman soldier appearance
+
+Keep the previously discussed Roman soldier as an optional selectable appearance.
+
+Visual characteristics:
+
+- Silver Roman-inspired armor.
+- Crimson red accents.
+- Optional helmet with red crest.
+- Optional cape.
+- Appropriate boots or sandals.
+
+The Roman soldier should use standard locomotion and should not inherit the doctor's limp or dialogue.
+
+Do not allow costume work to take priority over the core civilization simulation.
+
+---
+
+# PHASE 14 — SECRET EASTER EGG: THE DOCTOR
+
+Introduce the previously specified secret playable doctor character as a secondary feature of v0.0.10.
+
+Use the user-provided original portrait, body reference, and multi-angle turnaround sheet.
+
+Do not use AI concept artwork as proof that a real playable model has been implemented.
+
+## 14.1 Appearance
+
+Create a genuinely 3D, rigged adult man resembling the visual references.
+
+Required appearance:
+
+- Mature male face.
+- Blue eyes.
+- Short messy salt-and-pepper hair.
+- Facial stubble.
+- Lean adult proportions.
+- Dark blazer.
+- Light blue open-collar shirt.
+- Dark pants.
+- Black casual shoes.
+- Walking cane.
+
+The face should be recognizable and noticeably more detailed than the original primitive character.
+
+Avoid excessively blocky, pixelated, or generic facial geometry.
+
+The model need not achieve AAA photorealism.
+
+A slightly awkward game-character appearance is acceptable and contributes to the joke.
+
+## 14.2 Image-to-3D workflow
+
+Investigate the strongest permitted asset-generation workflow.
+
+Where suitable, use Blender automation or compatible rigged humanoid assets with appropriate licenses.
+
+Do not simply place the reference PNG on a flat surface.
+
+Do not claim exact facial geometry reconstruction from a photograph when that has not actually occurred.
+
+Preserve editable source assets where possible.
+
+## 14.3 Right-leg limp
+
+The doctor has a distinctive limp affecting his **right leg**.
+
+He uses the cane for walking assistance.
+
+- Hold the cane in his left hand.
+- Favor the left leg during weight bearing.
+- Use asymmetric walking animation.
+- Coordinate cane contact with stride timing.
+- Add a slightly awkward running gait.
+- Allow idle weight shifts.
+- Avoid foot sliding.
+- Avoid physically unstable movement.
+
+Initially, the limp should affect animation rather than gameplay movement speed.
+
+## 14.4 Animation
+
+Support:
+
+- Idle.
+- Walking.
+- Running.
+- Turning.
+- Jumping.
+- Digging.
+- Mining.
+- Crouching.
+- Flying.
+- Falling.
+- Landing.
+- Basic dialogue gestures.
+
+When exiting flight, he should physically fall and flail his arms and legs.
+
+Keep the cane attached appropriately.
+
+Prevent the cane from interfering with excavation tools.
+
+## 14.5 Secret unlock
+
+The doctor must not be the default character.
+
+Use the unlock phrase:
+
+`EVERYBODY LIES`
+
+After unlocking, show:
+
+**A Mysterious Doctor Has Appeared**
+
+Make the unlock state persistent.
+
+Add a practical development/testing method for unlocking the character.
+
+Switching characters must not modify world terrain, civilization simulation, population, or historical state.
+
+---
+
+# PHASE 15 — DOCTOR RANDOM DIALOGUE
+
+Add the following 30 dialogue lines to the doctor's character-specific dialogue pool.
+
+Preserve the exact wording:
+
+1. "Everybody lies."
+2. "It's not lupus."
+3. "Humanity is overrated."
+4. "Reality is almost always wrong."
+5. "Never trust doctors."
+6. "Weird works for me."
+7. "Truth begins in lies."
+8. "Everybody dies alone."
+9. "People rarely change who they really are."
+10. "Being nice doesn't automatically make you right."
+11. "Just because you're offended doesn't mean you're correct."
+12. "Most people prefer comforting lies to uncomfortable truths."
+13. "Stupidity is practically a universal condition."
+14. "Being miserable doesn't make you special."
+15. "Everyone has an excuse. Very few have a good one."
+16. "You don't need to like someone to save their life."
+17. "The truth doesn't care how you feel about it."
+18. "Sometimes doing the right thing makes everyone hate you."
+19. "People tend to believe whatever makes them happiest."
+20. "If the obvious answer were correct, you wouldn't need me."
+21. "You can be completely sincere and completely wrong."
+22. "Common sense isn't nearly as common as people think."
+23. "People only want your opinion when it agrees with theirs."
+24. "An apology doesn't magically fix what happened."
+25. "If everyone agrees with you, you're probably missing something."
+26. "You can't solve a problem by pretending it doesn't exist."
+27. "Being confident and being correct are two very different things."
+28. "Sometimes the smartest thing you can say is nothing."
+29. "People don't always get what they deserve."
+30. "The world doesn't owe you a happy ending."
+
+## 15.1 Dialogue behavior
+
+During ordinary exploration, deliver a random remark approximately every 45–120 seconds.
+
+Avoid immediate repetition.
+
+Occasionally trigger dialogue through gameplay events.
+
+Examples:
+
+**Entering a new biome:**
+"It's not lupus."
+
+**Falling:**
+"Everybody dies alone."
+
+**Mining:**
+"If the obvious answer were correct, you wouldn't need me."
+
+**Unexpected event:**
+"Everybody lies."
+
+## 15.2 Presentation
+
+Use small speech bubbles or subtitles.
+
+Support:
+
+- Adjustable display duration.
+- Fade in/out.
+- Readable text.
+- Non-overlapping presentation.
+- Contextual selection.
+- Offline operation.
+
+Provide optional dialogue interactions without conflicting with existing controls.
+
+Do not attempt unauthorized imitation or cloning of a recognizable real person's voice.
+
+Text-based dialogue is sufficient for this release.
+
+---
+
+# PHASE 16 — WORLD SAVE/LOAD INTEGRATION
+
+This update introduces significant persistent simulation state.
+
+Define stable IDs for:
+
+- Civilizations.
+- Settlements.
+- Territories or territory cells.
+- Historical events.
+- Political entities.
+- Character presets.
+
+Persist:
+
+- Civilization state.
+- Settlement positions.
+- Population.
+- Resource inventories.
+- Development levels.
+- Territorial ownership.
+- Political relationships.
+- Simulation time.
+- Historical events.
+- Selected character.
+- Character unlock state.
+
+Use versioned save data.
+
+Previous saves should either migrate safely or remain readable under documented compatibility rules.
+
+Do not silently destroy or rewrite existing saves.
+
+Test reloading worlds after substantial simulation progression.
+
+Verify that populations, resources, and territorial boundaries do not randomly reset on load.
+
+---
+
+# PHASE 17 — STABILITY AND REGRESSION PREVENTION
+
+Do not regress v0.0.9's environmental improvements.
+
+Preserve:
+
+- Procedural terrain.
+- Geological mountain generation.
+- Rivers and lakes.
+- Coastlines and bathymetry.
+- Climate and weather.
+- Vegetation.
+- Snow and ice.
+- Underground features.
+- Excavation.
+- Top-Down Mode.
+- Player movement.
+- Large-world floating-origin behavior.
+- Native rendering stability.
+
+If a major v0.0.9 problem is discovered during integration, document it and repair it where necessary for compatibility.
+
+However, do not indefinitely divert the entire Living World Update into unrelated visual polishing.
+
+Maintain distinct validation evidence for world-generation and civilization simulation changes.
+
+---
+
+# PHASE 18 — AUTOMATED VALIDATION
+
+Create substantive Editor and Play Mode tests.
+
+## Civilization generation
+
+Verify:
+
+- Civilizations have unique IDs.
+- Generated names are valid.
+- Civilization colors are stable.
+- Spawn locations are geographically valid.
+- Civilization counts respect configuration.
+- Generation reproduces deterministically.
+
+## Settlements
+
+Verify:
+
+- Settlements belong to valid civilizations.
+- Settlements spawn above valid terrain.
+- Settlement populations are nonnegative.
+- Development transitions obey resource rules.
+- Settlement positions survive save/load.
+- Visual representation matches simulation state.
+
+## Population
+
+Verify:
+
+- Growth responds to resource availability.
+- Food shortage affects population.
+- Population values remain bounded and valid.
+- Accelerated simulation does not produce inconsistent results.
+
+## Economy
+
+Verify:
+
+- Production adds inventory.
+- Consumption reduces inventory.
+- Resources cannot be spent repeatedly without accounting.
+- Shortages prevent unsupported construction or growth.
+- Resource state persists after reload.
+
+## Territory
+
+Verify:
+
+- Ownership is consistent.
+- Expansion changes actual simulation state.
+- Political overlay reflects ownership.
+- Boundaries remain consistent across streamed terrain.
+
+## History
+
+Verify:
+
+- Founding events are recorded.
+- Growth events are recorded.
+- Historical dates are correct.
+- Events persist after reload.
+- No duplicate events appear after loading.
+
+## Characters
+
+Verify:
+
+- All character presets load.
+- Doctor unlock works.
+- Doctor dialogue contains all 30 lines.
+- Roman soldier does not inherit doctor-specific behaviors.
+- Camera controls continue working.
+- Character switching preserves world state.
+- Movement and excavation remain stable.
+
+## Performance
+
+Test multiple world sizes.
+
+Measure aggregate simulation costs.
+
+Perform long-duration accelerated simulation tests.
+
+Avoid relying exclusively on small test worlds with a single settlement.
+
+---
+
+# PHASE 19 — REAL WINDOWS GAMEPLAY VALIDATION
+
+Produce and run a real Windows standalone executable.
+
+The update must be validated in the actual rendered game.
+
+Capture evidence of:
+
+1. Multiple civilizations in one world.
+2. A small settlement.
+3. A larger developed settlement.
+4. A settlement before and after simulated growth.
+5. A political map showing distinct territories.
+6. Settlement inspection UI.
+7. Civilization statistics.
+8. Population and resource changes over time.
+9. A historical events timeline.
+10. A save/load cycle preserving civilization state.
+11. The default explorer character.
+12. The Roman soldier, if completed.
+13. The secret doctor's front-facing character model.
+14. The doctor's limp and cane animation.
+15. A random dialogue subtitle.
+
+Use real Unity renders or screenshots of the built game.
+
+Do not generate fabricated screenshots as evidence of implemented functionality.
+
+---
+
+# PHASE 20 — FINAL BUILD
+
+Produce:
+
+`M:\Aevoria\Builds\Alpha-v0.0.10\Aevoria.exe`
+
+Preserve earlier builds.
+
+Update the visible version label.
+
+Create:
+
+`Docs/Validation/Alpha-v0.0.10/`
+
+Include:
+
+- Development report.
+- Test results.
+- Windows build logs.
+- Performance findings.
+- Screenshots.
+- Known limitations.
+- Implementation notes.
+- Architecture documentation.
+
+---
+
+# PHASE 21 — FINAL REPORT
+
+Provide a complete final report.
+
+Clearly separate fully implemented systems from partial features.
+
+Report:
+
+**Civilizations**
+- Number and types generated.
+- Suitability logic.
+- Determinism.
+- Known limitations.
+
+**Settlements**
+- Placement.
+- Rendering.
+- Growth.
+- Development stages.
+
+**Population**
+- Birth/death or aggregate growth logic.
+- Resource constraints.
+- Migration behavior.
+
+**Economy**
+- Resource types.
+- Production.
+- Consumption.
+- Transfers or trade where supported.
+
+**Territories**
+- Geographic ownership.
+- Expansion rules.
+- Political visualization.
+
+**Politics and warfare**
+- Implemented relationship mechanics.
+- Data-model foundations.
+- Deferred gameplay.
+
+**Chronicles**
+- Supported events.
+- Historical persistence.
+- Timeline interface.
+
+**Characters**
+- Reusable character framework.
+- Available presets.
+- Doctor modeling quality.
+- Right-leg limp.
+- Animation states.
+- Random dialogue.
+
+**Testing**
+- Editor tests.
+- Play Mode tests.
+- Windows standalone tests.
+- Performance.
+- Save/load compatibility.
+
+**Build**
+- Exact executable path.
+- Completion status.
+- Unresolved bugs.
+
+Never call placeholder functionality complete.
+
+---
+
+# PHASE 22 — PRIORITIES AND SCOPE CONTROL
+
+Implement features in the following priority order:
+
+**Priority 1 — Working civilization simulation**
+- Civilizations.
+- Geographically valid settlements.
+- Population.
+- Food and resources.
+- Basic settlement growth.
+
+**Priority 2 — Persistent and observable world**
+- Territory.
+- Political overlays.
+- Civilization inspection.
+- Historical events.
+- Save/load.
+
+**Priority 3 — Political foundations**
+- Basic political relationships.
+- Capital settlements.
+- Leadership data structures.
+- Future diplomacy/warfare interfaces.
+
+**Priority 4 — Character system**
+- Reusable humanoid architecture.
+- Better player models.
+- Roman appearance where feasible.
+
+**Priority 5 — Secret doctor Easter egg**
+- Recognizable model.
+- Cane.
+- Right-leg limp.
+- Animations.
+- Hidden unlock.
+- Random dialogue.
+
+**Priority 6 — Full regression testing and release**
+- Cross-world validation.
+- Performance.
+- Native build.
+- Documentation.
+
+Do not sacrifice the primary civilization systems merely to polish the Easter egg.
+
+If time or tooling limits prevent completing every requirement, prioritize a functioning, tested living-world simulation and clearly report the remaining work.
+
+---
+
+# LONG-TERM SYSTEMS TO PREPARE FOR, NOT MISREPRESENT AS COMPLETE
+
+The following belong to Aevoria's long-term roadmap.
+
+Design foundations that can grow into these systems, but do not substitute token implementations for complete mechanics:
+
+- Detailed individual citizen lives.
+- Family relationships and dynasties.
+- Birth, marriage, inheritance, and succession.
+- Fully functioning markets and trade networks.
+- Advanced diplomacy.
+- Alliances and treaties.
+- Professional armies.
+- Tactical battle simulation.
+- Sieges and campaigns.
+- Kingdoms and empires with complete political dynamics.
+- Rebellions and revolutions.
+- Technological development.
+- Religious and cultural evolution.
+- Player control over political decisions.
+- Complex economic production chains.
+- Fully simulated civilian NPC behaviors.
+- Massive historical timelines covering thousands of years.
+
+These should remain expandable next-step systems.
+
+---
+
+# FINAL VISION
+
+Alpha v0.0.9 establishes the natural world.
+
+Alpha v0.0.10 begins populating that world.
+
+Civilizations should emerge in geographically suitable regions.
+
+Villages should develop.
+
+Populations should grow and decline.
+
+Resources should constrain development.
+
+Territories should expand.
+
+The political map should change over time.
+
+Historical events should accumulate into a persistent record of the world's development.
+
+The player should be able to observe these changes in Explore Mode and Top-Down Mode.
+
+And, hidden among the character choices, the player may unlock one deeply sarcastic, cane-wielding doctor who seems entirely unimpressed by everything.
+
+Aevoria must become more than a beautiful terrain generator.
+
+It must begin becoming **a living world with its own civilizations, history, and future.**
+
+Proceed systematically, preserve previous milestones, test honestly, and deliver the strongest functional Alpha v0.0.10 implementation possible.

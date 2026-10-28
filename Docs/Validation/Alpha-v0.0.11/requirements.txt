@@ -1,0 +1,1278 @@
+# AEVORIA — ALPHA v0.0.11
+## THE WORLD REFINEMENT UPDATE
+### Complete Codex Development Specification
+**Primary Focus: Modular Layered World Generation, Geological Realism, Hydrology, and Visual Reconstruction**
+
+---
+
+# 1. MISSION AND RELEASE PRIORITIES
+
+Develop Aevoria Alpha v0.0.11 in Unity 6.3 LTS using the Universal Render Pipeline.
+
+This is a major architectural and visual improvement release. The current world generator repeatedly produces unsatisfactory geography despite earlier technical validation. Mountains are insufficient or malformed, ordinary hills are too exaggerated, major rivers are largely absent, caves cannot reliably be found in normal gameplay, water geometry is unstable, and large-world generation can stall.
+
+**The primary mission is to implement a modular, deterministic world-generation pipeline where each geographic system generates its own authoritative data and integrates with the systems around it.**
+
+The world must be assembled from coherent, interdependent layers rather than disconnected procedural noise.
+
+### Priority order
+
+**Critical — Must be completed before secondary features:**
+
+1. Audit, preserve, and modularize the existing world-generation architecture.
+2. Establish a consistent authoritative elevation and terrain system.
+3. Restore large, dramatic, independently generated mountain formations.
+4. Reduce excessive hill steepness and ordinary terrain exaggeration.
+5. Rebuild the connected river, lake, drainage, and water systems.
+6. Establish physically consistent climate and biome generation.
+7. Restore genuinely accessible, navigable, mineable cave systems.
+8. Fix water flickering, surface seams, terrain geometry, and LOD.
+9. Create a loading experience that visually assembles the actual generated world.
+10. Fix world generation hangs, especially Stage 5 drainage processing.
+
+**Secondary — Complete after the geographical foundation is validated:**
+
+- Metric and Imperial units.
+- Clean Escape menu and customizable key bindings.
+- Default random-seed behavior.
+- Explore Mode hotbar and command-console foundation.
+- Movement, flight, freefall, spawning, and animation corrections.
+- Boulders, material rendering, and surface visual improvements.
+- Improved settlements, citizens, buildings, and NPC interactions.
+- Clouds, cold-region forests, and environmental presentation.
+- Final regression testing, optimization, and release packaging.
+
+Do not sacrifice the world-generation goals to complete secondary convenience features.
+
+Do not claim completion based solely on compilation, passing unit tests, or automatically captured screenshots.
+
+The actual Windows executable must demonstrate the requested geography and interactions.
+
+---
+
+# 2. PHASE ZERO — BASELINE AUDIT AND PRESERVATION
+
+Before changing the world generator:
+
+1. Inspect the current Aevoria repository and project instructions.
+2. Review the completed v0.0.10 implementation and validation reports.
+3. Inspect existing terrain generation, geological processing, climate generation, drainage, lake creation, cave systems, biome selection, rendering, and streaming.
+4. Identify which existing systems can be reused and which must be replaced.
+5. Preserve the official v0.0.9 and v0.0.10 builds and source archives.
+6. Establish consistent seed, camera-position, and world-setting test fixtures.
+7. Record baseline world-generation times, stage timings, memory usage, and representative screenshots.
+8. Verify save-versioning contracts and prevent the new generator from silently rebuilding or altering older saved worlds.
+
+Do not automatically discard working systems merely because a modular architecture is being introduced.
+
+Refactor into clear modules wherever possible. Replace defective algorithms where necessary.
+
+### Existing critical performance issue
+
+During v0.0.10 playtesting, a Colossal world configured with 16,000 meters of mountain relief stalled near Stage 5 of 10, displaying "settling drainage pass."
+
+The process retained approximately 4.2 GB of memory while Task Manager showed almost no CPU, disk, or GPU activity.
+
+The root cause is not confirmed.
+
+Investigate blocked tasks, lock contention, synchronization, deadlocks, infinite waits, cancellation paths, Unity main-thread dependencies, and drainage-algorithm termination.
+
+Instrument all world-generation stages and their substeps.
+
+A stalled process must not indefinitely display a stage name without reporting useful diagnostic information or permitting safe cancellation.
+
+---
+
+# 3. PHASE ONE — MODULAR WORLD-GENERATION ARCHITECTURE
+
+## 3.1 Design philosophy
+
+Redesign the generator around **independently testable but interconnected geographic systems**.
+
+Each system should calculate a particular property of the world, store its output in a shared world-data model, and make that output available to dependent systems.
+
+For example:
+
+- Elevation affects climate and drainage.
+- Mountain placement affects rainfall and snow.
+- Rainfall contributes to rivers and lakes.
+- Rivers influence local soil moisture.
+- Climate and moisture determine eligible biomes.
+- Biomes influence vegetation and resource distribution.
+- Geography, water availability, and resources influence settlement placement.
+
+The result must be one coherent world.
+
+### Important distinction: Data layers versus physical meshes
+
+Not every system requires a separate visible 3D mesh.
+
+Climate, precipitation, and biomes are primarily data fields and classification maps. Mountains and caves influence actual physical terrain geometry. Rivers and lakes also need independent renderable water surfaces.
+
+Separate the **calculation systems** first, then use whichever physical mesh structures are appropriate.
+
+Do not stack arbitrary overlapping surfaces that create gaps, flickering, duplicate collision, or disconnected geography.
+
+## 3.2 Required world-generation modules
+
+| Module | Responsibility | Primary output |
+|---|---|---|
+| Continental Generator | Continents, islands, oceans, coastline foundations | Land/ocean mask |
+| Elevation Generator | Base elevation, plains, rolling terrain, hill relief | Authoritative surface heights |
+| Mountain Generator | Peaks, clusters, foothills, cliffs, localized alpine relief | Mountain height contributions and detailed geometry |
+| Geological Generator | Rock types, erosion resistance, geological formations | Geological fields |
+| Climate Generator | Temperature, wind, atmospheric moisture, precipitation | Climate data fields |
+| Hydrology Generator | Drainage, rivers, streams, lakes, watersheds, water levels | Water topology, channel geometry, water surfaces |
+| Biome Generator | Determine ecologically appropriate biomes | Biome classifications and transition masks |
+| Cave Generator | Cave networks, chambers, shafts, entrances, underground rock | Volumetric cave data and geometry |
+| Material Generator | Sand, soil, rock, snow, terrain textures | Surface materials |
+| Ecosystem Generator | Trees, vegetation, habitats, ecological distributions | Ecological world data and instances |
+| Civilization Generator | Suitable settlement sites and initial populations | Persistent society state |
+| World Assembler | Integrate, validate, render, and stream all layers | Playable world |
+
+Every module must have clear input requirements and output contracts.
+
+## 3.3 Dependency-aware assembly
+
+Use a dependency graph rather than relying on one enormous world-generation routine.
+
+A recommended logical sequence is:
+
+1. Resolve the world seed and generation settings.
+2. Generate continents and sea level.
+3. Generate base elevation, plains, and moderate hills.
+4. Add mountain formations and geological influences.
+5. Apply geological shaping and erosion where appropriate.
+6. Calculate initial climate, rainfall, and atmospheric conditions using the terrain.
+7. Calculate drainage, rivers, lakes, and watersheds; modify terrain where water channels require it.
+8. Reconcile local moisture and climate interactions with the hydrology.
+9. Determine final biome eligibility and transitions.
+10. Generate cave volumes, entrances, and any necessary local terrain integration.
+11. Assemble surface geometry, cave geometry, water meshes, collision, and LOD.
+12. Apply materials, vegetation, and natural environmental objects.
+13. Place civilizations and settlements using the completed geography.
+14. Validate the assembled world, finish essential streaming, and allow gameplay.
+
+The exact technical ordering may vary when dependency analysis requires it.
+
+For instance, climate needs elevation before temperature can account for altitude, while river discharge needs precipitation. A controlled multi-pass calculation is acceptable.
+
+Avoid uncontrolled cyclic dependencies or repeatedly recomputing the entire world.
+
+## 3.4 Authoritative shared world model
+
+Establish one consistent source of truth for geographic properties.
+
+At any world coordinate, the game must be able to query:
+
+- Surface elevation.
+- Ground collision and solid/empty underground state.
+- Geological material.
+- Temperature and precipitation.
+- Biome and local environmental conditions.
+- Drainage direction and surface-water properties.
+- Water depth and surface elevation.
+- Available natural resources.
+- Settlement eligibility.
+
+Player physics, vegetation, excavation, civilizations, and rendering must reference the same authoritative geography.
+
+A mountain must not appear visually 20,000 meters high while the physics system believes the land is flat.
+
+Likewise, a river must not appear to flow through land that the terrain generator never carved.
+
+## 3.5 Deterministic generation and seeds
+
+Preserve deterministic world generation.
+
+Use one master world seed, with stable derived seeds for individual modules.
+
+Ensure module execution order, thread scheduling, and unrelated random-number consumption do not unexpectedly change the output of other modules.
+
+Store the master seed, generator version, and relevant creation settings.
+
+The same seed and settings within the same generator version must reproduce equivalent geographic results.
+
+Changes to generator algorithms may legitimately produce different geography across versions, but those changes must be explicitly versioned.
+
+Old saved worlds must not be silently regenerated with new geographic rules.
+
+## 3.6 Independent module testing
+
+Allow developers to generate and inspect individual layers.
+
+Examples:
+
+- Continents only.
+- Elevation only.
+- Elevation plus mountains.
+- Temperature heatmap.
+- Rainfall map.
+- Watershed and river networks.
+- Biome classifications.
+- Cave entrances and underground geometry.
+- Complete assembled world.
+
+Provide debug visualizations and numeric summaries without permanently exposing developer controls in normal gameplay.
+
+Record module timing, output validity, and dependencies.
+
+The architecture should make it possible to repair mountains independently without rewriting unrelated civilization logic.
+
+---
+
+# 4. PHASE TWO — COMPLETE ELEVATION AND MOUNTAIN RECONSTRUCTION
+
+## 4.1 Ordinary hills are too large and steep
+
+The current world contains enormous rolling ridges that are visually exaggerated, especially when seen from first-person perspective.
+
+Ordinary terrain needs substantially less vertical relief and less excessive hill coverage.
+
+Implement:
+
+- Wider, flatter plains.
+- Gentle rolling hills.
+- Gradual, natural elevation transitions.
+- Appropriate valleys and lowlands.
+- Smaller ordinary hill footprints.
+- Reduced large-scale hill exaggeration.
+- Consistent slopes suitable for travel and settlement placement.
+
+Do not flatten the entire world.
+
+Separate ordinary hill shaping from true mountain formation.
+
+Regular hills should make exploration pleasant; major mountains should provide the dramatic vertical scale.
+
+Measure terrain slope distributions and compare them visually from ground level and high altitude.
+
+## 4.2 Dedicated mountain generation
+
+The current mountain generator has repeatedly failed to produce the intended mountains.
+
+Create a dedicated mountain-generation module rather than continuing to rely exclusively on the current global terrain-noise implementation.
+
+Mountains should appear as recognizable geological formations with strong silhouettes.
+
+### Requested mountain appearance
+
+Favor sporadically distributed mountain clusters rather than enormous repetitive ridge networks.
+
+A typical cluster should include:
+
+- One dominant central summit.
+- Approximately three or four surrounding smaller peaks.
+- Natural foothills and connecting slopes.
+- Steep exposed rock faces.
+- Distinct valleys and occasional passes.
+- Irregular geological structure.
+- Snow and ice where climate and altitude justify them.
+
+Mountain clusters must vary in shape, orientation, scale, and geological character.
+
+Do not make each cluster an identical arrangement of five cones.
+
+Avoid long, repeating maze-like mountain chains as the default world pattern.
+
+Some longer connected formations can occur when geographically appropriate, but smaller clusters should be common.
+
+## 4.3 Mountain height requirements
+
+Aevoria is not required to follow Earth's maximum mountain elevations.
+
+For high-relief settings, significant major mountains should be capable of reaching approximately **20,000 meters**, with rare exceptional formations reaching approximately **30,000 meters or potentially higher**, subject to the selected mountain-relief setting.
+
+The major mountain setting must produce visible, measurable changes in actual terrain height.
+
+A setting of 16,000 meters must not generate a barely visible rolling ridge.
+
+Interpret elevation and relief parameters consistently, avoiding accidental double-scaling or ignoring selected values.
+
+Record actual peak elevations and local prominence.
+
+Rare extreme elevations must not corrupt camera precision, climate calculation, physics, or water systems.
+
+## 4.4 Mountain geometry integration
+
+Generate mountain shapes independently, but integrate them into the authoritative terrain surface.
+
+The system may use specialized streamed mountain geometry for rock faces and high-detail features.
+
+However:
+
+- No floating mountain shells.
+- No hollow artificial mountains.
+- No duplicate visible surfaces creating Z-fighting.
+- No terrain clipping through mountain faces.
+- No walking through visible solid rock.
+- No mismatched collision geometry.
+- No visible disappearance at LOD transitions.
+
+Mountains should generate appropriate foothills and blend naturally into lower terrain.
+
+Their shapes must be recognizable from World Mode as well as first-person exploration.
+
+## 4.5 Acceptance
+
+Codex must demonstrate at least one convincing mountain cluster in the actual Windows build before extending the generator throughout the full world.
+
+Validate from:
+
+- High-altitude overview.
+- Mid-altitude oblique view.
+- Ground level at the foothills.
+- Ground level near steep slopes.
+- A distant view showing the formation silhouette.
+
+Also compare identical seeds under different mountain-relief settings.
+
+**Do not move on to declaring the mountain system complete until the requested formations are physically visible and their height settings demonstrably work.**
+
+---
+
+# 5. PHASE THREE — RIVER NETWORKS, LAKES, AND HYDROLOGY OVERHAUL
+
+## 5.1 Current problems
+
+The playable world contains small streams, but major rivers are either absent, insufficiently developed, or invisible except at close range.
+
+This is unacceptable for worlds spanning hundreds or thousands of kilometers.
+
+Aevoria needs major river networks that are recognizable from above.
+
+Water also flickers, disappears or changes shape during zoom, and lakes sometimes display rectangular or triangular boundaries.
+
+## 5.2 Hierarchical drainage networks
+
+Generate a coherent hierarchy of watercourses.
+
+Small tributaries and streams must collect into larger waterways.
+
+Larger rivers must continue to accumulate water downstream where drainage conditions support it.
+
+Create:
+
+- Tiny headwater streams.
+- Small creeks and tributaries.
+- Medium rivers.
+- Major regional rivers.
+- Large trunk rivers.
+- River confluences.
+- Broad river valleys.
+- Natural mouths and estuaries.
+- Deltas where geographically appropriate.
+
+The system must be based on elevation, watershed area, precipitation, and flow accumulation rather than arbitrary painted blue lines.
+
+Rivers must have physical widths and depths that make sense for their estimated flow.
+
+## 5.3 Major river visibility
+
+Large rivers must be visible from World Mode without requiring the player to zoom all the way to the ground.
+
+Use stable, scale-appropriate rendering or distant LOD representations derived from the same authoritative river network.
+
+Do not inflate tiny streams into enormous rivers merely to make them visible.
+
+At closer distances, transition into properly shaped riverbanks, water surfaces, and detailed channels.
+
+Avoid abrupt disappearance, disconnected segments, and visibly artificial rectangular channel pieces.
+
+## 5.4 Terrain carving and drainage
+
+Rivers need to interact with real terrain.
+
+Generate:
+
+- Riverbeds below adjacent land.
+- Natural riverbank slopes.
+- Broad lowland floodplains for appropriate rivers.
+- Deeper channels for major rivers.
+- Suitable erosion and deposition effects.
+- Realistic lake outlets.
+- Correct downstream connectivity.
+
+Prevent physically invalid uphill flow unless an explicitly modeled special mechanism justifies it.
+
+Ensure major channels connect to their appropriate basin destinations.
+
+## 5.5 Lake reconstruction
+
+Reduce excessive tiny puddle generation.
+
+Generate lakes primarily where meaningful geological and hydrological basins exist.
+
+Include regional variety: freshwater lakes, mountain lakes, lowland lakes, ponds, and wetlands.
+
+Large lakes should have smooth but naturally irregular shorelines, meaningful depth, and believable tributaries or outlets.
+
+Correct polygon fragmentation, obvious square edges, exposed terrain islands created by geometry bugs, and incoherent lake surfaces.
+
+## 5.6 Water rendering and flickering
+
+Investigate and permanently correct the flickering observed while zooming and moving the camera.
+
+Potential causes include:
+
+- Overlapping terrain and water surfaces.
+- Depth-buffer precision.
+- Z-fighting.
+- Transparent sorting.
+- Camera projection precision.
+- LOD transitions.
+- Water mesh streaming.
+- Surface elevation mismatches.
+- Coordinate precision during origin rebasing.
+
+Do not merely hide the issue with color adjustments.
+
+Water must remain stable while the camera moves.
+
+Water colors should respond to depth, turbidity, biome, and lighting without becoming uniformly bright turquoise.
+
+Oceans must have appropriate bathymetry for future marine systems.
+
+## 5.7 Acceptance
+
+In the actual Windows executable, demonstrate a connected major river originating from smaller tributaries and flowing into another substantial waterbody or the ocean.
+
+Verify the same river at multiple viewing altitudes.
+
+The river should be a real continuous physical feature, not a disconnected map graphic.
+
+Test camera zooming, oblique camera movement, shoreline transitions, and changes in terrain LOD without flickering or vanishing segments.
+
+---
+
+# 6. PHASE FOUR — CLIMATE AND BIOME GENERATION
+
+## 6.1 Climate as an independent data layer
+
+Build a clearly separated climate calculation module.
+
+It must compute geographically relevant fields, including:
+
+- Air temperature.
+- Altitude correction.
+- Latitude-related temperature variation.
+- Wind direction and exposure.
+- Atmospheric moisture.
+- Precipitation distribution.
+- Seasonal temperature variation.
+- Snow and freezing eligibility.
+
+Climate should not be selected randomly from a color palette.
+
+Elevation, mountains, oceans, and atmospheric conditions must influence the resulting climate.
+
+Include plausible mountain rain shadows and local moisture patterns.
+
+## 6.2 Biomes should depend on climate
+
+The biome generator must consume actual climate data rather than independently assigning unrelated biome colors.
+
+For example, a region with a temperature around 28°C may qualify for different biomes depending on its rainfall:
+
+- Very low rainfall may favor a hot desert.
+- Moderate rainfall may support grassland or savanna.
+- High rainfall may support tropical forest.
+
+Altitude, seasonal conditions, soil, water availability, and geology should further refine the classification.
+
+The game must not generate obviously contradictory biome combinations without an environmental justification.
+
+## 6.3 Biome transitions
+
+The current world sometimes shows very large blended zones where grassland, desert, and other biomes lose their identities.
+
+Narrow excessive blending while preserving natural irregular transitions.
+
+Biome boundaries should respond to meaningful changes in climate, elevation, soil, and water.
+
+Avoid square boundaries, repetitive noise, and enormous muddy intermediate zones.
+
+## 6.4 Cold-region visual refinement
+
+Improve the cold-biome palette.
+
+Use recognizable combinations of:
+
+- Muted tundra vegetation.
+- Sage grasses.
+- Slate and gray-blue exposed rock.
+- Pale soil.
+- Snow and ice.
+- Deep evergreen vegetation.
+- Moss and lichen.
+
+Cold terrain should not appear uniformly muddy brown or dull gray.
+
+Add larger, more recognizable boreal forests populated by believable spruce and conifer models.
+
+Trees must maintain convincing silhouettes and spacing from both ground level and higher elevations.
+
+## 6.5 Snow, ice, and alpine environments
+
+Mountain snow must respond to climate and altitude.
+
+Avoid random disconnected snow patches with no apparent climatic explanation.
+
+Create sensible snowline behavior, ice accumulation, exposed rocky faces, alpine zones, and transitions into surrounding lower-elevation vegetation.
+
+Exceptional mountain heights must be handled correctly by the climate model.
+
+---
+
+# 7. PHASE FIVE — DEDICATED CAVE SYSTEM
+
+## 7.1 Existing situation
+
+Earlier Aevoria development reported procedural caves, collision, excavation, and persistent underground geometry.
+
+However, normal gameplay testing has not demonstrated easily discoverable, accessible cave systems.
+
+Inspect the existing implementation before rebuilding it.
+
+## 7.2 Cave-generation architecture
+
+Caves should be generated through an independent volumetric geological system.
+
+Unlike ordinary height-based terrain, caves require actual three-dimensional underground space.
+
+Support:
+
+- Walkable cave entrances.
+- Narrow passages.
+- Broad tunnels.
+- Chambers.
+- Branches.
+- Loops.
+- Shafts.
+- Vertical variation.
+- Cave systems beneath mountains and plains.
+- Appropriate underground materials and rock formations.
+
+Entrance geometry must connect to the real surface terrain.
+
+The player should be able to enter a cave naturally rather than walking into an invisible wall or a decorative opening.
+
+## 7.3 Mining and persistence
+
+Support interaction with underground surfaces using the existing excavation and mining system.
+
+Maintain:
+
+- Solid collision geometry.
+- Actual empty cave spaces.
+- Accurate surface normals.
+- Reasonable lighting.
+- Underground navigation.
+- Persistent excavation.
+- Save/load continuation.
+- Appropriate origin rebasing.
+
+Caves must not create holes through unrelated terrain tiles or break river and lake surfaces.
+
+## 7.4 Acceptance
+
+Codex must identify several cave locations from newly generated worlds and physically traverse them in the Windows executable.
+
+Demonstrate entering, walking, mining, saving, reloading, and continuing.
+
+A cave system that technically exists in data but cannot be reliably reached during ordinary gameplay is not considered complete.
+
+---
+
+# 8. PHASE SIX — TERRAIN MATERIALS, BOULDERS, AND VISUAL QUALITY
+
+## 8.1 Remove grainy terrain appearance
+
+Ground textures currently look reasonable at very close distances but become excessively grainy or speckled after zooming out slightly.
+
+Investigate high-frequency procedural noise, texture sampling, shader aliasing, texture mipmaps, anisotropic filtering, and terrain LOD interactions.
+
+Apply distance-appropriate detail filtering.
+
+Maintain fine surface detail nearby, but blend naturally into broader terrain patterns at greater distances.
+
+Grasslands, sand, soil, and rock should not turn into noisy pixel-like surfaces.
+
+Test moving and zooming cameras, not only static screenshots.
+
+## 8.2 Boulder reconstruction
+
+Current boulders can appear unnaturally jagged, contain visible holes, and lack reliable collision.
+
+Replace defective geometry with more natural rounded or angular rock formations appropriate to the geological region.
+
+Boulders must:
+
+- Have valid, closed geometry where appropriate.
+- Avoid visible holes and inverted faces.
+- Have solid collision.
+- Rest naturally against the terrain.
+- Vary in shape and size.
+- Support mining interactions.
+- Yield stone or rock resources.
+- Persist their mined state where required.
+
+Use appropriate LOD and collision complexity for performance.
+
+## 8.3 Overall natural-world appearance
+
+Review terrain from multiple heights and perspectives.
+
+Correct visible tiling, seams, repetitive ridge patterns, unnatural material transitions, and disconnected geometry.
+
+Do not make the world look smoother by simply removing all geographical detail.
+
+The goal is believable structure with fine detail at the appropriate scale.
+
+---
+
+# 9. PHASE SEVEN — VISUAL WORLD-ASSEMBLY LOADING SCREEN
+
+## 9.1 Core concept
+
+The world-generation loading screen should visually demonstrate the world being assembled from its individual systems.
+
+The player should see a map of the actual newly generated world progressively becoming more complete.
+
+This must be tied to authentic world-generation output rather than a generic looping animation.
+
+## 9.2 Desired visual sequence
+
+Begin with a clean empty or subdued preview surface.
+
+As generation proceeds, progressively reveal:
+
+**Stage A — Continents**
+
+Landmasses and ocean boundaries emerge.
+
+**Stage B — Elevation**
+
+Plains, hills, plateaus, and valleys become visible through shaded relief.
+
+**Stage C — Mountains**
+
+Mountain clusters rise or progressively appear as detailed relief.
+
+**Stage D — Climate**
+
+Temperature and precipitation layers briefly appear as readable environmental overlays.
+
+**Stage E — Water**
+
+River networks draw across the land, lakes fill their basins, and ocean boundaries settle into their final shapes.
+
+**Stage F — Biomes**
+
+Deserts, grasslands, forests, tundra, and other regions emerge according to the completed climate and terrain.
+
+**Stage G — Ecosystems**
+
+Forests, alpine environments, and environmental details are added.
+
+**Stage H — Final Assembly**
+
+The completed world map appears in its final visual form.
+
+The exact order of the visual transitions must respect the real generator dependencies. Do not pretend that data has been computed before it actually has.
+
+Climate and biome fields should be visualized as overlays, not treated as literal 3D mesh geometry.
+
+## 9.3 Presentation quality
+
+The preview should be smooth, attractive, readable, and visually consistent.
+
+Avoid coarse squares, flickering low-resolution pixels, or a sequence of unrelated images.
+
+Use stable, lower-resolution representations of the actual world where necessary for performance.
+
+A layer should transition naturally into the next instead of abruptly replacing the entire map.
+
+## 9.4 Honest progress reporting
+
+Show the current module, useful substage details, and actual generation progress.
+
+Provide elapsed time and meaningful diagnostics when work takes unusually long.
+
+Do not falsely report 100% while required world-assembly or loading operations are unfinished.
+
+Ensure cancellation remains responsive.
+
+## 9.5 Ready-to-play behavior
+
+The completed visual preview should represent the actual generated world.
+
+Transition into gameplay only after the authoritative world data is valid and the essential initial terrain, water, collision, and presentation resources are ready.
+
+Do not artificially delay gameplay merely to finish decorative animation.
+
+Similarly, do not enter gameplay with critical geographic systems missing.
+
+---
+
+# 10. PHASE EIGHT — WORLD SEEDS AND CREATION SETTINGS
+
+## 10.1 Seed input behavior
+
+Remove the automatically populated `Aevoria-001` seed.
+
+The Create World screen must begin with an empty, editable seed field.
+
+The exact gray placeholder text must be:
+
+**Leave blank for random seed**
+
+Do not automatically fill the text field with randomly generated digits.
+
+Do not add an unnecessary Randomize button.
+
+If the player leaves the field blank and creates a world, generate a new random numeric seed.
+
+Store the actual generated seed in the world's metadata and make it available to the player for future recreation.
+
+If the player manually enters a supported seed, use it consistently.
+
+Preserve compatibility with existing manually entered or legacy textual seed formats where currently supported.
+
+## 10.2 World settings
+
+Maintain the existing world-size and generation-settings options.
+
+Ensure those settings actually affect the relevant geographic systems.
+
+For example, mountain-relief settings must influence mountain relief, and appropriate rainfall settings must influence hydrology.
+
+Do not silently ignore or override user-entered values.
+
+---
+
+# 11. PHASE NINE — METRIC AND IMPERIAL UNITS
+
+Add a persistent display preference:
+
+- Metric
+- Imperial
+
+The player must be able to change this in Settings.
+
+### Metric
+
+- Elevation and local distance: meters.
+- Large-world distances: kilometers.
+- Temperature: Celsius.
+- Movement speed: kilometers per hour where applicable.
+
+### Imperial
+
+- Elevation and local distance: feet.
+- Large-world distances: miles.
+- Temperature: Fahrenheit.
+- Movement speed: miles per hour where applicable.
+
+Use appropriate additional conversions for other quantities exposed in the interface.
+
+Apply the selection throughout the game wherever measurements appear, including:
+
+- Coordinates and elevation.
+- Mountain settings.
+- World information.
+- Climate displays.
+- Weather information.
+- Flight-speed indicators.
+- Character movement-speed indicators.
+- Geographic inspection panels.
+- Relevant world-generation settings.
+
+Maintain consistent internal simulation units regardless of the player's display preference.
+
+Unit selection must not affect seeds, geographic generation, physics, simulation determinism, or saves.
+
+Changing from Metric to Imperial should immediately update displayed values without rebuilding the world.
+
+Save the selected preference across launches.
+
+---
+
+# 12. PHASE TEN — COMPLETE HUD AND MENU CLEANUP
+
+## 12.1 Minimal interface philosophy
+
+Remove the clutter of persistent on-screen buttons, unnecessary action controls, and permanent instructions.
+
+The world should occupy the majority of the screen.
+
+Do not display the long control-instruction footer at the bottom of the screen during ordinary gameplay.
+
+Do not permanently show text explaining which key opens every menu or activates every action.
+
+## 12.2 Escape menu
+
+Pressing Escape should open a clean, organized game menu.
+
+Move nonessential on-screen buttons and controls into this menu or appropriate subordinate interfaces.
+
+Include access to:
+
+- Resume.
+- Save and load.
+- World and simulation options.
+- Character selection.
+- Settings.
+- Controls and key bindings.
+- Relevant inspection or management interfaces.
+- Return to main menu.
+- Exit.
+
+Preserve useful keyboard shortcuts even after their buttons are removed from the persistent HUD.
+
+Opening the menu must correctly focus the UI and prevent accidental gameplay movement or actions.
+
+## 12.3 Customizable key bindings
+
+Add **Settings → Controls / Key Bindings**.
+
+List the actual input actions organized by context:
+
+- World Mode.
+- Explore Mode.
+- Flight controls.
+- Camera controls.
+- Mining and tools.
+- Inventory and hotbar.
+- Menu and interface.
+- Command console.
+
+Support reassignment of applicable keyboard and mouse bindings.
+
+Detect binding conflicts, handle context-sensitive shared inputs, persist changes, and provide a Restore Defaults option.
+
+Ensure the Escape key and input-capture behavior remain usable even when bindings are modified.
+
+## 12.4 Minimal HUD elements
+
+Retain only useful gameplay information.
+
+Top-left: compact world time, season, and simulation speed.
+
+Top-right: small coordinate display using X, Y, and Z with the appropriate unit interpretation.
+
+Do not put these inside enormous opaque panels.
+
+In Explore Mode, show the tool hotbar where appropriate.
+
+Use brief contextual interaction indicators only when immediately relevant, not permanent tutorial instructions.
+
+---
+
+# 13. PHASE ELEVEN — EXPLORE MODE AND CHARACTER IMPROVEMENTS
+
+## 13.1 Walking and running
+
+Increase default walking and running speeds substantially.
+
+Use approximately 4–5 meters per second for ordinary walking and 8–10 meters per second for sprinting as initial tuning targets, with final values adjusted through gameplay testing.
+
+Ensure responsive acceleration, deceleration, and turning.
+
+Walking and running animations should match physical movement to reduce foot sliding.
+
+Maintain proper collision and slope handling.
+
+## 13.2 Context-sensitive mouse wheel
+
+Preserve different mouse-wheel actions by context.
+
+| Context | Mouse-wheel behavior |
+|---|---|
+| World Mode | Zoom |
+| Explore Mode while walking | Change selected hotbar slot |
+| Explore Mode while flying | Increase or decrease flight-speed setting |
+| Menus | Scroll interface content where appropriate |
+
+The context must be explicit and the controls must not conflict.
+
+## 13.3 Explore Mode hotbar
+
+Implement a compact bottom-screen tool hotbar.
+
+The player should be able to select tools and equipment without repeatedly opening the full inventory.
+
+Support mouse-wheel selection while grounded and appropriate number-key shortcuts.
+
+Show the selected item clearly without occupying excessive screen space.
+
+## 13.4 Flight and freefall
+
+Improve flight-speed adjustment using an appropriately broad multiplicative scale.
+
+Increase speed when scrolling upward, and decrease it when scrolling downward while flying.
+
+The speed selection must apply consistently to movement in every supported flight direction.
+
+When flight is disabled in midair, the player must enter a genuine accelerating fall.
+
+Do not teleport the player to the ground.
+
+Handle very high altitudes, steep mountains, collision tunneling, and origin rebasing.
+
+## 13.5 Explore Mode entry position
+
+When switching from World Mode to Explore Mode with T, spawn the player near the currently observed terrain focal point, not at an unrelated previous location.
+
+Validate the intended surface and find a safe placement.
+
+When returning to World Mode, center the camera on the player's relevant location.
+
+## 13.6 Character selection and Doctor
+
+Make the Doctor character available through the normal character-selection menu.
+
+Do not require a hidden phrase, special unlock, or obscure access mechanism.
+
+Preserve the Doctor's dedicated model, clothing, cane, right-leg limp, personality, and existing dialogue.
+
+Maintain the distinct Roman soldier character.
+
+Fix the soldier's arm posture, tool alignment, grips, and animation transitions without damaging the Doctor's independent rig and animations.
+
+## 13.7 Forward-slash command-console framework
+
+Pressing `/` during active gameplay must open a compact command-entry interface.
+
+Typing should automatically receive keyboard focus.
+
+Enter submits the current input, and Escape closes the interface.
+
+No actual gameplay commands are required in this release.
+
+Unknown or unsupported input may display a simple message indicating that commands are not yet available.
+
+Implement a maintainable command registration and dispatch foundation for future updates.
+
+Disable gameplay movement and action shortcuts while the player is entering text.
+
+Do not intercept `/` when another text field already has focus.
+
+---
+
+# 14. PHASE TWELVE — SETTLEMENT AND NPC PRESENTATION
+
+These features remain in the v0.0.11 scope but must not displace the primary geographic overhaul.
+
+## 14.1 Settlement scale
+
+Current villages can report populations around 100 while showing only three to five houses.
+
+This visual representation is not sufficient.
+
+Building counts and apparent housing capacity must correspond meaningfully to settlement population.
+
+Do not require one visible house per citizen, but use plausible residential occupancy and building distributions.
+
+## 14.2 Settlement structure
+
+Replace repetitive groups of box-shaped houses with believable villages.
+
+Include a varied selection of buildings such as:
+
+- Residential homes of different sizes and shapes.
+- Farms and agricultural structures.
+- Workshops.
+- Storage buildings.
+- Shops or market structures.
+- Appropriate community and civic buildings.
+- Churches or comparable culturally appropriate gathering places where the settlement context supports them.
+
+Buildings should be connected by sensible roads and paths.
+
+Settlement layouts should respond to nearby water, slopes, geography, and available space.
+
+Avoid identical repetitive building placement or random unconnected structures.
+
+## 14.3 Settlement growth
+
+As settlement population increases, actual settlement presentation should expand appropriately.
+
+Add houses, roads, and other buildings according to population, resources, and construction logic.
+
+Preserve existing population and resource authority from v0.0.10.
+
+The number of rendered buildings must not be substituted for authoritative population data.
+
+## 14.4 Visible NPC inhabitants
+
+Add visible humanoid NPC residents who can walk through settlements and nearby areas.
+
+Support basic walking animation, movement between destinations, collision, and appropriately limited simulation behavior.
+
+NPCs should not stand motionless indefinitely.
+
+Provide basic health and combat interactions allowing the player to attack and kill NPCs.
+
+Deaths must be handled consistently with the simulation's population and persistence rules; do not repeatedly duplicate deceased characters after streaming or loading.
+
+Do not imply that the current release implements full individual citizen economies, dialogue, or sophisticated AI warfare unless those behaviors actually exist.
+
+Scale NPC presentation appropriately for very large worlds, keeping detailed characters near the player rather than simulating every distant citizen as a fully animated GameObject.
+
+---
+
+# 15. PHASE THIRTEEN — CLOUDS AND ATMOSPHERIC RESTORATION
+
+Restore clearly visible clouds during ordinary gameplay.
+
+Investigate any cloud system already present but hidden or disabled by quality settings, camera configuration, or rendering logic.
+
+Cloud cover should depend on actual climate and weather conditions.
+
+Support recognizable variation in cloud thickness, shape, altitude, movement, and storm intensity.
+
+Ensure clouds remain geographically consistent while zooming and moving.
+
+Do not create enormous stationary cotton-ball formations or visibly teleporting weather systems.
+
+Test visible cloud coverage in the actual Windows executable across several climates and weather states.
+
+---
+
+# 16. PHASE FOURTEEN — PERFORMANCE, STREAMING, AND WORLD SCALE
+
+The modular system must support the existing world-size options, including Colossal.
+
+Optimize the generator around actual performance measurements.
+
+### Requirements
+
+- Keep world-generation processing responsive.
+- Avoid blocking the main rendering thread unnecessarily.
+- Prevent infinite waits and undetected generation deadlocks.
+- Instrument slow module execution.
+- Use bounded, cancellable operations.
+- Avoid unnecessary full-world recalculation.
+- Stream detailed geometry as needed.
+- Maintain appropriate LOD transitions.
+- Support large-world coordinate precision and origin rebasing.
+- Minimize severe frame-time spikes.
+- Preserve deterministic outputs under supported execution configurations.
+
+Do not prioritize minimizing disk storage over rendering quality, simulation quality, or reliable validation.
+
+However, do not create enormous unbounded memory allocations or duplicate copies of every generated layer without an actual technical purpose.
+
+### Performance validation
+
+Measure generation, loading, and runtime performance for all supported world sizes.
+
+Use the development hardware as a practical test target:
+
+- Intel Core i7-8700K.
+- NVIDIA RTX 3060 Ti 8 GB.
+- 64 GB RAM.
+- Windows 11.
+- 2560×1440 resolution.
+- High graphics settings.
+
+Record individual module times, total time, memory use, and stalled-progress incidents.
+
+Test actual camera movement and native frame times, not merely automated simulation speed.
+
+For Medium and Colossal worlds, establish and report realistic generation-time budgets from measurements. Treat unexpectedly long delays as defects requiring investigation, not something to conceal behind an animation.
+
+---
+
+# 17. PHASE FIFTEEN — TESTING AND ACCEPTANCE GATES
+
+Automated tests are necessary but insufficient.
+
+The previous versions demonstrated that mathematically valid terrain can still look unnatural or fail to appear correctly in the actual game.
+
+## Gate A — Modular world generation
+
+Verify that every major generator produces inspectable, deterministic outputs and that its dependencies are correctly resolved.
+
+Prove that changing one module does not unexpectedly invalidate unrelated layers.
+
+## Gate B — Elevation and mountains
+
+Generate worlds where regular terrain is comfortably traversable and major peaks are dramatic, distinct formations.
+
+Verify actual physical peak heights and collision.
+
+Test different mountain-relief values on the same seed.
+
+Reject worlds containing only repetitive rounded ridges in place of major mountains.
+
+## Gate C — Hydrology
+
+Verify complete drainage networks with visible major rivers, consistent tributaries, meaningful lakes, and connected river mouths.
+
+Demonstrate that rivers actually render at higher altitudes.
+
+Reject flickering water, artificial blue tiles, broken shorelines, and floating surfaces.
+
+## Gate D — Climate and biomes
+
+Inspect quantitative temperature and rainfall outputs.
+
+Confirm that biome classifications are consistent with those climate inputs and the relevant geography.
+
+Inspect cold regions, deserts, grasslands, rainforests, and alpine environments.
+
+## Gate E — Caves and collision
+
+Physically locate and enter multiple cave systems.
+
+Walk, mine, save, and reload successfully.
+
+Verify underground collision and safe surface transitions.
+
+## Gate F — Loading and seed behavior
+
+Confirm that the loading screen progressively displays the actual generated world layers and ends on an accurate completed preview.
+
+Verify that empty seed fields create fresh random numeric seeds.
+
+Verify manual-seed determinism and generator-version compatibility.
+
+Test cancellation during drainage and other long stages.
+
+## Gate G — Controls and interface
+
+Confirm that Escape opens the menu, persistent action-button clutter is removed, permanent bottom control hints are absent, and key bindings can be changed and restored.
+
+Verify metric and imperial measurements, including Fahrenheit temperatures.
+
+Test the hotbar, command entry, camera modes, flight speed, and player movement using physical keyboard and mouse input.
+
+## Gate H — Settlements and characters
+
+Verify plausible building counts relative to population, varied architecture, settlement roads, NPC animation and interaction, character selection, and persistence.
+
+Confirm the Doctor and Roman soldier remain playable and correctly animated.
+
+## Gate I — Long-term simulation
+
+Preserve and regression-test:
+
+- Civilization identities.
+- Settlement identities and growth.
+- Food production and consumption.
+- Population and resource balances.
+- Territory and history.
+- World time.
+- Ecological simulation.
+- Underground changes.
+- Save/load continuation.
+- Long-duration determinism.
+
+Do not fake economic or population results to match the appearance of the rendered world.
+
+## Gate J — Real Windows visual approval
+
+Capture actual gameplay evidence at:
+
+- Ground level.
+- Low aerial altitude.
+- Medium altitude.
+- Continental/world overview.
+
+Include mountains, ordinary hills, rivers, lakes, caves, forests, deserts, snow, settlements, and water transitions.
+
+Perform moving-camera and zoom tests.
+
+Do not mark an issue visually resolved without actual rendered evidence and gameplay review.
+
+---
+
+# 18. PHASE SIXTEEN — RELEASE PACKAGING AND DOCUMENTATION
+
+Once all critical geographical acceptance gates are satisfied, complete the remaining scoped features and perform final regression testing.
+
+Deliver:
+
+1. The Alpha v0.0.11 Windows executable with its required runtime files.
+2. A preserved source checkpoint/archive.
+3. A factual changelog.
+4. Documented world-generator architecture and dependency diagram.
+5. Reproducible test seeds and generation settings.
+6. Module performance reports and generation-time measurements.
+7. Before-and-after terrain screenshots.
+8. Recorded native gameplay validation.
+9. Save-compatibility and determinism results.
+10. A clearly identified list of remaining limitations or incomplete secondary features.
+
+Keep internal candidate builds organized separately from official releases.
+
+Preserve v0.0.9 and v0.0.10.
+
+Do not delete or silently migrate user saves.
+
+Do not spend development time generating new literary release Chronicles. Preserve the old material, but use conventional release documentation.
+
+---
+
+# 19. EXECUTION INSTRUCTIONS FOR CODEX
+
+Work in clear, sequential development milestones.
+
+**Milestone 1:** Baseline audit, architecture design, preservation, and generator diagnostics.
+
+**Milestone 2:** Shared world-data model, modular generation interfaces, dependency orchestration, and deterministic seed handling.
+
+**Milestone 3:** Base elevation, ordinary hills, mountain generator, and physical terrain assembly.
+
+**Milestone 4:** Watersheds, tributaries, major rivers, lakes, water meshes, and hydrological integration.
+
+**Milestone 5:** Climate, biome calculation, alpine snow, cold environments, and vegetation integration.
+
+**Milestone 6:** Cave integration, terrain materials, boulders, collision, streaming, and LOD.
+
+**Milestone 7:** Actual-layer world-generation loading experience and large-world performance corrections.
+
+**Milestone 8:** Settings, Imperial/Metric units, Escape menu, key bindings, hotbar, command console, and character/movement corrections.
+
+**Milestone 9:** Settlement visual improvements, NPCs, atmospheric features, and remaining secondary scope.
+
+**Milestone 10:** Full regression testing, native visual inspection, final fixes, and preserved release packaging.
+
+At each milestone:
+
+- Report what was implemented.
+- Report what was actually tested.
+- Distinguish automated results from visual observations.
+- Identify failures and unresolved issues.
+- Preserve necessary diagnostic evidence.
+- Do not claim an incomplete milestone is finished.
+
+When a visual component fails its acceptance criteria, correct it before continuing to broad feature expansion.
+
+Do not skip the mountain or hydrology acceptance gates to complete easier menu features.
+
+If the new architecture reveals that some existing code cannot be retained safely, document the finding and replace that code deliberately, without unnecessarily damaging unrelated systems.
+
+---
+
+# FINAL DEVELOPMENT DIRECTIVE
+
+**The central objective of Aevoria Alpha v0.0.11 is to replace the unreliable appearance-driven world-generation process with a coherent, modular geographical system.**
+
+The world should be generated through connected calculations:
+
+Continents determine the land. Elevation gives it shape. Mountains introduce dramatic geological formations. Climate responds to elevation and geography. Rainfall forms drainage systems. Streams merge into great rivers. Rivers feed lakes and oceans. Climate, geology, and water determine biomes. Vegetation responds to environmental conditions. Caves occupy real underground spaces. Civilizations develop where those natural conditions make sense.
+
+All of these outputs must ultimately describe the same physical world.
+
+When the player starts a new world, the loading screen should visually assemble those layers into a completed geographic map.
+
+When the player enters the world, that map must correspond to the real terrain, rivers, mountains, caves, and environments they can explore.
+
+The end result should not merely be a more complicated generator.
+
+**It should be an enormous, cohesive, beautiful, geographically believable living world that works consistently from continental overview to first-person exploration.**
+
+Prioritize the quality and correctness of that world above all other additions in this release.

@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const root=path.resolve('Docs/Validation/Alpha-v0.0.9');
+const read=p=>{const b=fs.readFileSync(p);return b.toString(b[0]===255&&b[1]===254?'utf16le':'utf8').replace(/^\uFEFF/,'');};
+const json=p=>JSON.parse(read(p));
+const csv=p=>{const lines=read(p).trim().split(/\r?\n/),split=s=>s.split(',').map(v=>v.replace(/^"|"$/g,''));const header=split(lines.shift());return lines.map(l=>Object.fromEntries(split(l).map((v,i)=>[header[i],Number.isFinite(Number(v))?Number(v):v])));};
+const stats=a=>{a=a.filter(Number.isFinite).sort((a,b)=>a-b);return {count:a.length,mean:a.reduce((a,b)=>a+b,0)/a.length,median:a[Math.floor(a.length*.5)],p95:a[Math.min(a.length-1,Math.floor(a.length*.95))],max:a.at(-1),over16_667:a.filter(v=>v>1000/60).length,over33_333:a.filter(v=>v>1000/30).length};};
+function cases(files){const result=new Map();for(const file of files){for(const m of read(path.join(root,file)).matchAll(/<test-case\s[^>]*>/g)){const attrs=Object.fromEntries([...m[0].matchAll(/([\w-]+)="([^"]*)"/g)].map(v=>[v[1],v[2]]));result.set(attrs.fullname,{result:attrs.result,evidence:file});}}return {total:result.size,passed:[...result.values()].filter(v=>v.result==='Passed').length,failed:[...result].filter(([,v])=>v.result!=='Passed'),cases:Object.fromEntries(result)};}
+const editor=cases(['editor-integrated-first.xml','editor-contract-updates.xml','editor-rig-preview-current.xml']);
+const play=cases(['play-integrated-all-first.xml','play-terrain-target-ownership.xml']);
+const portableLogs=['portable-supported-forest.log','living-streamed-volume.log','cave-resolution-generalization.log'];
+const portable=[...new Set(portableLogs.flatMap(f=>read(path.join(root,f)).split(/\r?\n/).filter(l=>l.startsWith('PASS: '))))];
+const cave=csv(path.join(root,'Final-underground-native/cave-motion.csv'));
+const standing=cave.slice(0,120).map(v=>v.y);
+const summary={generatedUtc:new Date().toISOString(),editor,play,portable:{distinctPassingAssertions:portable.length,logs:portableLogs,assertions:portable,note:'Aggregate coverage across retained runs and focused fixture corrections; not one all-green full portable execution.'},cave:{result:read(path.join(root,'Final-underground-native/result.txt')).trim(),engineMs:stats(cave.map(v=>v.engineMs)),standingRangeMetres:Math.max(...standing)-Math.min(...standing)},native:null};
+const nativeEvidence=process.argv[2]??'Final-native-settled';
+const nativeDir=path.join(root,nativeEvidence);
+if(fs.existsSync(path.join(nativeDir,'audit.json'))){const audit=json(path.join(nativeDir,'audit.json'));const memory=csv(path.join(nativeDir,'process-memory.csv'));const traces={},motion={};for(const name of fs.readdirSync(nativeDir).filter(v=>v.endsWith('-frames.csv')))traces[name]=stats(csv(path.join(nativeDir,name)).map(v=>v.engineLoopMs));for(const name of fs.readdirSync(nativeDir).filter(v=>v.endsWith('-motion.csv'))){const rows=csv(path.join(nativeDir,name));let rebases=0,maxStep=0;for(let i=1;i<rows.length;i++){const p=rows[i-1],q=rows[i];if(p.originX!==q.originX||p.originZ!==q.originZ)rebases++;maxStep=Math.max(maxStep,Math.hypot(q.x-p.x,q.z-p.z));}motion[name]={samples:rows.length,originChanges:rebases,maxHorizontalStepMetres:maxStep,verticalRangeMetres:Math.max(...rows.map(v=>v.y))-Math.min(...rows.map(v=>v.y)),lastVerticalSpeed:rows.at(-1)?.verticalSpeed};}summary.native={...audit,evidence:nativeEvidence,completed:audit.cleanup&&audit.cancellation&&audit.worlds.length===5&&audit.worlds.every(v=>v.persistence)&&audit.errors===0,frameTraces:traces,motion,peakMemoryMiB:Object.fromEntries(['workingSetMiB','privateMiB','dedicatedGpuMiB','sharedGpuMiB'].map(k=>[k,Math.max(...memory.map(v=>v[k]).filter(Number.isFinite))]))};}
+fs.writeFileSync(path.join(root,'validation-summary.json'),JSON.stringify(summary,null,2)+'\n');
+console.log(JSON.stringify({editor:[editor.passed,editor.total],play:[play.passed,play.total],portable:portable.length,cave:summary.cave,nativeCompleted:summary.native?.completed,nativeWorlds:summary.native?.worlds,peakMemoryMiB:summary.native?.peakMemoryMiB},null,2));

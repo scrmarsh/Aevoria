@@ -1,0 +1,1 @@
+{"name":"Aevoria.Persistence","rootNamespace":"Aevoria.Persistence","references":["Aevoria.Core","Aevoria.Simulation","Aevoria.World"],"autoReferenced":true}

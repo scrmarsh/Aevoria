@@ -1,0 +1,948 @@
+# AEVORIA — ALPHA v0.0.9
+## THE NATURAL WORLD UPDATE
+### Complete Codex Development Instructions
+
+You are continuing development of **Aevoria**, a large-scale procedurally generated world simulation and exploration game built in Unity 6.3 LTS with URP.
+
+Your assignment is to implement **Alpha v0.0.9**, building upon the completed Alpha v0.0.8 Expanded milestone.
+
+This update must incorporate all gameplay feedback, visual defects, and feature requirements below.
+
+**IMPORTANT: The previous Codex session did not crash. Development continued through Alpha v0.0.8 Part 2, which was completed and validated. You are now beginning a new development milestone, Alpha v0.0.9.**
+
+The project is located at `M:\Aevoria`.
+
+Do not treat this as a collection of cosmetic adjustments. Several issues originate in terrain-generation mathematics, rendering, mesh geometry, physics, camera synchronization, and world-coordinate precision.
+
+Investigate and correct the underlying causes.
+
+---
+
+# SECTION 1 — DEVELOPMENT RULES
+
+Before implementation:
+
+1. Inspect the existing Unity project and read its development instructions.
+2. Review the v0.0.8 source code, validation reports, screenshots, and documentation.
+3. Establish a reproducible baseline before changing existing systems.
+4. Preserve previous builds, project history, and existing save files.
+5. Create a separate v0.0.9 milestone and Windows build.
+6. Preserve deterministic world generation.
+7. Version any incompatible changes to procedural generation and archives.
+8. Do not silently overwrite or regenerate existing worlds.
+9. Preserve working gameplay features.
+10. Do not introduce mock implementations or cosmetic substitutes for requested functionality.
+11. Prefer reliable architecture over shortcuts.
+12. Prioritize performance and quality without imposing artificial disk-storage constraints.
+
+The original `Aevoria-old` repository must remain read-only.
+
+Do not modify earlier Chronicle books. Append new development history according to the existing project conventions.
+
+**A feature is not considered complete simply because automated tests pass. Actual gameplay and visual validation are required.**
+
+---
+
+# SECTION 2 — FUNDAMENTAL TERRAIN CORRECTIONS
+
+## 2.1 Remove maze-like terrain patterns
+
+**PRIORITY: CRITICAL**
+
+Current worlds contain unnatural, repetitive terrain formations.
+
+Observed defects:
+
+- Maze-like mountain ridges.
+- Unexplained narrow trenches.
+- Repeating straight lines.
+- Rectangular terrain formations.
+- Sharp 90-degree turns.
+- Narrow ridges with almost no width.
+- Sudden cliff walls.
+- Repetitive grassland waves.
+- Artificial-looking valleys.
+- Biome transitions with repeated geometric patterns.
+
+These artifacts appear across several geographical regions.
+
+Investigate continental masks, plate-boundary elevation fields, erosion, terrain interpolation, drainage carving, and mesh construction.
+
+Distinguish geometry defects from material and shader artifacts using diagnostic rendering.
+
+Correct the underlying procedural algorithms rather than hiding artifacts with textures.
+
+Terrain must flow naturally between geological formations.
+
+## 2.2 Rebuild mountain proportions
+
+**PRIORITY: CRITICAL**
+
+Mountains currently appear too small, too narrow, and insufficiently imposing compared with the enormous world scale.
+
+Requirements:
+
+- Massive mountain ranges spanning substantial distances.
+- Long, connected mountain chains.
+- Broad mountain bases.
+- Naturally connected foothills.
+- Increasing elevations toward major summits.
+- Distinct peaks and ridgelines.
+- Large mountain valleys.
+- Smooth transitions into nearby terrain.
+- Appropriate geological erosion.
+- Realistic traversal routes and mountain passes.
+
+Mountains must be dramatically more noticeable from high altitude and during world overview.
+
+Investigate why model elevations above 10,000 meters still appear visually unimpressive.
+
+Correct the mountain-to-world proportions, relief distribution, and rendering.
+
+The desired visual increase may be an order of magnitude, but do not blindly multiply every mountain's altitude by 10 or 20.
+
+Avoid exaggerated elevation values that break climate, collision, camera behavior, or world traversal.
+
+Mountains should be imposing without making the entire world inaccessible.
+
+## 2.3 Add major plateaus
+
+**PRIORITY: HIGH**
+
+Plateaus should become common, recognizable geological features where appropriate.
+
+Generate:
+
+- Grassland plateaus.
+- Forested plateaus.
+- Desert mesas.
+- Rocky tablelands.
+- Mountain plateaus.
+- Coastal plateaus.
+- Major escarpments.
+
+Plateaus should contain broad, elevated, relatively level terrain.
+
+Some should extend across many kilometers.
+
+Their edges should include appropriate slopes, erosion valleys, and occasional cliffs.
+
+Plateaus must be integrated into geology and erosion rather than applied as arbitrary terrain stamps.
+
+## 2.4 Add coastal cliffs and ocean-facing plateaus
+
+Not every coastline should slope gently toward the ocean.
+
+Generate a natural distribution of:
+
+- Sandy beaches.
+- Rocky coasts.
+- Tall coastal cliffs.
+- Raised headlands.
+- Coastal plateaus.
+- Steep ocean-facing escarpments.
+- Protected coves.
+- Gradual shoreline slopes.
+
+Some plateaus should extend directly to cliffs overlooking the ocean.
+
+Ocean depth and shoreline geometry must correspond correctly to these features.
+
+## 2.5 Rework grasslands
+
+**PRIORITY: HIGH**
+
+Current grasslands are excessively wavy and resemble sand dunes.
+
+Grassland generation must favor:
+
+- Vast open plains.
+- Extensive relatively flat areas.
+- Gentle rolling hills.
+- Subtle local elevation variation.
+- Natural rivers and streams.
+- Occasional hills and ridges.
+- Scattered trees.
+- Small groves.
+- Wetlands in suitable regions.
+- Gradual transitions to forests and highlands.
+
+Preserve the attractive rolling dune geography already present in deserts.
+
+Grasslands and deserts must not share identical terrain profiles.
+
+Grasslands should feel expansive without becoming empty or repetitive.
+
+## 2.6 Improve biome transitions
+
+Desert-to-grassland and other biome boundaries should not feature unnatural repeated ridge patterns or abrupt rectangular transitions.
+
+Use broad geographical ecotones.
+
+Blend appropriate vegetation, soil, ground coloration, and climate over meaningful distances.
+
+Different biomes should retain recognizable identities while connecting naturally.
+
+Restore natural green grassland colors rather than excessively orange or brown vegetation.
+
+---
+
+# SECTION 3 — RIVERS, LAKES, AND COASTLINES
+
+## 3.1 Repair river geometry and missing water
+
+**PRIORITY: CRITICAL**
+
+Many rivers currently appear as dry trenches or hairline cracks.
+
+Some channels have straight segments, strange turns, abrupt endings, and excessive incision.
+
+Requirements:
+
+- Continuous downhill river paths.
+- Connected drainage networks.
+- Proper tributary confluences.
+- Natural meanders.
+- Flow-dependent widths.
+- Appropriate channel depths.
+- Reliable water-surface placement.
+- Smooth river-to-lake transitions.
+- Realistic river mouths.
+
+Permanent rivers must visibly contain water.
+
+Only seasonally dry or ephemeral channels may be empty, where supported by climate and hydrology.
+
+Investigate whether some apparent river trenches originate from continental masks or elevation algorithms rather than actual river generation.
+
+Do not confuse ocean-separation cuts with freshwater rivers.
+
+## 3.2 Improve lakes and eliminate excessive mountain pools
+
+Current worlds contain too many strange water pools inside mountain formations.
+
+Generate lakes based on plausible drainage basins.
+
+Reduce unexplained elevated ponds, small random mountain lakes, and water-filled geometric holes.
+
+Preserve natural alpine lakes where justified by terrain and climate.
+
+Every permanent lake should have a sensible water budget and drainage relationship.
+
+## 3.3 Smooth shoreline geometry
+
+**PRIORITY: HIGH**
+
+The existing coastline and lake-island boundaries frequently appear blocky.
+
+Fix the actual shoreline mesh and triangulation.
+
+Requirements:
+
+- Smoother naturally curved shorelines.
+- Improved shoreline sampling.
+- No obvious square or polygonal edges.
+- Stable boundaries across terrain LOD changes.
+- Natural bays and small peninsulas.
+- Gradual banks in appropriate locations.
+- Realistic transitions from sand or earth to water.
+
+Do not make every shoreline uniformly rounded.
+
+## 3.4 Improve shallow-water transparency
+
+Shallow water should reveal the underwater terrain.
+
+Implement:
+
+- Clear shallow-water visibility near shore.
+- Smooth transparency transitions.
+- Visible sand, gravel, and submerged rocks.
+- Gradual opacity increases with depth.
+- Turquoise shallow water where appropriate.
+- Natural transitions into deeper calm blue.
+
+Ponds and shallow lakes should generally retain attractive light blue or turquoise coloration where conditions permit.
+
+Avoid excessively dark, nearly black water.
+
+## 3.5 Preserve negative underwater elevation
+
+Sea level must not be the minimum world elevation.
+
+Support actual underwater bathymetry extending below zero elevation.
+
+Underwater terrain should include:
+
+- Continental shelves.
+- Sloping coastal seabeds.
+- Deeper ocean basins.
+- Underwater ridges.
+- Submerged valleys.
+- Varied shallow-water terrain.
+
+This forms the foundation for future coral reefs, kelp forests, seagrass, fish, marine wildlife, diving, and underwater exploration.
+
+Full marine ecological simulation is not required in this milestone, but its geographic foundation must not be compromised.
+
+## 3.6 Improve ocean appearance
+
+Preserve the preferred calm blue water aesthetic.
+
+Reduce excessively choppy, repetitive waves.
+
+Weather should influence wave strength appropriately.
+
+Prevent color seams, harsh water geometry boundaries, and flickering at long viewing distances.
+
+---
+
+# SECTION 4 — SNOW, ICE, AND ATMOSPHERE
+
+## 4.1 Correct snow distribution
+
+Snow should depend on actual climate and elevation.
+
+Evaluate:
+
+- Latitude.
+- Air temperature.
+- Elevation.
+- Atmospheric lapse rate.
+- Seasonal conditions.
+- Precipitation.
+- Terrain exposure.
+
+Avoid applying snow automatically to every mountain regardless of local temperature.
+
+Extremely tall tropical mountains may still have snow where climate conditions justify it.
+
+Avoid excessive white outlines following narrow mountain ridges.
+
+## 4.2 Improve frozen lakes
+
+Frozen water should look like pale, naturally reflective ice.
+
+Use:
+
+- Very light blue-white coloration.
+- Subtle reflective highlights.
+- Restrained surface texture.
+- Gentle variation.
+- Optional snow accumulation.
+
+Remove the overly textured denim-like appearance.
+
+## 4.3 Fix flickering black snow specks
+
+**PRIORITY: CRITICAL**
+
+Snow currently contains dark or black specks that appear and disappear when the camera moves.
+
+Investigate:
+
+- Shadow bias.
+- Shadow acne.
+- Z-fighting.
+- Incorrect normals.
+- Overlapping surfaces.
+- Shader instability.
+- Depth precision.
+- LOD transitions.
+- Vegetation or mesh clipping.
+
+Identify the actual cause using diagnostic render modes.
+
+Do not conceal the problem with brighter snow.
+
+Snow must remain stable when viewed from different angles.
+
+## 4.4 Stabilize clouds
+
+Clouds currently sometimes appear too low, move incorrectly, or change position when zooming.
+
+Clouds must:
+
+- Remain anchored to world coordinates.
+- Move continuously with wind.
+- Form and dissipate gradually.
+- Have natural shapes.
+- Remain stable during zoom.
+- Avoid square edges and procedural noise-sheet appearances.
+- Occupy appropriate atmospheric altitudes.
+- Interact naturally with regional weather.
+
+Rain clouds should darken during storms.
+
+Cloud coverage and precipitation must correspond geographically.
+
+Preserve independent weather and cloud display controls.
+
+---
+
+# SECTION 5 — CAVES, RAVINES, AND MINING
+
+## 5.1 Add natural ravines
+
+Generate geological ravines, gorges, and canyons.
+
+They should result from appropriate erosion or geological processes.
+
+Features may include:
+
+- Narrow natural gorges.
+- River-cut canyons.
+- Desert ravines.
+- Mountain valleys.
+- Plateau-cut canyons.
+- Steep rocky passages.
+
+These must not resemble the existing artificial maze-like trenches.
+
+## 5.2 Add spaghetti-like cave networks
+
+**PRIORITY: MAJOR NEW FEATURE**
+
+Implement genuinely three-dimensional procedural caves.
+
+Cave systems should include:
+
+- Winding passages.
+- Branching tunnels.
+- Multiple depths.
+- Interconnected loops.
+- Large caverns.
+- Narrow corridors.
+- Vertical shafts.
+- Hillside entrances.
+- Cliff entrances.
+- Connections to natural ravines.
+
+Caves should not resemble flat two-dimensional mazes.
+
+Investigate appropriate volumetric terrain or local underground mesh architecture.
+
+A standard heightfield alone cannot represent true underground tunnels.
+
+Consider local voxel systems, signed-distance fields, or other technically suitable approaches.
+
+Use deterministic generation and scalable streaming.
+
+Integrate caves with the geological model.
+
+Do not generate full-detail underground meshes for the entire Colossal world at once.
+
+## 5.3 Expand terrain mining
+
+Players should be able to excavate accessible solid ground, including:
+
+- Grasslands.
+- Deserts.
+- Hillsides.
+- Mountains.
+- Cliffs.
+- Rock formations.
+- Underground terrain.
+
+Allow excavations to form holes, tunnels, shafts, and chambers.
+
+Terrain modifications must persist after saving and loading.
+
+Mining should remove actual geological material rather than merely lowering the visible surface.
+
+## 5.4 Add excavation targeting circle
+
+**PRIORITY: HIGH**
+
+Implement a visible circular excavation indicator.
+
+The targeting circle should:
+
+- Follow the player's aim.
+- Highlight the actual dig location.
+- Show the excavation radius.
+- Conform to surface geometry.
+- Work on horizontal and vertical surfaces.
+- Remain visible against snow, earth, sand, and rock.
+- Indicate invalid excavation targets.
+
+The actual excavation must match the displayed indicator.
+
+## 5.5 Repair hairy and grainy excavation surfaces
+
+**PRIORITY: CRITICAL**
+
+Current excavated holes have dark, grainy, hairy-looking interiors.
+
+Investigate geometry, normals, material assignment, z-fighting, shadow artifacts, and terrain-mesh replacement.
+
+Excavated surfaces should use suitable earth or rock materials.
+
+Shallow holes should reveal soil.
+
+Deeper excavation should expose geological strata.
+
+Remove black speckling, flickering, and jagged mesh artifacts.
+
+## 5.6 Stop excavation-induced character shaking
+
+Digging currently causes violent character and camera jitter.
+
+Investigate character grounding, collision updates, terrain replacement, collider synchronization, and camera movement.
+
+The character must remain stable during excavation.
+
+Test digging on level ground, slopes, near hole edges, and underground.
+
+---
+
+# SECTION 6 — PLAYER MOVEMENT AND PHYSICS
+
+## 6.1 Eliminate character vibration
+
+**PRIORITY: CRITICAL**
+
+The character currently vibrates visibly during standing, walking, digging, and flying.
+
+Investigate:
+
+- Physics/render update synchronization.
+- Character-controller grounding.
+- Collider overlap.
+- Animation transforms.
+- Camera-follow logic.
+- Terrain LOD replacement.
+- World-coordinate precision.
+- Floating-point instability.
+
+Correct the root cause.
+
+Do not simply hide vibration with visual smoothing.
+
+## 6.2 Fix high-speed flight
+
+**PRIORITY: CRITICAL**
+
+High-speed flight causes violent character jitter.
+
+Flight must remain smooth during:
+
+- Maximum-speed movement.
+- Sudden acceleration.
+- Deceleration.
+- Sharp turns.
+- Rapid altitude changes.
+- High-altitude travel.
+- Colossal-world navigation.
+
+Maintain stable camera behavior and character animation.
+
+## 6.3 Double-Space must initiate freefall
+
+**PRIORITY: HIGH**
+
+Double-tapping Space currently enables or disables flight.
+
+Preserve that control.
+
+However, disabling flight while airborne currently teleports the character to the ground.
+
+This must be fixed.
+
+When the player double-taps Space during flight:
+
+1. Disable powered flight.
+2. Keep the character at the current airborne position.
+3. Preserve appropriate momentum.
+4. Activate gravity.
+5. Transition into a falling animation.
+6. Allow the character to fall naturally.
+7. Detect collision with the ground.
+8. Transition into the landing animation.
+
+Do not teleport the character downward.
+
+Do not snap the player instantly to a grounded state.
+
+Fall damage is not required yet.
+
+## 6.4 Improve movement animations
+
+Implement distinct animations for:
+
+- Idle.
+- Walking.
+- Running.
+- Jumping.
+- Flying.
+- Freefall.
+- Landing.
+- Digging.
+
+During freefall, the character should visibly move their arms and legs in a controlled flailing or running-in-the-air animation.
+
+Blend animation states smoothly.
+
+Animations must not cause unintended changes in the player's physical position.
+
+---
+
+# SECTION 7 — ROMAN SOLDIER CHARACTER
+
+## 7.1 Replace the stick figure
+
+**PRIORITY: HIGH**
+
+Replace the current stick-figure character with a properly proportioned, rigged Roman soldier.
+
+Use an Imperial Roman legionary as the visual reference.
+
+The character should have:
+
+- Polished silver segmented armor.
+- Silver Roman helmet.
+- Deep crimson accents.
+- Red helmet crest.
+- Red tunic.
+- Short red cape.
+- Leather straps.
+- Brown Roman sandals or boots.
+- Believable human anatomy.
+
+Armor should reflect environmental lighting naturally.
+
+Avoid excessive metallic glare or chrome-like surfaces.
+
+The overall style may be slightly stylized to match Aevoria.
+
+## 7.2 Character functionality
+
+The Roman soldier must support all existing movement and excavation functionality.
+
+Keep the shovel available.
+
+Include a suitable skeletal rig.
+
+Armor should not deform unnaturally or clip excessively during animations.
+
+Allow future character customization without implementing an entire customization system now.
+
+---
+
+# SECTION 8 — GAMEPLAY MODES AND CAMERA
+
+## 8.1 Rename God Mode
+
+Remove the player-facing name "God Mode."
+
+Use:
+
+- **Top-Down Mode**
+- **Explore Mode**
+
+Update the interface, controls, menus, tooltips, and documentation.
+
+Preserve internal compatibility where necessary.
+
+## 8.2 Add T mode toggle
+
+Pressing **T** should switch between Top-Down Mode and Explore Mode.
+
+Requirements:
+
+- Smooth transition.
+- No teleportation.
+- No jitter.
+- Preserve player position.
+- Maintain camera safety.
+- No unnecessary loading delay.
+
+Do not trigger the shortcut when the player is typing into a text field.
+
+## 8.3 Add reverse third-person camera
+
+Use **F5** to cycle between:
+
+1. First-person.
+2. Standard third-person.
+3. Reverse third-person.
+
+Reverse third-person should position the camera in front of the player, looking back at the Roman soldier.
+
+This allows the player to see the soldier's face, armor, and animations.
+
+Keep movement controls intuitive and unchanged.
+
+Maintain stable camera positioning during walking, running, flying, jumping, and falling.
+
+Avoid character clipping or camera collision problems.
+
+---
+
+# SECTION 9 — LOADING SCREEN
+
+## 9.1 Add meaningful progress reporting
+
+Provide an actual loading progress indicator.
+
+Display stages such as:
+
+- Continental generation.
+- Geological construction.
+- Mountain and plateau formation.
+- Erosion.
+- Hydrology.
+- Climate.
+- Biomes.
+- Terrain preparation.
+- Final loading.
+
+Do not use fabricated percentages or timers.
+
+Distinguish world creation from loading an existing world.
+
+Preserve cancellation support.
+
+## 9.2 Dynamic loading background
+
+The loading screen should not display an unrelated image from a previous world.
+
+When feasible, show a lightweight preview of the actual world being generated.
+
+Potential preview elements:
+
+- Continents.
+- Oceans.
+- Mountain ranges.
+- Elevation.
+- Climate regions.
+
+Do not significantly slow world generation to render this preview.
+
+---
+
+# SECTION 10 — PERFORMANCE AND STABILITY
+
+Aevoria supports the following world sizes:
+
+- Miniature — 128 × 128 km.
+- Small — 256 × 256 km.
+- Medium — 512 × 512 km.
+- Large — 1,024 × 1,024 km.
+- Colossal — 2,048 × 2,048 km.
+
+All systems must operate efficiently across these configurations.
+
+Use scalable procedural generation, LOD, chunk streaming, caching, asynchronous preparation, and appropriately bounded active world detail.
+
+Do not load the entire Colossal world at maximum resolution.
+
+Avoid unnecessary terrain regeneration during camera movement.
+
+Maintain reliable collision and rendering during streaming transitions.
+
+Prioritize stable frame pacing.
+
+Do not impose artificial disk-space restrictions.
+
+---
+
+# SECTION 11 — PHASED IMPLEMENTATION PLAN
+
+Execute this milestone in clearly defined phases.
+
+## Phase 0 — Audit and baseline
+
+- Review the v0.0.8 source and validation evidence.
+- Identify likely root causes.
+- Establish baseline screenshots and benchmarks.
+- Preserve existing builds and saves.
+- Write a short implementation plan with dependencies.
+
+## Phase 1 — Critical stability fixes
+
+- Character vibration.
+- High-speed flight jitter.
+- Excavation-induced shaking.
+- Black specks on snowy terrain.
+- Excavation rendering corruption.
+- Flight deactivation teleportation.
+- Camera and collider synchronization.
+
+Verify these fixes before introducing major new systems.
+
+## Phase 2 — Terrain reconstruction
+
+- Maze-like terrain removal.
+- Mountain shape and proportions.
+- Plateau generation.
+- Grassland flattening.
+- Biome transitions.
+- River continuity.
+- Lake placement.
+- Shoreline smoothing.
+- Coastal cliffs.
+
+Compare actual generated terrain visually against the previous build.
+
+## Phase 3 — Environment and water
+
+- Shallow-water transparency.
+- Underwater depth and bathymetry.
+- Snow distribution.
+- Frozen-lake materials.
+- Ocean appearance.
+- Cloud stability.
+- Weather integration.
+
+## Phase 4 — Underground world
+
+- Ravines.
+- Three-dimensional spaghetti caves.
+- Mining expansion.
+- Excavation targeting.
+- Underground materials.
+- Persistent modified terrain.
+- Scalable cave streaming.
+
+## Phase 5 — Character and camera
+
+- Roman soldier model.
+- Silver armor and crimson accents.
+- Animation states.
+- Freefall flailing animation.
+- Explore/Top-Down terminology.
+- T mode toggle.
+- F5 camera perspectives.
+
+## Phase 6 — Loading and final delivery
+
+- Loading progress.
+- Dynamic world preview.
+- Visual regression review.
+- Standalone gameplay verification.
+- Performance measurements.
+- Documentation.
+- Final Windows build.
+
+Do not call a phase finished until its required tests pass.
+
+If a phase exposes a fundamental architectural problem, resolve it before proceeding to dependent work.
+
+---
+
+# SECTION 12 — REQUIRED VALIDATION
+
+Test all major systems in the Unity Editor and the actual Windows standalone player.
+
+Include:
+
+### Terrain
+
+Generate multiple seeds across all five world sizes.
+
+Inspect mountains, plains, deserts, plateaus, rivers, lakes, coastlines, and biome transitions.
+
+### Movement
+
+Test walking, running, jumping, normal flight, maximum-speed flight, and freefall.
+
+Test at different elevations and across large world coordinates.
+
+### Excavation
+
+Dig repeatedly into multiple terrain materials.
+
+Verify targeting accuracy, hole geometry, collision stability, and save persistence.
+
+### Caves
+
+Verify actual three-dimensional underground passages and connections wherever implemented.
+
+### Rendering
+
+Test snow, shadows, coastlines, materials, clouds, terrain LOD, and excavation surfaces.
+
+### Cameras
+
+Test first-person, standard third-person, reverse third-person, and Top-Down Mode.
+
+### Character
+
+Inspect the Roman soldier from all directions and verify every animation state.
+
+### Save/load
+
+Ensure modified terrain, player position, world state, and other supported persistent systems survive save and reload.
+
+### Performance
+
+Run comparable benchmarks at 2560 × 1440, including high-quality scenarios.
+
+Record frame times, frame-time spikes, memory usage, and world-generation times.
+
+Distinguish measured outcomes from estimates.
+
+**IMPORTANT:** Motion-related bugs require motion-based validation. Static screenshots cannot demonstrate that violent vibration, jitter, or flickering has been eliminated.
+
+---
+
+# SECTION 13 — FINAL DELIVERABLES
+
+Deliver:
+
+1. Aevoria Alpha v0.0.9 Windows executable.
+2. Updated Unity project source.
+3. Implementation report.
+4. Changelog updates.
+5. Updated development roadmap.
+6. New Chronicle entry consistent with existing conventions.
+7. Automated validation results.
+8. Windows standalone test results.
+9. Before-and-after visual comparisons.
+10. Performance benchmarks.
+11. Save compatibility notes.
+12. List of incomplete requirements or remaining defects.
+
+Maintain the existing development history and preserve earlier evidence.
+
+Do not claim full completion when major systems remain unfinished.
+
+---
+
+# FINAL OBJECTIVE
+
+Aevoria Alpha v0.0.9 must significantly improve the natural appearance and playability of the world.
+
+The world should contain:
+
+- Vast, relatively flat grasslands.
+- Massive connected mountain ranges.
+- Natural elevated plateaus.
+- Coastal cliffs.
+- Smooth shorelines.
+- Visible freshwater rivers.
+- Proper lake placement.
+- Realistic snow and ice.
+- Natural clouds.
+- Genuine underground caves and ravines.
+- Terrain that can be excavated and explored.
+
+The player should:
+
+- Move without violent vibration.
+- Fly smoothly at high speed.
+- Fall naturally after disabling flight.
+- Dig with an accurate visible targeting indicator.
+- Explore underground.
+- Control a properly animated Roman soldier wearing polished silver armor with red accents.
+- Switch gameplay modes with T.
+- Cycle camera perspectives with F5.
+
+**Most importantly, prioritize foundational correctness, visual quality, and stable gameplay over superficial feature completion.**
+
+Begin with the repository audit and phased implementation plan, then implement and validate each phase systematically.
+
+Do not rush development merely to deliver another version number.
+
+The objective is a noticeably better, more stable, more immersive Aevoria.

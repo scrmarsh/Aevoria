@@ -1,0 +1,1 @@
+{"name":"Aevoria.UI","rootNamespace":"Aevoria.UI","references":["Aevoria.Core","Aevoria.Simulation","Aevoria.World"],"autoReferenced":true}

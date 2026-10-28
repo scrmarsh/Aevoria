@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "archive": "development-history",
+  "narrator": "They",
+  "bodyFile": "../THE_CHRONICLES_OF_AEVORIA.md",
+  "versionDefinition": "../../Assets/Scripts/Core/ApplicationVersion.cs",
+  "readerStatus": "in-game chapter reader; history and current implementation ledger remain separate from the retained prophecy",
+  "chapters": [
+    {
+      "id": "first-thought",
+      "version": "0.0.1",
+      "stage": "Alpha",
+      "title": "The First Thought",
+      "status": "retrospective-history",
+      "releaseDate": null,
+      "anchor": "chapter-i---the-first-thought",
+      "theme": {
+        "primary": "#B99A51",
+        "background": "#102238"
+      },
+      "evidence": [
+        "../MIGRATION_AUDIT.md",
+        "../../Assets/Tests/Editor/FoundationTests.cs"
+      ]
+    },
+    {
+      "id": "geometry-of-existence",
+      "version": "0.0.2",
+      "stage": "Alpha",
+      "title": "The Geometry of Existence",
+      "status": "retrospective-verified-history",
+      "validatedDate": "2026-10-21",
+      "releaseDate": null,
+      "anchor": "chapter-ii---the-geometry-of-existence",
+      "theme": {
+        "stone": "#77786B",
+        "earth": "#73583D",
+        "green": "#486347"
+      },
+      "evidence": [
+        "../PHASE_1_TEST_RESULTS.md",
+        "../Validation/Standalone/stage0.png"
+      ]
+    },
+    {
+      "id": "correction-of-imperfection",
+      "version": "0.0.3",
+      "stage": "Alpha",
+      "title": "The Correction of Imperfection",
+      "status": "development-with-open-acceptance",
+      "releaseDate": null,
+      "anchor": "chapter-iii---the-correction-of-imperfection",
+      "theme": {
+        "gold": "#C3A258",
+        "forest": "#294E35",
+        "turquoise": "#3C9998"
+      },
+      "evidence": [
+        "../PHASE_1_1_TEST_RESULTS.md",
+        "../ALPHA_v0.0.3_TEST_RESULTS.md",
+        "../Validation/Alpha-v0.0.3/06-forest.png"
+      ]
+    },
+    {
+      "id": "emergence-of-order",
+      "version": "0.0.4",
+      "stage": "Alpha",
+      "title": "The Emergence of Order",
+      "status": "development-with-open-acceptance",
+      "releaseDate": null,
+      "anchor": "chapter-iv---the-emergence-of-order",
+      "theme": {
+        "blue": "#345786",
+        "silver": "#C2CAD5",
+        "violet": "#756292"
+      },
+      "evidence": [
+        "../ALPHA_v0.0.4_TEST_RESULTS.md"
+      ]
+    },
+    {
+      "id": "first-stirring",
+      "version": "0.0.5",
+      "stage": "Alpha",
+      "title": "The First Stirring",
+      "status": "development-with-open-acceptance",
+      "releaseDate": null,
+      "anchor": "chapter-v---the-first-stirring",
+      "theme": {
+        "moss": "#507A48",
+        "earth": "#826340",
+        "amber": "#D4AC62"
+      },
+      "evidence": [
+        "../ALPHA_v0.0.5_TEST_RESULTS.md",
+        "../ECOLOGY.md"
+      ]
+    },
+    {
+      "id": "living-world",
+      "version": "0.0.6",
+      "stage": "Alpha",
+      "title": "The Living World",
+      "status": "development-with-open-acceptance",
+      "releaseDate": null,
+      "anchor": "chapter-vi---the-living-world",
+      "theme": {
+        "pine": "#4E7968",
+        "ice": "#748E9D",
+        "earth": "#927351"
+      },
+      "evidence": [
+        "../ALPHA_v0.0.6_TEST_RESULTS.md",
+        "../LIVING_WORLD.md"
+      ]
+    },
+    {
+      "id": "shaping-worlds",
+      "version": "0.0.7",
+      "stage": "Alpha",
+      "title": "The Shaping of Worlds",
+      "status": "development-with-open-acceptance",
+      "releaseDate": null,
+      "anchor": "chapter-vii---the-shaping-of-worlds",
+      "theme": {
+        "ocean": "#254C75",
+        "stone": "#A4A391",
+        "forest": "#457451"
+      },
+      "evidence": [
+        "../ALPHA_v0.0.7_TEST_RESULTS.md",
+        "../PLANETARY_WORLD.md"
+      ]
+    },
+    {
+      "id": "restoration-world",
+      "version": "0.0.8",
+      "stage": "Alpha",
+      "title": "The Restoration of the World",
+      "status": "development-with-open-acceptance",
+      "releaseDate": null,
+      "anchor": "chapter-viii---the-restoration-of-the-world",
+      "theme": {
+        "meadow": "#729154",
+        "water": "#468C9C",
+        "stone": "#9C9D91"
+      },
+      "evidence": [
+        "../ALPHA_v0.0.8_TEST_RESULTS.md",
+        "../WORLD_RESTORATION.md",
+        "../ALPHA_v0.0.8_ADDENDUM.md"
+      ]
+    },
+    {
+      "id": "natural-world",
+      "version": "0.0.9",
+      "stage": "Alpha",
+      "title": "The Natural World",
+      "status": "development-with-open-acceptance",
+      "releaseDate": null,
+      "anchor": "chapter-ix---the-natural-world",
+      "theme": {
+        "grass": "#629054",
+        "stone": "#979C99",
+        "water": "#398C9F"
+      },
+      "evidence": [
+        "../ALPHA_v0.0.9_IMPLEMENTATION.md"
+      ]
+    },
+    {
+      "id": "living-societies",
+      "version": "0.0.10",
+      "stage": "Alpha",
+      "title": "The Living World Update",
+      "status": "development-with-open-acceptance",
+      "releaseDate": null,
+      "anchor": "chapter-x---the-living-world-update",
+      "theme": {
+        "fields": "#859E5D",
+        "timber": "#A48256",
+        "water": "#478F9D"
+      },
+      "evidence": [
+        "../ALPHA_v0.0.10_IMPLEMENTATION.md",
+        "../Validation/Alpha-v0.0.10/DEVELOPMENT_CHECKPOINT.md"
+      ]
+    }
+  ]
+}

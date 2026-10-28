@@ -1,0 +1,11 @@
+#pragma kernel Probe
+#include "../../Shaders/WorldRiverFields.hlsl"
+StructuredBuffer<float2> Points;
+RWStructuredBuffer<float3> Results;
+float4 Rectangle;
+int PointCount;
+[numthreads(64,1,1)]
+void Probe(uint3 id:SV_DispatchThreadID)
+{
+    if(id.x<PointCount){float3 channel;Results[id.x]=WorldRiverBank(Points[id.x],Rectangle,channel);}
+}

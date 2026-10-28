@@ -1,0 +1,534 @@
+# AEVORIA — ALPHA v0.0.12
+## THE CHARACTER REMASTER HOTFIX
+### Complete Codex Development Prompt
+
+## MISSION
+
+Develop **Aevoria Alpha v0.0.12 — The Character Remaster Hotfix** using Unity 6.3 LTS and URP.
+
+This update is specifically focused on rebuilding and improving the playable Dr. House character, correcting character anatomy, fixing equipment orientation, and improving animations.
+
+**Dr. House is the absolute highest priority.**
+
+The current character resembles a creepy, blocky Roblox-style mannequin rather than a recognizable human. His arms bend inward unnaturally, his tools appear incorrectly oriented, his cane is in the wrong hand, and his limp is not convincingly animated.
+
+These are not minor cosmetic problems. They require meaningful improvements to the actual 3D model, skeleton, rigging, equipment attachments, and animations.
+
+The goal is to transform Dr. House into a recognizable, properly proportioned, realistically animated character.
+
+This should remain a focused hotfix. Do not rebuild the terrain generator, hydrology, settlements, or world simulation during this update.
+
+Preserve the existing v0.0.11 functionality and official release files.
+
+---
+
+# PHASE 1 — COMPLETE DR. HOUSE MODEL REMASTER
+
+## 1. Facial reconstruction
+
+Replace or substantially rebuild the current low-quality procedural face.
+
+The character should have a recognizable resemblance to Dr. Gregory House as portrayed by Hugh Laurie, using the character reference images supplied previously.
+
+Required improvements:
+
+- Realistic human head proportions.
+- Properly modeled forehead, brow, cheeks, cheekbones, and jaw.
+- A naturally shaped nose.
+- Properly positioned and proportioned eyes.
+- Realistic eye sockets, eyelids, and eyebrows.
+- A properly modeled mouth and lips.
+- Natural ears and facial proportions.
+- Subtle facial asymmetry.
+- A mature facial appearance.
+- Short salt-and-pepper hair.
+- A believable hairline and hairstyle.
+- Light salt-and-pepper facial stubble.
+- Natural skin coloring and material variation.
+- Facial expressions that suit his cynical personality.
+
+**Do not use cubes, spheres, or primitive placeholder shapes as the final visible face.**
+
+Use a genuinely modeled character mesh with appropriate topology, skin weights, normals, UVs, and materials.
+
+Inspect the existing editable Blender assets. Rebuild them where necessary rather than preserving defective geometry.
+
+If the original reference images are unavailable to Codex, request them or clearly report the limitation rather than claiming a recognizable likeness without reference validation.
+
+## 2. Realistic body proportions
+
+The current character has unnatural shoulders, arms, torso, and legs.
+
+Rebuild his proportions to resemble a tall, slender adult man.
+
+Requirements:
+
+- Natural shoulder width.
+- Proper chest and torso proportions.
+- Realistic upper arms and forearms.
+- Correct elbow locations.
+- Proper wrist articulation.
+- Fully modeled hands and fingers.
+- Realistic hips, knees, ankles, and feet.
+- Natural neck and head alignment.
+- No blocky rectangular limbs.
+- No disconnected joints.
+- No visible gaps or clipping between body segments.
+- No unnaturally large or small body parts.
+
+The model must hold up visually from first-person, third-person, and reverse third-person perspectives.
+
+## 3. Clothing overhaul
+
+Preserve his established outfit:
+
+- Navy-blue blazer.
+- Light-blue open-collar shirt.
+- Navy trousers.
+- Dark shoes.
+
+Improve the outfit with:
+
+- Realistic blazer proportions and lapels.
+- Natural shirt collar and neckline.
+- Convincing sleeve construction.
+- Appropriate fabric folds.
+- Better trouser geometry.
+- Properly modeled shoes.
+- Improved fabric textures and material properties.
+- Natural clothing movement during animation.
+
+Avoid making the clothes look painted onto a rectangular body.
+
+---
+
+# PHASE 2 — CORRECT CANE AND TOOL HANDEDNESS
+
+## 4. Cane MUST be in the right hand
+
+**Dr. House must hold his walking cane in his RIGHT hand.**
+
+The existing left-hand cane placement is incorrect.
+
+Requirements:
+
+- Attach the cane to the right-hand grip.
+- Correct its orientation.
+- Properly align the fingers around the handle.
+- Ensure the cane does not clip through his wrist or body.
+- Keep the cane on his right side while standing and walking.
+- Use believable cane positioning during turns and transitions.
+
+The cane must not float beside the character or behave like a rigid decorative object.
+
+## 5. Dr. House is the ONLY left-handed tool user
+
+**Every normal tool must be equipped in Dr. House's LEFT hand.**
+
+This includes:
+
+- Pickaxes.
+- Shovels.
+- Axes.
+- Other handheld tools introduced later.
+
+Unlike the other characters, Dr. House uses his left hand for tools because his right hand is reserved for his cane.
+
+Make this a character-specific equipment configuration.
+
+Do not globally reverse the handedness of all playable characters.
+
+The default Explorer and Roman soldier should retain their normal right-handed tool configuration.
+
+## 6. Correct tool orientation
+
+The current pickaxe sometimes appears backward or incorrectly angled.
+
+Fix:
+
+- Tool grip positions.
+- Handle orientation.
+- Pickaxe head direction.
+- Wrist alignment.
+- Hand placement.
+- Tool swing arcs.
+- Equipment attachment transforms.
+- Animation offsets.
+
+A pickaxe must be held by its handle, with its head facing the correct direction for mining.
+
+Tools must not point awkwardly behind the character or pass through his body.
+
+## 7. Cane and tool interaction
+
+Dr. House must be capable of carrying his cane in the right hand and using a tool in the left hand.
+
+Implement character-specific animation blending or overrides so these actions work together.
+
+During mining:
+
+- The left hand correctly grips and swings the pickaxe.
+- The right hand handles the cane appropriately.
+- The torso responds naturally to the mining movement.
+- The arms do not cross or collapse inward.
+- The tool does not intersect the character's body.
+- Equipment remains aligned throughout the animation.
+
+Do not solve equipment conflicts by permanently removing the cane without explanation.
+
+---
+
+# PHASE 3 — GENUINE ANIMATED RIGHT-LEG LIMP
+
+## 8. Implement an actual limp
+
+Dr. House must have a clearly visible **RIGHT-LEG LIMP**.
+
+The current implementation relies too heavily on presentational asymmetry rather than a convincing animated gait.
+
+This must change.
+
+Required animation characteristics:
+
+- Uneven stride timing.
+- Reduced or altered weight-bearing on the right leg.
+- Shorter or less confident right-leg steps.
+- Natural compensating motion in the left leg.
+- Asymmetrical hip movement.
+- Subtle torso lean and weight shifting.
+- Appropriate shoulder movement.
+- Realistic right-knee and ankle articulation.
+- Proper foot contact with the ground.
+
+The limp must be visible from the front, side, and rear.
+
+It should be recognizable while the character is actually moving, not just when examining a static pose.
+
+## 9. Cane-assisted walking
+
+The cane needs a coordinated animation cycle.
+
+Requirements:
+
+- Animate the right arm independently.
+- Coordinate cane placement with the right-leg gait.
+- Move the cane forward naturally.
+- Contact the ground at appropriate points in the walking cycle.
+- Apply believable weight shifts during support.
+- Prevent the cane from passing through terrain.
+- Adapt contact to slopes and uneven ground.
+
+Use animation curves, inverse kinematics, and ground-contact checks where appropriate.
+
+The cane should provide the appearance of physical support. It does not need to simulate every real-world force, but movement must be spatially coherent.
+
+## 10. Walking and running
+
+Create character-specific locomotion for Dr. House.
+
+His movements should reflect his right-leg impairment rather than reuse the Roman soldier's ordinary walking animation.
+
+Include:
+
+- Idle standing with cane.
+- Slow walking.
+- Regular walking.
+- Faster movement or running.
+- Turning.
+- Starting and stopping.
+- Walking uphill and downhill.
+- Uneven terrain movement.
+- Mining and digging transitions.
+
+The limp should remain recognizable where appropriate.
+
+Avoid excessive exaggeration that makes his movement comical or physically impossible.
+
+Synchronize foot animations with actual movement speed to prevent sliding.
+
+---
+
+# PHASE 4 — FIX ARM AND HAND ANIMATION
+
+## 11. Natural resting posture
+
+The current humanoid characters sometimes bend their arms inward as if they are trying to put their hands together.
+
+This must be corrected.
+
+Requirements:
+
+- Arms resting naturally near the sides.
+- Correct shoulder rotation.
+- Appropriate elbow bending.
+- Correct forearm orientation.
+- Relaxed hands when not using tools.
+- Realistic wrist positioning.
+- No arms collapsing inward.
+- No repeated clipping through the torso.
+- No rigid mannequin-like idle stance.
+
+Dr. House should have a relaxed but slightly asymmetrical standing posture due to his cane.
+
+## 12. Improve the character rig
+
+Inspect the current skeleton and animation system for:
+
+- Incorrect bone orientations.
+- Invalid bind poses.
+- Improper humanoid retargeting.
+- Bad shoulder and elbow constraints.
+- Incorrect wrist rotations.
+- Tool-socket orientation problems.
+- Poor skin weights.
+- Animation blending conflicts.
+- Scale inconsistencies.
+- Incorrect left/right handedness assumptions.
+
+Correct the underlying causes rather than compensating with arbitrary visual offsets.
+
+## 13. Repair the Roman soldier
+
+Although Dr. House remains the highest priority, also fix the existing Roman soldier's animation defects.
+
+Required corrections:
+
+- Natural arm positioning.
+- Correct elbow and shoulder movement.
+- Right-handed tool usage.
+- Correct pickaxe orientation.
+- Proper mining and digging animations.
+- Natural walking and running.
+- Improved idle posture.
+- No twisted wrists or backward equipment.
+
+Do not alter the Roman soldier to use the Doctor's limp, cane, or reversed tool handling.
+
+## 14. Preserve other playable characters
+
+The default Explorer must remain functional.
+
+Do not introduce regressions to:
+
+- Walking.
+- Running.
+- Jumping.
+- Flight.
+- Freefall.
+- Mining.
+- Digging.
+- Character selection.
+- Camera modes.
+- Save/load.
+- Hotbar selection.
+- Equipment changes.
+
+---
+
+# PHASE 5 — CHARACTER SELECTION AND PERSONALITY
+
+## 15. Make Dr. House easy to select
+
+Dr. House should appear as a normal selectable character in the character-selection menu.
+
+Do not require a secret phrase or hidden unlock mechanism.
+
+Retain compatibility with existing character-selection save data where possible.
+
+Selecting Dr. House must consistently load:
+
+- His correct model.
+- His cane.
+- His left-handed equipment rules.
+- His unique locomotion animations.
+- His established personality and dialogue.
+
+## 16. Preserve his personality
+
+Preserve the existing sarcastic, cynical, humorous dialogue system.
+
+Retain the previously implemented dialogue lines unless there is a verified technical reason to modify them.
+
+His personality should remain recognizable.
+
+Do not replace dialogue with unrelated generic lines.
+
+The priority of this update is visual quality and animation, not rewriting the personality system.
+
+---
+
+# PHASE 6 — QUALITY AND ASSET REQUIREMENTS
+
+## 17. Use proper production-quality assets
+
+Do not attempt to solve the appearance problem exclusively with procedural primitives.
+
+Use appropriate 3D modeling techniques, including Blender when necessary.
+
+Required asset quality:
+
+- Cohesive character meshes.
+- Proper topology.
+- Accurate normals.
+- Correct skeletal rigging.
+- Consistent scale.
+- Appropriate materials and textures.
+- Smooth animation deformation.
+- Suitable animation clips.
+- Correct equipment sockets.
+- Reasonable LOD support.
+
+Maintain editable source assets.
+
+Do not substitute a higher-resolution screenshot or decorative overlay for a genuinely improved 3D model.
+
+## 18. Visual style
+
+Dr. House should look like a believable adult human within Aevoria's visual style.
+
+A realistic or high-quality semi-realistic character is preferred.
+
+Avoid:
+
+- Roblox-like faces.
+- Minecraft-like body geometry.
+- Giant blocky hands.
+- Oversimplified heads.
+- Primitive mannequin proportions.
+- Creepy or distorted facial features.
+- Unnatural static poses.
+
+The final character must be substantially better than the v0.0.11 placeholder.
+
+---
+
+# PHASE 7 — MANDATORY VISUAL ACCEPTANCE
+
+## 19. Real Windows gameplay review
+
+Compile and run the actual Windows executable.
+
+Do not claim the character is visually finished based only on automated tests.
+
+Capture clear screenshots of Dr. House:
+
+1. Standing idle from the front.
+2. Standing idle from the side.
+3. Standing idle from behind.
+4. Holding his cane in his right hand.
+5. Holding a pickaxe in his left hand.
+6. Walking with his right-leg limp.
+7. Turning and walking on uneven terrain.
+8. Mining with the correct tool orientation.
+9. Using each supported camera perspective.
+
+Also record or inspect actual animation sequences rather than relying exclusively on still images.
+
+## 20. Compare before and after
+
+Preserve comparison images showing:
+
+- Original v0.0.11 Doctor model.
+- New v0.0.12 Doctor model.
+- Front and side facial appearance.
+- Clothing and body proportions.
+- Cane placement.
+- Tool placement.
+- Idle pose.
+- Walking animation.
+
+The final model should show an obvious visual improvement.
+
+## 21. Specific acceptance criteria
+
+Do not mark Dr. House complete unless all of the following are true:
+
+- His face resembles the intended Dr. House reference.
+- His body looks properly proportioned.
+- His arms rest naturally.
+- His hands have believable anatomy.
+- His clothing is properly modeled.
+- His cane is in the RIGHT hand.
+- Tools are in the LEFT hand.
+- Other characters retain their normal tool handedness.
+- The pickaxe faces the correct direction.
+- His right-leg limp is genuinely animated.
+- The cane moves with the walking cycle.
+- Feet maintain believable contact with the ground.
+- Tool usage does not cause severe clipping or broken poses.
+- The character looks acceptable during ordinary Windows gameplay.
+
+If any item fails, report it honestly and continue correcting the relevant system.
+
+---
+
+# PHASE 8 — REGRESSION PROTECTION
+
+This release must not modify or damage the major world-generation improvements introduced in v0.0.11.
+
+Preserve:
+
+- The modular world-generation architecture.
+- Mountains and elevation.
+- Climate and biome generation.
+- Hydrology.
+- Lakes and oceans.
+- Cave systems.
+- Existing settlements and NPC simulation.
+- Population and resources.
+- Historical event simulation.
+- Save/load behavior.
+- World-generation seeds.
+- Player movement and origin rebasing.
+- Existing menus and controls.
+
+Do not rebuild the world generator as part of this hotfix.
+
+Do not silently change terrain-generation fingerprints.
+
+Keep the scope focused on character modeling, rigging, animation, equipment behavior, and directly related controls.
+
+Preserve earlier official builds, source archives, and user saves.
+
+---
+
+# PHASE 9 — FINAL DELIVERABLES
+
+Produce:
+
+1. Alpha v0.0.12 Windows executable.
+2. Preserved source checkpoint.
+3. Editable character modeling assets.
+4. Updated character rigs and animations.
+5. Corrected equipment attachment configuration.
+6. Before-and-after character comparisons.
+7. Native gameplay validation results.
+8. Regression test summary.
+9. Short factual changelog.
+10. Clear list of any remaining character-quality limitations.
+
+Do not generate new decorative release Chronicles.
+
+Do not declare visual acceptance solely because automated tests pass.
+
+---
+
+# FINAL DIRECTIVE
+
+**The purpose of Alpha v0.0.12 is to make Dr. House look and move like Dr. House.**
+
+His current appearance is unacceptable as a finished character.
+
+The new model must have proper human anatomy, recognizable facial features, realistic clothing, correct hands, a right-hand cane, left-handed tool usage, and a physically convincing animated right-leg limp.
+
+At the same time, fix the Roman soldier's unnatural arm posture and backward-facing tools without introducing new character regressions.
+
+Prioritize Dr. House above all other features.
+
+**Do not expand this hotfix into another major world-generation update.**
+
+Terrain refinement, broader NPC model improvements, smoother village roads, and additional environmental work belong in the following update.
+
+The final acceptance standard is straightforward:
+
+**Dr. House must no longer look like a Roblox-style placeholder. He must look, walk, and behave like a recognizable, believable human character in the actual game.**

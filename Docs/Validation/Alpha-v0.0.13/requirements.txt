@@ -1,0 +1,1819 @@
+# AEVORIA — ALPHA v0.0.13
+## THE MEDITERRANEAN UPDATE
+### Complete Codex Development and Implementation Prompt
+
+**Project:** Aevoria  
+**Engine:** Unity 6000.3.27f1 / Unity 6.3 LTS, URP  
+**Platform:** Windows x64, Direct3D11 baseline  
+**Target hardware:** Intel Core i7-8700K, NVIDIA RTX 3060 Ti 8 GB, 64 GB RAM  
+**Starting version:** Alpha v0.0.12  
+**Update type:** Major procedural geography, environment, rendering, and interface overhaul
+
+---
+
+# 1. MISSION
+
+Begin development of **Aevoria Alpha v0.0.13 — The Mediterranean Update immediately**.
+
+Do not wait for further approval of the Dr. House character model.
+
+The user will review and request any remaining Dr. House facial corrections separately. Those corrections are deferred and are not prerequisites for this update.
+
+This release must transform Aevoria from an artificial-looking procedurally generated environment into a beautiful, geographically coherent, massive living world.
+
+The current world suffers from numerous problems:
+
+- Mountains resemble sharp pyramids, cones, and disconnected needles.
+- Geographic features appear randomly distributed rather than geologically related.
+- Climate zones form excessively smooth or uniform bands.
+- The terrain does not convincingly resemble Europe or Asia.
+- Continents sometimes appear divided by oversized rivers rather than substantial oceans.
+- The landscape has far too many tiny ponds and isolated water patches.
+- Desert and grass materials appear grainy from above.
+- Grasslands are too flat and visually barren.
+- There is insufficient ground vegetation, including flowers, grass clumps, shrubs, twigs, and rocks.
+- Northern spruce forests are effectively absent.
+- Northern terrain often looks brown rather than lush, mossy, forested, or appropriately snow-covered.
+- Clouds have disappeared or become unreliable.
+- Attractive distant mountain silhouettes have been lost.
+- Terrain sometimes disappears in the upper part of the screen during zooming.
+- Village paths contain unnatural jagged turns.
+- The world-generation preview is blurry and low quality.
+- Interface text is clipped.
+- The Escape menu is overcrowded.
+- The current menu backgrounds use outdated imagery.
+- World Mode lacks a compass.
+
+This update must address these issues as a coordinated overhaul.
+
+**Aevoria's environmental identity should be inspired by Europe, the Mediterranean, Scandinavia, Asia, and North Africa.**
+
+The world must feel geographically formed, not randomly assembled.
+
+---
+
+# 2. RELEASE SCOPE AND BASELINE PRESERVATION
+
+Start immediately from the latest tested Alpha v0.0.12 source and build.
+
+Before modifying anything:
+
+1. Record the current repository state and commit hash.
+2. Preserve the full v0.0.12 source and runtime.
+3. Record existing validation results and build hashes.
+4. Identify save-format and generator-version boundaries.
+5. Identify the current terrain, geography, water, biome, climate, settlement, and rendering modules.
+6. Capture reproducible before-images using known seeds.
+7. Document any v0.0.12 limitations already present.
+
+The v0.0.12 character hotfix should remain intact.
+
+Preserve:
+
+- The current Dr. House model and animations.
+- Right-hand cane placement.
+- Left-handed tool equipment for Dr. House.
+- Animated right-leg limp.
+- Corrected tool orientation.
+- Existing Roman soldier rig and tool improvements.
+- All three playable characters.
+- Existing character-selection and persistence behavior.
+
+**Do not spend this release redesigning Dr. House's face.**
+
+The user will address that separately.
+
+Do not touch character modeling code unless necessary to fix a regression introduced by this update.
+
+Do not alter or overwrite the original v0.0.9, v0.0.10, v0.0.11, or v0.0.12 official release artifacts.
+
+---
+
+# 3. THE FOREVER-WORLD PHILOSOPHY
+
+Aevoria is designed around the concept of a persistent world that may continue for years of simulated history and countless hours of gameplay.
+
+The user is not particularly concerned about initial world-generation time.
+
+Prioritize long-term world quality, visual complexity, coherent geography, and simulation reliability over fast initial generation.
+
+This means:
+
+- More sophisticated generation algorithms are acceptable.
+- Multiple erosion and refinement passes are encouraged.
+- Detailed geological modeling is desirable.
+- Complex terrain meshes are acceptable.
+- Rich vegetation and persistent geographic detail are desirable.
+- High-resolution geographic fields are acceptable.
+- Additional generation stages are acceptable.
+- Do not impose arbitrary disk-space limits.
+- Do not optimize quality away merely to save storage.
+
+However, reliability is still mandatory.
+
+Generation must:
+
+- Make observable progress.
+- Remain cancellable.
+- Detect stalled workers.
+- Avoid infinite loops.
+- Handle large-world memory responsibly.
+- Provide honest loading progress.
+- Persist completed worlds deterministically.
+
+A world that takes several minutes to generate is acceptable if the result is significantly better.
+
+A world that hangs indefinitely is not.
+
+Once created, the world must run smoothly enough to explore and simulate on the target hardware.
+
+---
+
+# 4. NEW GEOLOGICAL AND MESH GENERATION ARCHITECTURE
+
+The user wants **mesh-based geographic detail throughout the world**, not simply textures painted over flat terrain.
+
+Implement a modular geography architecture based on deterministic data layers and specialized generated meshes.
+
+## 4.1 Required generation systems
+
+Create or enhance dedicated systems for:
+
+- Continental structure.
+- Ocean basins.
+- Regional elevation.
+- Geological uplift.
+- Tectonic fault networks.
+- Folded mountain belts.
+- Individual mountain massifs.
+- Secondary ridges.
+- Hills and valleys.
+- Plateaus.
+- Escarpments.
+- Cliffs.
+- Geological fractures.
+- River channels and banks.
+- Lakes and lakebeds.
+- Erosion and sediment.
+- Coastal beaches.
+- Fjords.
+- Dune fields.
+- Salt flats.
+- Surface rock formations.
+- Cave entrances and underground caverns.
+- Forests and vegetation.
+- Settlement placement.
+- Roads, footpaths, and agricultural terrain.
+
+Each module should have clearly defined inputs and outputs, versioning, deterministic seeding, and integration tests.
+
+## 4.2 Authoritative shared terrain
+
+Maintain one authoritative geographic surface and coordinate system.
+
+Specialized mesh systems must agree with:
+
+- Terrain elevation.
+- Physics collision.
+- Water boundaries.
+- Settlement foundations.
+- Vegetation placement.
+- World coordinates.
+- Origin rebasing.
+- LOD transitions.
+- Save/load state.
+
+Avoid producing disconnected meshes floating above, beneath, or through the terrain.
+
+Climate and biome modules do not require separate visible geometry merely because they are independent data layers.
+
+Mountains, cliffs, rock outcrops, river channels, dunes, cave entrances, and other physical features may use specialized meshes when appropriate.
+
+Use a unified terrain mesh for broad continuous landforms, with additional geometry for features that require actual three-dimensional shape.
+
+Avoid duplicate overlapping terrain meshes, z-fighting, and unnecessary GameObjects.
+
+## 4.3 Generation dependency ordering
+
+Use a layered pipeline approximately as follows:
+
+1. World seed and size.
+2. Continental and ocean geography.
+3. Tectonic regions and fault networks.
+4. Regional elevation and major uplifts.
+5. Mountain formation and hill systems.
+6. Valleys, basins, plateaus, and escarpments.
+7. Large-scale erosion and drainage conditioning.
+8. Ocean, river, and lake generation.
+9. Climate, weather, temperature, and moisture.
+10. Biome distribution.
+11. Soil, surface materials, and geological details.
+12. Vegetation and ecological placement.
+13. Caves and special landforms.
+14. Settlement and agricultural geography.
+15. Mesh refinement, collision, and streaming products.
+16. Final world preview and preparation for gameplay.
+
+Iterate between erosion, hydrology, and other coupled systems where required.
+
+The resulting geography should form a coherent whole rather than unrelated layers.
+
+---
+
+# 5. TECTONIC GEOLOGY AND FAULT LINES
+
+Implement a regional tectonic-style geography system.
+
+Faults should influence the actual topography rather than simply appear as decorative cracks.
+
+Generate plausible:
+
+- Continental uplift regions.
+- Folded mountain belts.
+- Major faults.
+- Secondary fractures.
+- Escarpments.
+- Uplifted rock blocks.
+- Rift-like valleys.
+- Depressions and basins.
+- Coastal cliff systems.
+- Eroded plateaus.
+- Highland boundaries.
+
+Fault regions should influence:
+
+- The location and orientation of mountains.
+- Major ridgelines.
+- Valley formation.
+- River directions.
+- Cliff placement.
+- Rock exposure.
+- Regional elevation differences.
+- Cave suitability.
+
+Allow variation in fault length, displacement, orientation, age, and erosion.
+
+Use specialized meshes for steep exposed faces and fault details when the primary elevation surface cannot represent them correctly.
+
+Do not simply generate random straight faults across the map.
+
+**Acceptance requirement:** The player must be able to look at a mountain region from above and recognize coherent geological structures rather than random spikes.
+
+---
+
+# 6. COMPLETE MOUNTAIN OVERHAUL
+
+This is the single highest visual priority.
+
+The current mountains do not resemble natural mountains.
+
+Replace the current needle, pyramid, and cone appearance with believable mountain formations.
+
+## 6.1 Reference landscapes
+
+Use the following geographic inspirations:
+
+- Mediterranean limestone mountains.
+- Greek coastal mountain systems.
+- Italian mountains and Alpine foothills.
+- Croatian and Balkan rocky highlands.
+- Turkish and Anatolian mountains.
+- The Pyrenees.
+- The Alps.
+- Caucasus mountain systems.
+- Scandinavian mountains.
+- Central Asian mountain ranges.
+
+Use the topographic relief reference supplied earlier as a primary structural reference.
+
+That image demonstrates:
+
+- Large mountain masses.
+- Nested ridgelines.
+- Branching valleys.
+- Geological faults.
+- Escarpments.
+- Plateaus.
+- Natural erosion.
+- Drainage channels.
+- Broad elevation differences.
+
+It is a reference for terrain structure, not necessarily for material colors.
+
+## 6.2 Different mountain formations
+
+Support several distinct types.
+
+**Mountain massifs**
+
+One dominant high summit, approximately three or four major subordinate peaks, connected ridges, valleys, and foothills.
+
+**Mountain belts**
+
+Longer interconnected ranges with multiple summits, passes, and valleys.
+
+**Coastal mountains**
+
+Steep Mediterranean mountains descending toward the sea, with occasional sea cliffs and rugged shorelines.
+
+**Older eroded mountains**
+
+Broader and more rounded landforms with weathered ridges.
+
+**Extreme fantasy mountains**
+
+Very tall formations that remain geographically integrated instead of looking like vertically stretched cones.
+
+## 6.3 Mountain shapes
+
+Generate:
+
+- Irregular ridgelines.
+- Subsidiary peaks.
+- Rock faces.
+- Natural cliff bands.
+- Broad foothills.
+- Mountain saddles.
+- Traversable mountain passes.
+- Steep valleys.
+- Glacial valleys in cold regions.
+- Drainage channels.
+- Exposed rocky slopes.
+- Snowlines appropriate to elevation and climate.
+
+Avoid:
+
+- Single-polygon-looking summits.
+- Uniform triangular pyramids.
+- Needle-shaped formations.
+- Repetitive cones.
+- Disconnected foothills.
+- Giant vertical seams.
+- Rounded inflated blobs.
+- Repeating ridges across an entire continent.
+
+## 6.4 Extreme elevation preservation
+
+Keep the mountain-relief settings functional.
+
+Support mountains of approximately 20,000 meters and rare extreme mountains around 30,000 meters or higher where intentionally configured.
+
+These are fictional extreme elevations.
+
+The correct solution is to develop a wider supporting geological mass and regional structure, not simply stretch a small mountain vertically.
+
+At ordinary relief settings, mountains should remain appropriately scaled.
+
+Ordinary hills must remain much smaller and more gently sloped.
+
+## 6.5 True physical terrain
+
+The mountain rendering, collision, and surface coordinates must agree.
+
+A mountain must not visually exist in a different place from its collider.
+
+Players must be able to:
+
+- Walk on its slopes.
+- Fly around it.
+- Land on it.
+- Mine appropriate surface rocks.
+- Travel through its valleys.
+- Enter nearby caves where generated.
+
+Validate at multiple LOD levels.
+
+---
+
+# 7. ROLLING HILLS AND EUROPEAN COUNTRYSIDE
+
+Aevoria currently lacks sufficient ordinary topographic variation.
+
+The grasslands are too flat and often resemble green planes.
+
+Generate broad rolling terrain inspired by Mediterranean and European countryside.
+
+Required features:
+
+- Soft green hills.
+- Shallow valleys.
+- Gentle ridges.
+- Rocky meadows.
+- Small wooded hills.
+- Grass-covered slopes.
+- Scattered boulders.
+- Bushes and shrubs.
+- Wildflowers.
+- Occasional tree groves.
+- Natural drainage depressions.
+- Open pasture-like regions.
+
+These environments should feel spacious, green, and explorable.
+
+Do not turn every hill into a mountain.
+
+Include meaningful elevation variation without making normal grasslands overly steep.
+
+At ground level, a player should see rolling hills receding into the distance, not a perfectly flat green surface.
+
+---
+
+# 8. CONTINENTS AND OCEANS
+
+## 8.1 Proper continental separation
+
+The current small-world geography sometimes looks as though continents are joined by an excessive network of enormous rivers.
+
+Fix the distinction among:
+
+- Rivers.
+- Estuaries.
+- Straits.
+- Seas.
+- Oceans.
+
+Different continents must sometimes be separated by substantial uninterrupted ocean.
+
+Generate convincing:
+
+- Open oceans.
+- Inland seas.
+- Mediterranean-style seas.
+- Island chains.
+- Peninsulas.
+- Large bays.
+- Archipelagos.
+- Narrow natural straits.
+
+These features must scale appropriately with world size.
+
+A small world should not contain a disproportionate number of massive waterways.
+
+## 8.2 Mediterranean coastal geography
+
+Generate coastlines inspired by southern Europe.
+
+Include:
+
+- Pale rocky cliffs.
+- Beaches.
+- Small bays.
+- Rugged headlands.
+- Sheltered coves.
+- Coastal islands.
+- Cliffs descending into blue water.
+- Green hills overlooking the coastline.
+- Mountain valleys opening toward the sea.
+
+Preserve the attractive blue ocean coloration.
+
+## 8.3 Northern fjords
+
+In suitable cold, mountainous, glaciated regions generate:
+
+- Long narrow fjords.
+- Steep mountain walls.
+- Glacial valleys.
+- Deep coastal water.
+- Rocky shores.
+- Forest-covered fjord slopes.
+- Islands and inlets.
+
+Fjords should follow geological and glacial structure.
+
+Do not place them randomly along every coastline.
+
+## 8.4 Ocean depth
+
+Create coherent bathymetry:
+
+- Coastal shelves.
+- Shallow bays.
+- Deeper offshore regions.
+- Submerged slopes.
+- Ocean basins.
+
+Water appearance should respond to depth without introducing hard unnatural boundaries.
+
+---
+
+# 9. REFINED RIVERS, STREAMS, AND LAKES
+
+The existing river system is one of the strongest improvements from v0.0.11.
+
+**Preserve its good qualities.**
+
+The user particularly likes smaller streams flowing into larger rivers.
+
+Do not unnecessarily discard functioning river connectivity.
+
+## 9.1 River smoothing
+
+Remove:
+
+- Sharp pointed bends.
+- Triangular corners.
+- Jagged geometric banks.
+- Abrupt river endpoints.
+- Angular confluences.
+- Surface gaps.
+- Transparent seams.
+
+Generate smoothly varying riverbanks informed by terrain and erosion.
+
+Rivers should look like they have carved their path through the landscape.
+
+## 9.2 River density
+
+Reduce excessive major river density, particularly on smaller world sizes.
+
+A natural hierarchy should include:
+
+- Small streams.
+- Tributaries.
+- Medium rivers.
+- Regional trunk rivers.
+- Occasional major river systems.
+
+The number and width of rivers should reflect:
+
+- World size.
+- Rainfall.
+- Drainage area.
+- Terrain elevation.
+- Basin structure.
+
+Keep major rivers clearly visible from high altitude.
+
+Do not replace open oceans with extremely wide rivers.
+
+## 9.3 Fewer ponds
+
+The world currently has too many tiny random bodies of water.
+
+Significantly reduce unnecessary:
+
+- Small isolated puddles.
+- Shallow blue spots.
+- Tiny circular ponds.
+- Flooded terrain depressions.
+- Random disconnected water polygons.
+
+Preserve appropriate:
+
+- Natural lakes.
+- Glacial lakes.
+- Large freshwater basins.
+- Occasional small ponds.
+- Wetlands.
+- Desert oases.
+
+Lakes must be generated through credible drainage and basin conditions.
+
+Arid regions should often remain genuinely dry.
+
+## 9.4 Water rendering corrections
+
+Fix:
+
+- Shoreline flicker.
+- Water transparency defects.
+- Triangular edges.
+- River depth artifacts.
+- Water disappearing at certain zoom levels.
+- Surface conflicts between water and terrain.
+- LOD-related gaps.
+- Hard material boundaries at confluences.
+
+Validate both from the world map and at ground level.
+
+---
+
+# 10. NEW NORTHERN HEMISPHERE CLIMATE MODEL
+
+The current Colossal world has a large hot central region with cold regions appearing at both ends.
+
+Replace this with a **Northern Hemisphere-inspired north-to-south climate system**.
+
+## 10.1 Required broad temperature gradient
+
+**Far North — Very Cold**
+
+- Arctic tundra.
+- Permafrost.
+- Glaciers.
+- Snow-covered highlands.
+- Cold coastal environments.
+
+**Northern Regions — Boreal**
+
+- Spruce forests.
+- Pine forests.
+- Scandinavian lakes.
+- Moss-covered ground.
+- Rocky coniferous hills.
+- Boreal valleys.
+
+**Central Regions — Temperate**
+
+- Green hills.
+- Temperate forests.
+- Grasslands.
+- Meadows.
+- Rivers.
+- Agricultural valleys.
+
+**Southern-Central Regions — Mediterranean**
+
+- Warm coastal climates.
+- Mediterranean shrubland.
+- Dry rocky hills.
+- Olive-like woodland.
+- Temperate coastal mountains.
+- Dry summer landscapes.
+
+**Far South — Hot**
+
+- Semi-arid environments.
+- Rocky desert.
+- Dune deserts.
+- Dry plateaus.
+- Salt flats.
+- Occasional oases and green river valleys.
+
+The world should generally become warmer from north to south.
+
+**Do not place a second large polar winter region in the south.**
+
+## 10.2 Climate must remain geographical
+
+Latitude is only one influence.
+
+Also account for:
+
+- Elevation.
+- Ocean proximity.
+- Prevailing winds.
+- Rainfall.
+- Humidity.
+- Mountain rain shadows.
+- Continental interiors.
+- Drainage.
+- Soil moisture.
+- Seasonal variation.
+
+Snow can still exist on very high southern mountains because of altitude.
+
+Hot, wet environments should not automatically become deserts.
+
+## 10.3 More natural biome boundaries
+
+The current climate transitions appear too smooth, broad, and artificially uniform.
+
+Generate more irregular geographic boundaries.
+
+For example:
+
+- Mountains block rainfall.
+- Moist valleys remain greener.
+- Coastal zones are moderated by the sea.
+- Rain shadows create dry regions.
+- High elevations support alpine biomes.
+- Interior basins can become arid.
+
+Avoid giant circular biome shapes and perfectly straight color stripes.
+
+Do not merely add random jagged noise.
+
+Biome boundaries should have logical environmental causes.
+
+---
+
+# 11. SCANDINAVIAN TAIGA — HIGH PRIORITY
+
+The current game is missing convincing cold coniferous forests.
+
+This is a mandatory part of the update.
+
+The intended reference is **Norway and Scandinavia**.
+
+## 11.1 Spruce and pine trees
+
+Generate actual recognizable conifer trees.
+
+Required variations include:
+
+- Tall narrow spruce.
+- Dense spruce crowns.
+- Mature pine trees.
+- Younger saplings.
+- Sparse rocky-hillside conifers.
+- Dense evergreen forest stands.
+- Snow-covered conifers.
+- Windswept high-elevation trees.
+
+Do not substitute generic rounded broadleaf trees.
+
+Avoid crude geometric cone placeholders as the final visible trees.
+
+Use proper trunks, branches, and foliage geometry appropriate to distance and LOD.
+
+## 11.2 Dense forest environments
+
+Generate:
+
+- Large evergreen forests.
+- Spruce-covered valleys.
+- Pine-covered hills.
+- Forest clearings.
+- Wooded lakeshores.
+- Mossy rocks.
+- Forest understory.
+- Natural transitions to alpine tundra.
+
+Tree density must respond to terrain, climate, moisture, and elevation.
+
+## 11.3 Fix brown northern ground
+
+The northern forest floor currently looks too brown and barren.
+
+Add suitable materials and foliage:
+
+- Green moss.
+- Dark forest grass.
+- Low shrubs.
+- Ferns.
+- Lichen.
+- Fallen needles.
+- Rocks.
+- Ground plants.
+- Wet vegetation.
+- Snow patches where appropriate.
+
+Permafrost and tundra should have their own appropriate visual identity rather than simply turning every northern region brown.
+
+## 11.4 Northern alpine geography
+
+Include:
+
+- Scandinavian mountain slopes.
+- Fjords.
+- Rocky highlands.
+- Glacial valleys.
+- Alpine snow.
+- Cold lakes.
+- Spruce forests below the tree line.
+
+The result should be visibly recognizable as a northern European environment.
+
+---
+
+# 12. MEDITERRANEAN VEGETATION AND ENVIRONMENTS
+
+Use the previously supplied Mediterranean hillside photograph as a major visual reference.
+
+The terrain should feature:
+
+- Gentle green hills.
+- Exposed limestone.
+- Flowering meadows.
+- Scattered shrubs.
+- Olive-like trees.
+- Cypress-like trees.
+- Mediterranean pines.
+- Rocky outcrops.
+- Dense brush.
+- Coastal slopes.
+- Wooded valleys.
+
+Generate environmental detail according to climate, slope, and soil.
+
+Do not distribute trees and shrubs uniformly.
+
+Generate natural clustering and open areas.
+
+Create environments where a player can stand above the coastline and see hills covered in vegetation, cultivated land near villages, distant mountains, and the sea.
+
+---
+
+# 13. FULL GROUND-VEGETATION UPGRADE
+
+The existing landscape is visually too empty.
+
+Add dense and varied ground-level details in suitable environments.
+
+Required assets and systems:
+
+- Short grass.
+- Tall grass.
+- Grass clumps.
+- Meadow flowers.
+- Wildflowers.
+- Small flowering plants.
+- Low shrubs.
+- Medium bushes.
+- Twigs.
+- Fallen branches.
+- Pebbles.
+- Embedded stones.
+- Moss.
+- Ground cover.
+- Sparse dry vegetation in arid regions.
+
+Distribution should depend on:
+
+- Biome.
+- Climate.
+- Rainfall.
+- Soil.
+- Slope.
+- Elevation.
+- Shade.
+- Distance from water.
+
+Use mesh instancing, efficient vegetation streaming, and appropriate LOD.
+
+The world should feel richly inhabited by plants when walking around.
+
+It should also remain visually coherent when viewed from high altitude.
+
+Do not generate obvious repeating grids of vegetation.
+
+---
+
+# 14. EGYPTIAN AND NORTH AFRICAN DESERTS
+
+Generate vast desert regions inspired by Egypt, North Africa, and the Sahara.
+
+## 14.1 Rolling sand deserts
+
+Include:
+
+- Large dune fields.
+- Long wind-shaped ridges.
+- Rolling sand.
+- Broad sandy valleys.
+- Open desert plains.
+- Sparse rocks.
+- Occasional desert plants.
+
+Dune formations should respond to prevailing wind directions and terrain constraints.
+
+Do not create random tan hills and call them dunes.
+
+## 14.2 Salt deserts
+
+Include broad flat salt basins:
+
+- Pale white and beige surfaces.
+- Cracked dry ground.
+- Minimal vegetation.
+- Shallow relief.
+- Dry lakebeds.
+- Surrounding rocky terrain.
+
+Salt flats should feel dramatically flatter than rolling dune regions.
+
+## 14.3 Rocky deserts
+
+Include:
+
+- Sandstone cliffs.
+- Dry valleys.
+- Weathered outcrops.
+- Mesas.
+- Plateaus.
+- Rock fields.
+- Occasional canyons.
+
+## 14.4 Heat haze
+
+Add a subtle hot-air shimmer close to the ground.
+
+The effect should respond to:
+
+- Surface temperature.
+- Time of day.
+- Weather.
+- Viewing distance.
+
+Avoid excessive global blur.
+
+Heat distortion should be subtle and localized.
+
+---
+
+# 15. RARE NATURAL CAVES
+
+Preserve the functioning cave system from v0.0.11.
+
+Caves should remain relatively rare discoveries.
+
+Prefer locations such as:
+
+- Limestone cliffs.
+- Rocky hills.
+- Mountain foothills.
+- Escarpments.
+- Rugged coastal geology.
+- Appropriate karst regions.
+
+Cave entrances must integrate naturally with terrain meshes.
+
+Maintain:
+
+- Real surface openings.
+- Underground traversal.
+- Collision.
+- Mining.
+- Persistent excavation.
+- Save/reload behavior.
+
+Do not scatter cave entrances uniformly across every biome.
+
+---
+
+# 16. MATERIALS AND TEXTURE CORRECTIONS
+
+Fix grainy grassland and desert textures.
+
+The existing sand and grass materials exhibit excessive visual noise at higher viewing distances.
+
+Investigate:
+
+- Texture filtering.
+- Mipmapping.
+- Anisotropic filtering.
+- Normal maps.
+- High-frequency procedural noise.
+- Terrain shader sampling.
+- Texture scaling.
+- LOD transitions.
+- Distant surface materials.
+
+Create smooth broad environmental surfaces at high altitude while retaining close-range detail.
+
+Sand should look like sand, not static.
+
+Grassland should look like grassy terrain, not green noise.
+
+Improve blending among:
+
+- Grass.
+- Soil.
+- Rock.
+- Sand.
+- Snow.
+- Moss.
+- Forest floor.
+- Beaches.
+- Wetlands.
+
+Avoid obvious hard boundaries and smeared transition textures.
+
+---
+
+# 17. RESTORE THE DISTANT MOUNTAIN BACKGROUND
+
+Earlier versions of Aevoria featured attractive mountain scenery along the distant horizon.
+
+That visual appeal has disappeared.
+
+Restore visually compelling distant mountains and regional terrain.
+
+Prefer actual generated geography and distant terrain LOD rather than disconnected decorative mountain curtains.
+
+Potential solutions include:
+
+- Hierarchical distant terrain meshes.
+- Regional horizon meshes.
+- Distant mountain silhouettes.
+- Atmospheric perspective.
+- Terrain streaming across larger distances.
+
+The distant mountain representation must agree with the real geographic world.
+
+It should not appear in directions where no mountains exist.
+
+Do not allow near-field terrain and distant mountains to overlap incorrectly.
+
+---
+
+# 18. FIX VIEW-DISTANCE RENDERING DEFECTS
+
+There is a known rendering problem where part of the landscape disappears when zooming toward terrain or islands.
+
+Sometimes approximately the upper third of the screen contains no rendered geography.
+
+Investigate:
+
+- Camera clipping.
+- Far-plane distances.
+- Frustum culling.
+- Terrain streaming.
+- Camera altitude transitions.
+- Floating-origin behavior.
+- Distant mesh visibility.
+- Regional terrain bounds.
+- Depth-buffer precision.
+- Horizon rendering.
+- Occlusion culling.
+
+Identify the actual cause.
+
+Do not mask the issue with a sky-colored overlay.
+
+Test continuously zooming from high-altitude World Mode into near-ground views.
+
+The landscape should remain visible and geographically consistent throughout.
+
+---
+
+# 19. CLOUDS, SKY, AND ATMOSPHERE
+
+Restore visible clouds.
+
+The current clouds have disappeared or render inconsistently.
+
+Implement or repair:
+
+- Stable cloud visibility.
+- Natural cloud distribution.
+- Wind-driven cloud movement.
+- Appropriate cloud altitudes.
+- Cloud coverage linked to weather.
+- Consistent rendering during camera zoom.
+- Correct behavior in World Mode and Explore Mode.
+
+Support appropriate atmospheric conditions:
+
+- Clear Mediterranean skies.
+- Cloudy northern forests.
+- Mountain fog.
+- Coastal haze.
+- Desert heat distortion.
+- Rain clouds.
+- Cold-weather cloud cover.
+
+Visual inspection in the actual Windows game is mandatory.
+
+---
+
+# 20. VILLAGE AND ROAD REFINEMENT
+
+The v0.0.11 villages are a major improvement.
+
+The user likes:
+
+- Increased housing counts.
+- Better settlement population representation.
+- Interconnected roads.
+- Visible residents.
+- More convincing clusters of buildings.
+
+Preserve those improvements.
+
+## 20.1 Smooth the paths
+
+Current paths have too many sharp zigzags and angular corners.
+
+Implement:
+
+- Smooth curves.
+- Better turning radii.
+- Natural branching intersections.
+- Roads following terrain.
+- Appropriate path widths.
+- Improved entrance connections.
+- Reduced unnecessary path segments.
+
+## 20.2 More organized layouts
+
+Support different village patterns:
+
+**Organic village**
+
+Irregular roads and houses following geographic constraints.
+
+**Semi-grid village**
+
+Main streets and smaller branching streets that form recognizable housing blocks.
+
+**Mediterranean hillside village**
+
+Compact houses, terraced development, roads following slope contours, and central community spaces.
+
+**Coastal village**
+
+Connected housing clusters around suitable coastal terrain.
+
+**Agricultural village**
+
+Houses connected to fields, orchards, and farmland.
+
+Do not make every village identical.
+
+## 20.3 Settlement environmental detail
+
+Where appropriate, add:
+
+- Orchards.
+- Olive groves.
+- Agricultural terraces.
+- Fields.
+- Gardens.
+- Workshops.
+- Community structures.
+- Small central gathering spaces.
+
+Preserve simulated population and resource constraints.
+
+Do not replace functioning civilization mechanics with purely decorative settlements.
+
+---
+
+# 21. NEW WORLD-MODE COMPASS
+
+Add a small circular compass in the **bottom-right corner**.
+
+It should display:
+
+- North.
+- East.
+- South.
+- West.
+- Camera-facing orientation.
+- A clear north indicator.
+
+The compass must update during:
+
+- World Mode rotation.
+- Camera tilt.
+- Zooming.
+- Camera movement.
+
+It should use the actual geographic orientation of the world.
+
+The north direction shown must correspond with the new cold-north climate system.
+
+Keep the compass unobtrusive.
+
+It must not cover important controls or gameplay information.
+
+Optionally support an appropriately simplified compass in Explore Mode.
+
+---
+
+# 22. WORLD-GENERATION PREVIEW REDESIGN
+
+The current generation preview looks blurry and unintentionally low-resolution.
+
+Replace it with an intentionally stylized map.
+
+## 22.1 Visual appearance
+
+Prefer:
+
+- Sharp tile or chunk boundaries.
+- Crisp colors.
+- Distinct terrain categories.
+- Readable coastlines.
+- Visible major mountain formations.
+- Clear rivers.
+- Recognizable forests.
+- Recognizable deserts.
+- A clean cartographic look.
+
+The user is comfortable with deliberately low-resolution or tile-based art.
+
+The problem is accidental-looking blur, smearing, and interpolation.
+
+A sharp simplified atlas is preferable to a blurry realistic map.
+
+## 22.2 Progressive generation
+
+The preview must represent the actual world being generated.
+
+Show geographic layers progressively:
+
+1. Continental structure.
+2. Ocean basins.
+3. Regional elevation.
+4. Fault systems.
+5. Mountains and valleys.
+6. Rivers and lakes.
+7. Climate.
+8. Biomes.
+9. Vegetation.
+10. Settlement placement.
+11. Completed world map.
+
+Do not fabricate progress percentages.
+
+Use real module completion data.
+
+## 22.3 Loading behavior
+
+Display:
+
+- Current stage.
+- Current module.
+- Meaningful progress.
+- Responsive cancel control.
+- Generation status.
+- Completion feedback.
+
+Generation must continue correctly while the window is unfocused.
+
+Cancellation must not corrupt existing saves.
+
+---
+
+# 23. FIX MENU AND LOADING SCREEN TEXT CLIPPING
+
+Text is currently being cut off at the bottom of menus and world-generation panels.
+
+Investigate:
+
+- TextMeshPro bounds.
+- Canvas scaling.
+- UI layout groups.
+- RectTransform anchors.
+- Content masking.
+- Line spacing.
+- Font metrics.
+- Resolution-dependent clipping.
+
+Fix all affected interface components.
+
+Validate at:
+
+- 1920 × 1080.
+- 2560 × 1440.
+- 3840 × 2160.
+
+Also check Windows display scaling where practical.
+
+Text should fit naturally.
+
+Do not simply shrink every font.
+
+---
+
+# 24. REDESIGN THE ESCAPE MENU
+
+The current Escape menu is overcrowded.
+
+Replace it with a clean four-option interface.
+
+## Main Escape menu
+
+**1. Resume**
+
+Return to the game.
+
+**2. Settings**
+
+Open settings categories for:
+
+- Graphics.
+- Audio.
+- Controls.
+- Key bindings.
+- Units.
+- Display preferences.
+- Other relevant configurations.
+
+**3. Advancement**
+
+Display "Coming Soon."
+
+The progression system is reserved for a later update.
+
+Do not invent and prematurely ship an advancement system.
+
+**4. Save & Quit**
+
+Save the active world and return to Aevoria's main menu.
+
+## Critical behavior
+
+Save & Quit must NOT close the Windows executable.
+
+It must:
+
+1. Safely save the world.
+2. Confirm the save succeeded.
+3. Preserve terrain state, world history, populations, resources, player state, and simulation data.
+4. Unload the session.
+5. Return to the main menu.
+
+If saving fails, display an error and keep the session available.
+
+Do not discard progress.
+
+The main menu may contain Quit to Desktop, but should not contain an active-world Save option.
+
+Keep the Escape menu minimal and visually polished.
+
+---
+
+# 25. TEMPORARILY HIDE CHRONICLES
+
+Remove Chronicles from the visible game interface for now.
+
+Hide:
+
+- Chronicles menu buttons.
+- Unnecessary Chronicles panels.
+- Decorative historical pages.
+
+Do not destroy:
+
+- Existing world history.
+- Saved historical events.
+- Civilization history.
+- Existing Chronicle data.
+- Older release archives.
+
+The user may want this feature again later.
+
+This is a temporary interface removal, not a destructive data deletion.
+
+Do not generate decorative release Chronicles for v0.0.13.
+
+Provide a straightforward changelog instead.
+
+---
+
+# 26. REPLACE THE OUTDATED ESCAPE MENU BACKGROUND
+
+The current Escape menu still uses imagery from older Aevoria versions.
+
+Replace this after the Mediterranean visual overhaul is complete.
+
+Use a screenshot captured from the actual updated game.
+
+Ideal composition:
+
+- Mediterranean coastline.
+- Rich green hills.
+- Mountains in the distance.
+- Blue ocean.
+- Appropriate vegetation.
+- Atmospheric depth.
+
+Do not use screenshots from older versions.
+
+Do not generate a synthetic marketing image and present it as a real gameplay capture.
+
+Use a high-resolution screenshot and preserve its aspect ratio.
+
+Ensure foreground menu text remains readable.
+
+---
+
+# 27. PERFORMANCE AND WORLD STREAMING
+
+The game should support visually rich worlds without requiring all meshes and vegetation objects to remain active simultaneously.
+
+Use:
+
+- Efficient chunk streaming.
+- Hierarchical terrain LOD.
+- GPU instancing.
+- Mesh batching where appropriate.
+- Distant vegetation simplification.
+- Collision LOD.
+- Sensible culling.
+- Controlled memory residency.
+
+Support large Colossal worlds with extensive geographic detail.
+
+Do not use world-generation speed as the primary quality constraint.
+
+Nevertheless, measure generation costs and identify pathological bottlenecks.
+
+The v0.0.11 Colossal generation previously showed hydrology consuming almost all worker-generation time.
+
+Investigate major bottlenecks where useful, particularly if improved world generation greatly increases their costs.
+
+Do not sacrifice geographic correctness simply to make the progress bar move faster.
+
+---
+
+# 28. PERSISTENCE, SAVE COMPATIBILITY, AND DETERMINISM
+
+The Mediterranean Update changes foundational world geography.
+
+Treat this as a potentially generator-breaking release.
+
+Requirements:
+
+- Preserve existing v0.0.12 worlds.
+- Preserve all older archives.
+- Maintain deterministic generation for new worlds.
+- Store explicit generation settings.
+- Record generator/module versions.
+- Avoid silently regenerating old geography with new algorithms.
+- Reject unsupported save versions clearly.
+- Never delete incompatible archives.
+- Keep civilization and history records safe.
+- Ensure caves and mining remain persistent.
+- Ensure new-world save/reload reproducibility.
+
+If v0.0.13 requires a new generator version or save schema, implement it explicitly.
+
+Do not attempt automatic migration without verified compatibility and a safe rollback path.
+
+Do not silently alter a player's permanent world.
+
+---
+
+# 29. REQUIRED DEVELOPMENT ORDER
+
+Implement in phases and validate each phase before advancing.
+
+## Phase 0 — Preservation
+
+- Preserve v0.0.12.
+- Record baselines.
+- Audit current generator modules.
+- Capture before-images.
+- Record known limitations.
+
+## Phase 1 — Geology
+
+- Regional tectonic structures.
+- Fault fields.
+- Mountain uplift.
+- New massif shapes.
+- Natural valleys and ridges.
+- Physical terrain integration.
+
+## Phase 2 — Coastlines and oceans
+
+- Continental separation.
+- Ocean basins.
+- Mediterranean coastline.
+- Fjords.
+- Beaches and cliffs.
+
+## Phase 3 — Hydrology
+
+- River smoothing.
+- Tributary preservation.
+- Reduced pond density.
+- Lake refinement.
+- Water-rendering corrections.
+
+## Phase 4 — Climate
+
+- Cold north, hot south.
+- Regional rainfall.
+- Rain shadows.
+- Irregular biome boundaries.
+- Elevation-driven alpine climates.
+
+## Phase 5 — Major biome regions
+
+- Norwegian taiga.
+- Scandinavian highlands.
+- European countryside.
+- Mediterranean coast.
+- Asian mountain environments.
+- Egyptian desert.
+- Salt flats and dunes.
+
+## Phase 6 — Vegetation
+
+- Spruce and pine forests.
+- Mediterranean vegetation.
+- Rich grasslands.
+- Ground cover.
+- Rocks and shrubs.
+- Material improvements.
+
+## Phase 7 — Rendering
+
+- Distant mountain skyline.
+- Stable clouds.
+- View-distance correction.
+- Terrain LOD.
+- Heat haze.
+- Zoom artifact corrections.
+
+## Phase 8 — Villages
+
+- Smoother roads.
+- Better intersections.
+- Semi-grid options.
+- Organic settlement preservation.
+- Terraced and coastal villages.
+
+## Phase 9 — Interface
+
+- Compass.
+- New world preview.
+- Text clipping fixes.
+- Escape menu redesign.
+- Safe Save & Quit.
+- Chronicles hidden.
+- New menu background.
+
+## Phase 10 — Integration
+
+- Native Windows gameplay.
+- Save/load.
+- World-size tests.
+- Multiple seeds.
+- Character regression tests.
+- Full visual review.
+- Performance review.
+- Final packaging.
+
+Do not skip visual review gates.
+
+---
+
+# 30. REQUIRED NATIVE WORLD TESTS
+
+Generate and inspect representative environments.
+
+## Mediterranean test
+
+Must demonstrate:
+
+- Large blue sea.
+- Rocky coastal cliffs.
+- Mountains near the coast.
+- Rolling green hills.
+- Mediterranean trees and shrubs.
+- Villages and agricultural landscapes.
+
+## Scandinavian test
+
+Must demonstrate:
+
+- Correct cold-north climate.
+- Spruce forests.
+- Pine forests.
+- Green forest understory.
+- Fjords.
+- Rocky highlands.
+- Snow and tundra where appropriate.
+
+## European grassland test
+
+Must demonstrate:
+
+- Rolling hills.
+- Meadows.
+- Flowers.
+- Grass clumps.
+- Rocks.
+- Shrubs.
+- Scattered woodland.
+- Natural drainage.
+
+## Desert test
+
+Must demonstrate:
+
+- Large dunes.
+- Flat salt basins.
+- Rocky desert.
+- Low vegetation density.
+- Appropriate hot climate.
+- Subtle heat haze.
+
+## Colossal test
+
+Must demonstrate:
+
+- Substantial continental separation.
+- Multiple geographically coherent biomes.
+- Cold north and warm south.
+- Regional mountain formations.
+- Natural valleys.
+- Rivers and tributaries.
+- Large oceans.
+- Reliable world creation and save/load.
+
+Use reproducible seeds.
+
+Preserve known fixtures such as `shaping-continents` and `aevoria-001` for regression comparison where appropriate.
+
+Test additional seeds to avoid overfitting improvements to one example.
+
+---
+
+# 31. VISUAL QUALITY ACCEPTANCE
+
+Automated tests alone are not sufficient.
+
+The user will personally inspect the game.
+
+The following must be visibly true.
+
+## Mountains
+
+They resemble actual geological mountain formations rather than needles, cones, pyramids, or disconnected spikes.
+
+## Terrain
+
+Ordinary grasslands contain recognizable rolling hills, valleys, rocks, and vegetation.
+
+## Coasts
+
+Mediterranean coastlines contain natural cliffs, bays, blue water, and appropriate mountains.
+
+## Oceans
+
+Continents are separated by meaningful expanses of sea or ocean.
+
+## Rivers
+
+Rivers remain naturally connected, with smooth banks and no sharp polygonal points.
+
+## Lakes
+
+There are far fewer random tiny ponds.
+
+## Climate
+
+Northern regions are cold and southern regions are generally warmer.
+
+Biome boundaries are geographically irregular rather than painted in uniform stripes.
+
+## Northern forests
+
+Actual spruce and pine forests are visible, with suitable green understory and appropriate alpine transitions.
+
+## Deserts
+
+The world contains both rolling dunes and flat salt deserts.
+
+## Surface materials
+
+Grass and sand are not excessively grainy from above.
+
+## Atmosphere
+
+Clouds remain visible in appropriate conditions.
+
+Distant mountains remain visible.
+
+Heat haze appears subtly in hot environments.
+
+## Camera
+
+Terrain does not disappear from the top of the screen while zooming.
+
+## Villages
+
+Existing improvements are preserved, and roads are smoother and more believable.
+
+## Interface
+
+The compass is functional.
+
+The generation preview is crisp and deliberate.
+
+Text is not clipped.
+
+Escape offers four main options.
+
+Save & Quit returns to the main menu without closing the game.
+
+Chronicles are hidden.
+
+The menu background shows actual v0.0.13 gameplay.
+
+If any visual acceptance item fails, record it honestly rather than claiming the entire update is complete.
+
+---
+
+# 32. FINAL VALIDATION REQUIREMENTS
+
+Run appropriate Editor and PlayMode checks.
+
+Also execute real Windows builds and native runtime reviews.
+
+Required coverage:
+
+- All supported world sizes.
+- Multiple seeds.
+- Extreme mountain relief.
+- Camera zoom and tilt.
+- World Mode and Explore Mode.
+- Terrain collision.
+- Cave traversal.
+- Mining persistence.
+- Settlement growth.
+- Resident movement and interaction.
+- Character selection.
+- Equipment and animation regression.
+- World creation cancellation.
+- World save/reload.
+- Incompatible save handling.
+- Menu navigation.
+- UI scaling.
+- Compass rotation.
+- Cloud visibility.
+- River and ocean rendering.
+
+Preserve failed prototype evidence.
+
+Distinguish between:
+
+- Passed automated checks.
+- Passed native gameplay checks.
+- Inspected screenshots.
+- Inspected moving sequences.
+- Remaining known defects.
+- User visual acceptance.
+
+Do not claim a stable release without sufficient evidence.
+
+---
+
+# 33. FINAL DELIVERABLES
+
+Produce:
+
+1. Aevoria Alpha v0.0.13 Windows executable.
+2. Complete preserved source snapshot.
+3. Versioned geographic generation changes.
+4. New fault and mountain systems.
+5. Improved coastlines and hydrology.
+6. Northern Hemisphere climate overhaul.
+7. Scandinavian, European, Mediterranean, Asian, and North African environments.
+8. Updated vegetation and terrain materials.
+9. Corrected clouds, horizon, and camera rendering.
+10. Improved village roads.
+11. New compass.
+12. Redesigned loading preview.
+13. Simplified Escape menu.
+14. Correct Save & Quit behavior.
+15. Updated actual-gameplay menu background.
+16. Before-and-after screenshot gallery.
+17. Native gameplay validation report.
+18. Save compatibility and determinism report.
+19. Performance and generation-stage measurements.
+20. Factual changelog and remaining limitations.
+
+Preserve all prior official releases and user data.
+
+Do not create decorative release Chronicles.
+
+---
+
+# 34. FINAL DIRECTIVE TO CODEX
+
+**Begin Alpha v0.0.13 — The Mediterranean Update now.**
+
+Do not wait for further Dr. House facial revisions.
+
+The current v0.0.12 character hotfix is the baseline, and remaining facial refinements will be addressed separately.
+
+The goal is to establish Aevoria's definitive geographical identity.
+
+Aevoria should feel like a living world inspired by:
+
+- The Mediterranean.
+- Southern and central Europe.
+- Scandinavia and Norway.
+- European and Asian mountain systems.
+- Anatolia and central Asia.
+- Egypt and North Africa.
+
+The player should experience convincing geography at every scale, from a Colossal overview down to an individual hillside.
+
+Mountains should follow geological structure.
+
+Valleys should result from uplift and erosion.
+
+Rivers should drain natural watersheds.
+
+Coastlines should be intricate and beautiful.
+
+Forests should match regional climates.
+
+Deserts should be vast and varied.
+
+Villages should reflect the terrain around them.
+
+Every landscape should look like it belongs in the same world.
+
+**Prioritize geographic coherence, visual beauty, detailed procedural meshes, long-term persistence, and gameplay reliability above world-generation speed.**
+
+Use the existing modular architecture as the foundation, but make whatever substantial improvements are needed to achieve the required visual quality.
+
+Do not settle for cosmetic changes that leave the underlying geography looking random.
+
+Do not mark this release finished simply because technical tests pass.
+
+The final test is whether the actual Windows game produces landscapes that resemble the supplied real-world references and feel natural, massive, geographically connected, and worth exploring.
+
+**This is the update that should make Aevoria finally look like Aevoria.**

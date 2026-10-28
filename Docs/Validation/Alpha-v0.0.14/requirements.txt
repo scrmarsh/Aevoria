@@ -1,0 +1,602 @@
+# AEVORIA — ALPHA v0.0.14
+## PROJECT GENESIS
+### Procedural Materials, Natural Surfaces & Compact Asset Architecture
+
+**Development platform:** Unity 6.3 LTS / URP / Windows  
+**Previous release:** Alpha v0.0.13 — The Mediterranean Update  
+**Update type:** Major rendering and asset-generation overhaul  
+**Priority:** Visual quality → Terrain integration → Performance → Audio → Storage optimization
+
+---
+
+## 1. Primary Mission
+
+Implement a high-quality procedural material system that fundamentally improves how Aevoria's world looks.
+
+Aevoria must no longer rely on terrain surfaces that resemble repeated square textures, flat painted colors, stretched mountain materials, or simplistic noise patterns.
+
+The objective is to achieve richly detailed, geographically believable terrain using **compact mathematical material recipes instead of large collections of traditional texture files**.
+
+The player's experience must resemble a professionally developed 3D world, not a procedurally colored heightmap.
+
+**The most important requirement is that the world must look natural from every viewing distance.**
+
+This includes the highest overhead world view, intermediate camera distances, and ground-level exploration.
+
+## 2. Preservation and Baseline Verification
+
+Before modifying the project:
+
+1. Read the latest development checkpoint and validation documentation.
+2. Confirm the current source version and most recent completed release.
+3. Preserve all existing builds, archives, player saves, and historical generation products.
+4. Preserve the existing Mediterranean geography, tectonics, mountains, rivers, lakes, climate, biomes, villages, caves, characters, controls, and persistence.
+5. Do not overwrite older release builds.
+6. Do not regenerate existing player worlds silently.
+7. Keep material-generation changes compatible with the existing geography whenever possible.
+8. Record the baseline build size, asset usage, performance, and representative screenshots.
+
+Do not assume v0.0.13 is fully validated solely from its version number. Verify its final checkpoint and maintain compatibility with the actual completed baseline.
+
+Do not modify Dr. House or any other protected character assets unless an unrelated critical issue makes it absolutely necessary.
+
+Do not spawn additional agents without authorization.
+
+## 3. Aevoria's New Procedural Material Architecture
+
+Create a modular procedural material system that allows materials to be defined through compact recipes.
+
+A material recipe should support:
+
+- Deterministic procedural seed.
+- Base color gradient.
+- Multiple noise functions.
+- Noise scale and frequency.
+- Fractal octave configuration.
+- Domain warping.
+- Material roughness.
+- Surface normal variation.
+- Geological strata.
+- Cracks and fractures.
+- Erosion and weathering.
+- Moisture response.
+- Temperature response.
+- Snow accumulation.
+- Moss and vegetation masks.
+- Large-scale color variation.
+- Localized surface detail.
+- Distance-based filtering.
+- Biome and geological compatibility.
+
+Each recipe must be reusable, versioned, and reproducible.
+
+Use Unity URP-compatible shader implementations and efficient GPU rendering where appropriate.
+
+Avoid requiring full-resolution generated image files for every terrain location.
+
+## 4. Mandatory Anti-Tiling Requirement
+
+**Absolutely no visibly repeated square terrain textures.**
+
+Forbidden results include:
+
+- Checkerboard patterns.
+- Square material boundaries.
+- Repeated identical rock patches.
+- Repeating grass stamps.
+- Obvious UV tiling.
+- Stretched cliff textures.
+- Blurry material squares.
+- Pixelated biome transitions.
+- Static-like procedural noise.
+- Noticeably identical surface patterns over large distances.
+
+Implement several complementary anti-tiling techniques rather than relying on a single noise filter.
+
+Required techniques where appropriate:
+
+1. World-space material coordinates.
+2. Triplanar projection on steep terrain.
+3. Multi-octave noise.
+4. Domain-warped material sampling.
+5. Large-scale geographic color variation.
+6. Medium-scale surface breakup.
+7. Small-scale detail variation.
+8. Noise-distorted material transition masks.
+9. Stochastic or rotated sampling for any retained repeated source textures.
+10. Distance-aware mipmapping, derivative filtering, or equivalent antialiasing.
+
+The world must not reveal material repetition when the camera pans, rotates, zooms, or travels across chunk boundaries.
+
+Procedural materials should be continuous across terrain chunks and streaming regions.
+
+## 5. Geographic Material Intelligence
+
+Material distribution must be driven by the existing simulation data rather than arbitrary color selection.
+
+Inputs should include:
+
+- Elevation.
+- Slope.
+- Slope aspect.
+- Geological classification.
+- Temperature.
+- Moisture.
+- Rainfall.
+- Wind exposure.
+- Distance to oceans.
+- Distance to rivers and lakes.
+- Snow conditions.
+- Biome.
+- Terrain curvature and erosion.
+- Regional geographic variation.
+
+For example:
+
+A steep mountain face should expose more rock.
+
+Sheltered ledges should collect soil, snow, or vegetation when conditions permit.
+
+Lower foothills should transition into grass, shrubs, stones, and soil.
+
+Wet riverbanks should display darker ground, vegetation, sediment, and appropriate transitions.
+
+Dry desert regions should show sand accumulation, exposed bedrock, and weathered stone.
+
+Material logic must remain deterministic for the same world seed and generation version.
+
+## 6. Procedural Rock and Stone
+
+Develop multiple distinct rock material families.
+
+Examples:
+
+- Mediterranean limestone.
+- Weathered sandstone.
+- Northern granite.
+- Dark metamorphic rock.
+- Layered sedimentary stone.
+- Jagged mountain bedrock.
+- River-smoothed stone.
+- Cave limestone.
+
+Each material must support detailed color variation, fractures, sediment layers, micro-grain, erosion, surface relief, and roughness.
+
+Rock appearance must vary across entire mountains, not merely across individual texture samples.
+
+Geological strata should follow plausible regional directions rather than appearing randomly painted onto the terrain.
+
+Triplanar projection must prevent materials from stretching down cliff faces.
+
+Normal detail must respond naturally to lighting.
+
+Where substantial silhouette-changing relief is required, use actual geometry rather than relying on normal maps alone.
+
+## 7. Grassland and Mediterranean Ground
+
+Create richly detailed procedural ground materials for temperate and Mediterranean environments.
+
+Required components:
+
+- Multiple green and yellow grass tones.
+- Exposed soil.
+- Dry grass.
+- Small stones.
+- Rocky patches.
+- Natural erosion patterns.
+- Moss.
+- Sparse vegetation regions.
+- Soil moisture variation.
+- Transition regions around pathways and settlements.
+
+The ground must contain coherent patches of different materials rather than uniformly distributed multicolored noise.
+
+Grassland hills should remain readable from distant world views.
+
+Up close, fine-scale material details and actual vegetation geometry must become visible.
+
+## 8. Forest Floor Materials
+
+Create dedicated forest-floor materials for northern and temperate forests.
+
+Support:
+
+- Dark soil.
+- Pine needles.
+- Leaf litter.
+- Moss.
+- Small stones.
+- Organic debris.
+- Damp earth.
+- Exposed roots where suitable.
+- Lichen.
+- Decaying vegetation.
+
+These materials should respond to forest density, moisture, canopy cover, altitude, and temperature.
+
+Do not simply recolor ordinary grass to represent forest ground.
+
+Preserve the existing forest distribution system.
+
+## 9. Desert and Sand Materials
+
+Develop several realistic desert surface families:
+
+- Fine windblown sand.
+- Rippled dune sand.
+- Compact dry sand.
+- Rocky desert.
+- Weathered sandstone.
+- Dry cracked soil.
+- White salt flats.
+- Oasis soil.
+- River-deposited sediment.
+
+Large dunes must retain their actual geographic geometry.
+
+Procedural materials provide surface appearance, not a substitute for dunes, cliffs, mesas, or other important landforms.
+
+Sand ripples should have plausible directional structure influenced by prevailing wind.
+
+The desert must not resemble yellow static or a repeated noise texture.
+
+## 10. Snow, Ice, and Arctic Materials
+
+Create natural cold-region surfaces:
+
+- Fresh snow.
+- Wind-packed snow.
+- Dirty melting snow.
+- Exposed alpine rock.
+- Ice.
+- Frozen soil.
+- Permafrost.
+- Snow-covered forest ground.
+
+Snow must accumulate according to climate, elevation, slope, exposure, and available terrain geometry.
+
+Transitions between snow and exposed rock should be irregular and geographically believable.
+
+Avoid artificial white bands or uniformly painted mountains.
+
+## 11. Seamless Material Blending
+
+Develop a consistent blending architecture supporting multiple material influences.
+
+Examples:
+
+- Rock → Scree → Soil → Grass.
+- Forest floor → Moss → Rock.
+- Grass → Dirt → Sand.
+- Sand → Rock → Salt flat.
+- Alpine rock → Ice → Snow.
+- Dry riverbank → Damp soil → Wet sediment.
+
+Transitions should use meaningful terrain and environment masks enhanced by controlled procedural variation.
+
+Do not allow chunk boundaries, grid cells, or material assignment regions to become visibly apparent.
+
+Test transitions on varied slopes and complex shorelines.
+
+## 12. Surface Depth and Lighting
+
+Procedural materials must support realistic physically based shading.
+
+Implement or derive where useful:
+
+- Base color.
+- Normal detail.
+- Roughness or smoothness.
+- Ambient occlusion where appropriate.
+- Height or displacement-related detail.
+- Surface wetness.
+- Snow or dust accumulation.
+
+Avoid expensive techniques when they provide little visual improvement.
+
+Optimize material detail according to viewing distance and screen-space visibility.
+
+World Mode must not become noisy or oversharpened when displaying large regions.
+
+Close-up Explorer Mode must not look flat.
+
+## 13. Three Levels of Surface Detail
+
+Implement a consistent scale-aware system.
+
+**Macro detail — regional**
+
+Controls large color regions, geological variation, vegetation density, and broad surface differences.
+
+**Meso detail — landscape**
+
+Controls patches of exposed rock, dirt, grass, erosion, sediment, moss, and weathered surfaces.
+
+**Micro detail — close-up**
+
+Controls cracks, grain, small pebbles, grooves, and material roughness.
+
+These three scales must work together without creating excessive visual noise.
+
+Avoid expensive microscopic calculations at distances where their details cannot be resolved.
+
+## 14. Actual Geometry and Environmental Detail
+
+Procedural texturing alone is insufficient.
+
+Use efficient geometry and instancing for appropriate objects such as:
+
+- Stones and boulders.
+- Rock fragments.
+- Grass clumps.
+- Shrubs.
+- Flowers.
+- Fallen branches.
+- Logs.
+- Scree deposits.
+- Forest litter.
+- Tree roots.
+- Coastal stones.
+
+Placement should depend on geography, slope, climate, soil, moisture, and vegetation suitability.
+
+Use deterministic object placement and distance-based level of detail.
+
+Maintain stable visibility during camera movement.
+
+Avoid obvious repeated object arrangements.
+
+## 15. Asset Size and Installation Goals
+
+The preferred installed game size is **2 GB or less**, with **10 GB as the upper planning limit**.
+
+These are development goals, not requirements that justify sacrificing visual fidelity or breaking existing functionality.
+
+Prefer:
+
+- Compact procedural material recipes.
+- Reusable shaders.
+- Reusable geometry.
+- Deterministic seeds.
+- Instanced meshes.
+- Efficient asset compression.
+- Shared material libraries.
+- Optional generated caches.
+
+Avoid shipping thousands of large redundant textures.
+
+Keep generated world data and persistent saves separate from the core game installation.
+
+Measure and report:
+
+- Compressed distribution size.
+- Installed application size.
+- Procedural material data size.
+- Shader and supporting asset size.
+- Optional cache size.
+- Typical world save size.
+- Peak graphics memory consumption.
+
+Do not make unverified claims about storage savings.
+
+## 16. Procedural Environmental Audio
+
+After the visual material system is stable, investigate compact procedural audio.
+
+Prototype:
+
+- Wind.
+- Rain.
+- Ocean waves.
+- River ambience.
+- Footsteps.
+- Mining impacts.
+- Simple interface sounds.
+
+Use synthesis, filtered noise, compact parameters, and reusable sound generators where appropriate.
+
+For example, wind may be generated through filtered noise modulated by wind strength and environmental conditions.
+
+Footsteps may vary according to terrain material.
+
+Mining impacts may vary according to rock classification.
+
+Use conventional compressed audio where procedural synthesis would sound noticeably worse.
+
+Do not remove or damage existing audio systems.
+
+Avoid unnecessary CPU expense or audible artifacts.
+
+Implement any new audio generation without compromising frame stability.
+
+## 17. World Generation and Persistence
+
+Materials must be derived from stable generation inputs.
+
+Do not store full generated texture maps in every world save unless necessary.
+
+Prefer storing:
+
+- Material recipe version.
+- World seed.
+- Relevant generation identifiers.
+- Persistent environmental changes.
+- Explicit overrides where necessary.
+
+Preserve actual gameplay changes.
+
+For example, if a player excavates a cave, the modified geometry and save state must remain intact.
+
+A renderer upgrade must not erase historical world changes or alter unrelated simulation systems.
+
+Generated material changes must respect world-generation versioning and existing save compatibility rules.
+
+No silent destructive migration.
+
+## 18. Rendering Performance
+
+Use the existing hardware-performance expectations, including an RTX 3060 Ti 8 GB, i7-8700K, and 64 GB RAM as a practical validation target.
+
+Prioritize smooth camera movement and stable frame pacing.
+
+Investigate:
+
+- GPU shader cost.
+- Texture bandwidth.
+- Shader variant counts.
+- Procedural sampling frequency.
+- Material batching.
+- Mesh instancing.
+- Streaming performance.
+- CPU-to-GPU synchronization.
+- Memory allocation.
+- Shader compilation.
+- Runtime generation spikes.
+
+Don't automatically bake every procedural material into a full-resolution texture.
+
+Use an evidence-based hybrid of GPU shader generation, selective caching, and conventional assets.
+
+## 19. Visual Reference and Art Direction
+
+Use the previously generated Aevoria overhead concept map as the intended art-direction reference.
+
+The desired visual identity includes:
+
+- Rich Scandinavian northern forests and mountains.
+- Broad connected mountain systems.
+- Natural temperate green regions.
+- Detailed Mediterranean limestone coasts.
+- Beautiful rolling countryside.
+- Distinct desert landscapes.
+- Geologically meaningful colors.
+- Visually coherent biomes.
+- Clear coastlines and terrain silhouettes.
+- Detail that survives all camera distances.
+
+The reference is a visual goal, not a fixed map layout that every seed must reproduce.
+
+**Never substitute a static image of the concept map for actual generated and explorable geography.**
+
+If the concept image isn't available in the project, report the missing reference rather than inventing access to it.
+
+## 20. Implementation Phases
+
+### Phase 0 — Preservation and profiling
+
+Establish a verified baseline, protect existing content, and measure build size, memory use, and performance.
+
+### Phase 1 — Procedural material foundation
+
+Implement the versioned material recipes, shader architecture, deterministic seeds, and geographic inputs.
+
+### Phase 2 — Rock material prototype
+
+Produce a visually convincing limestone/rock material and demonstrate natural variation on an actual mountain.
+
+### Phase 3 — Anti-tiling and blending
+
+Eliminate obvious texture repetition, seams, square transitions, and cliff stretching.
+
+### Phase 4 — Regional materials
+
+Implement grassland, forest floor, desert, snow, and coastal surface families.
+
+### Phase 5 — Geometry integration
+
+Blend surface materials with scattered real-world detail objects and appropriate LOD systems.
+
+### Phase 6 — Visual polish
+
+Improve surface depth, roughness, large-scale color variation, and consistency between World Mode and Explorer Mode.
+
+### Phase 7 — Performance and size optimization
+
+Measure GPU and CPU costs, optimize material sampling, eliminate redundant data, and evaluate actual installation size.
+
+### Phase 8 — Procedural audio prototype
+
+Implement and compare compact procedural environmental sounds against conventional audio.
+
+### Phase 9 — Full native validation
+
+Run representative Windows builds, inspect real screenshots, verify persistence, and compare performance and install size against the baseline.
+
+### Phase 10 — Final release
+
+Publish the v0.0.14 release only after technical and visual acceptance criteria pass.
+
+## 21. Required Visual Tests
+
+Use actual native Windows gameplay, not only mathematical tests or Unity Editor previews.
+
+Capture and inspect:
+
+1. Mountain seen from a high-altitude world view.
+2. Mountain viewed from a medium distance.
+3. Mountain cliff viewed up close.
+4. Mediterranean grassy hillside.
+5. Forest floor.
+6. Northern snowy mountains.
+7. Desert dunes and salt flats.
+8. Rocky coastline.
+9. Riverbank and lake shoreline.
+10. Adjacent terrain chunks with different materials.
+
+For each location, test changes in camera altitude, rotation, pan, lighting, and LOD.
+
+Look specifically for repeated patterns, visible squares, color discontinuities, shimmering noise, stretched surfaces, and abrupt loading transitions.
+
+If defects remain, document and resolve them before claiming visual acceptance.
+
+## 22. Acceptance Criteria
+
+The update is successful only when:
+
+- No obvious square texture tiling is visible in representative terrain screenshots.
+- Materials transition naturally across world geography.
+- Mountain rock looks substantially more detailed and believable.
+- Grasslands, deserts, forests, and snowy terrain have distinct visual identities.
+- Surface detail behaves appropriately at multiple viewing distances.
+- No new chunk seams or rendering defects are introduced.
+- Procedural generation is deterministic for identical inputs.
+- Existing worlds, saves, characters, and gameplay are preserved.
+- Performance remains acceptable and is measured rather than assumed.
+- Installation size is measured and compared with the baseline.
+- Procedural audio improves or preserves perceived quality without destabilizing the game.
+- Native Windows tests and visual reviews are completed.
+- No incomplete feature is described as production-ready.
+
+## 23. Required Final Report
+
+At completion, provide:
+
+1. Summary of implemented changes.
+2. Material recipes and shader architecture.
+3. List of supported terrain materials.
+4. Before-and-after visual comparisons.
+5. Evidence that obvious tiling has been eliminated.
+6. CPU and GPU performance measurements.
+7. Download and installed application size.
+8. Procedural data size versus any traditional assets retained.
+9. Audio prototype results.
+10. Save compatibility results.
+11. Native Windows validation results.
+12. Known remaining defects.
+13. Exact release paths and version identifiers.
+
+Clearly distinguish fully implemented features, prototypes, partially implemented work, and deferred requirements.
+
+---
+
+## Final Directive
+
+**Build Aevoria's terrain to look like real, naturally varied landscapes—not a collection of square textures.**
+
+Use compact mathematical recipes wherever they produce equal or better quality. Favor realistic geological variation, continuous material transitions, and beautiful environmental detail.
+
+Do not sacrifice the existing world simulation, player saves, or visual fidelity merely to minimize file size.
+
+Start by inspecting the finished v0.0.13 baseline, then implement the procedural material system in the phased order above.
+
+**Aevoria Alpha v0.0.14 — PROJECT GENESIS: A world whose surfaces are generated, not merely painted.**

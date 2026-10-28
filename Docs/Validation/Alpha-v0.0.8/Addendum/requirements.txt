@@ -1,0 +1,792 @@
+# AEVORIA — ALPHA v0.0.8
+## ADDITIONAL REQUIREMENTS: TERRAIN, RENDERING, CLOUDS, CAMERA, AND WORLD STABILITY
+### Critical Playtesting Feedback — Integrate Into the Restoration of the World
+
+**Project:** `M:\Aevoria`  
+**Engine:** Unity 6.3 LTS / URP 17.3  
+**Current development milestone:** Alpha v0.0.8  
+**Reference builds:** Alpha v0.0.6 and v0.0.7
+
+## PRIMARY DIRECTIVE
+
+The user has continued manually inspecting Aevoria and has identified additional problems beyond the original Alpha v0.0.8 specification.
+
+Incorporate all requirements below into the existing recovery work.
+
+**Do not begin an unrelated version update, undo successful v0.0.8 corrections, or restart the entire implementation.**
+
+The top priorities are:
+
+1. Eliminate the square/grid/maze artifacts in terrain and mountains.
+2. Repair God-mode zoom, terrain clipping, and gray-screen failures.
+3. Restore missing vegetation.
+4. Improve terrain LOD, render distance, and preload behavior.
+5. Correct mountain ranges, scale, peaks, and valleys.
+6. Restore natural flowing river shapes.
+7. Replace thousands of tiny low clouds with a few large cumulus cloud formations.
+8. Implement independent cloud and weather display toggles.
+9. Improve God-mode movement and exploration flight controls.
+10. Implement the missing distant horizon mountain backdrop.
+11. Investigate the observed save failure.
+
+These are user-observed acceptance requirements, not optional suggestions.
+
+---
+
+# 1. CRITICAL — REMOVE SQUARE AND MAZE-LIKE TERRAIN ARTIFACTS
+
+The user has observed square patterns on virtually every terrain type, including completely flat grassland.
+
+Mountain regions also exhibit unnatural square, maze-like ridges and trenches.
+
+These are not acceptable natural terrain formations.
+
+### Diagnose the actual source
+
+Investigate:
+
+- Global geological sampling.
+- Heightmap interpolation.
+- Regional terrain reconstruction.
+- Coarse drainage grids.
+- Erosion and uplift masks.
+- Shader sampling.
+- Terrain normals.
+- Material blending.
+- Clipmap sampling.
+- Texture atlas filtering.
+- Tile boundaries.
+- LOD transitions.
+- Any grid-aligned derivatives or processing steps.
+
+Determine whether artifacts exist in the authoritative heightfield or only in rendering.
+
+Create diagnostic captures that isolate geometry, normals, albedo, elevation, and material masks.
+
+Do not merely blur terrain or hide the squares with additional noise.
+
+### Required result
+
+Grasslands should look continuous and naturally textured.
+
+Mountains should have recognizable peaks, ridges, cliffs, slopes, and valleys.
+
+No obvious checkerboard, rectangular, or maze-like generation patterns should remain.
+
+Fix this before attempting additional mountain-height exaggeration.
+
+# 2. CRITICAL — GOD-MODE ZOOM FAILURE
+
+The user reports two related problems.
+
+First, when zooming toward the ground, the scene sometimes turns gray and stops responding to further zoom input.
+
+Second, God-mode zoom can sometimes pass directly through the terrain.
+
+Both are critical camera defects.
+
+### Required fixes
+
+Investigate camera position, target height, near/far clipping, surface collision, camera altitude calculation, scene rendering, LOD availability, and input handling.
+
+God-mode zoom must never:
+
+- Pass beneath the ground unintentionally.
+- Get stuck inside terrain geometry.
+- Turn into a gray or empty screen.
+- Lose the landscape when entering a new LOD.
+- Stop accepting input because a terrain chunk is unavailable.
+- Incorrectly calculate distance to the ground from sea level instead of local elevation.
+
+Use authoritative terrain height and appropriate collision or clearance checks.
+
+During zoom transitions, retain the previous usable terrain representation until replacement detail is ready.
+
+Recover gracefully if a streaming operation fails.
+
+### Acceptance
+
+Test continuous zoom from the highest world overview to a few meters above ground level, including mountain peaks, valleys, grasslands, riverbanks, and coastlines.
+
+Test rapid scrolling in both directions.
+
+Test zoom while the terrain is still loading.
+
+The camera must remain controllable.
+
+# 3. EXPONENTIAL GOD-MODE ZOOM
+
+The zoom system should cover enormous distances without becoming difficult to control.
+
+Implement smooth logarithmic/exponential distance scaling.
+
+The user wants to be able to inspect a location from around 50 meters above the terrain, then smoothly pull back toward hundreds of meters, kilometers, and eventually the full world.
+
+Illustrative scale:
+
+- 5–10 meters: close terrain inspection.
+- 50 meters: local inspection.
+- 500 meters: neighborhood-scale inspection.
+- 5 kilometers: regional inspection.
+- 50 kilometers: broad geographic inspection.
+- Hundreds or thousands of kilometers: world overview.
+
+These are scale references, not mandatory discrete jumps.
+
+**Scrolling must remain smooth, not jump tenfold per mouse-wheel notch.**
+
+Use multiplicative distance adjustment with interpolation.
+
+At high altitudes, each zoom increment should cover more world distance.
+
+Near the ground, zoom steps should become progressively finer.
+
+Maintain a minimum clearance above the actual local terrain surface.
+
+Camera collision must account for steep slopes and mountains.
+
+Separate zoom distance from horizontal movement speed.
+
+Do not allow high-altitude zooming to become sluggish.
+
+Do not allow low-altitude movement to become nearly stationary.
+
+# 4. CAMERA MOVEMENT SPEED
+
+The user reports that movement becomes far too slow when zoomed close to the ground.
+
+Adjust speed scaling to maintain useful control across large and small distances.
+
+Provide sensible minimum movement speed so the camera does not become practically immobile.
+
+Scale God-mode panning speed with altitude, while keeping the movement responsive close to terrain.
+
+Include adjustable movement sensitivity and speed controls if suitable.
+
+Movement and zoom must function smoothly together.
+
+Preserve existing WASD, mouse look, middle-mouse drag, edge scroll, and other established controls.
+
+# 5. EXPLORATION MODE — DOUBLE-SPACE FLIGHT
+
+Add a proper free-flight feature to Explore mode.
+
+### Activation
+
+Double-tap Space to enter or exit flight mode.
+
+The double-tap detection window must be responsive and configurable if practical.
+
+Single Space remains jump when walking normally.
+
+### Flight controls
+
+| Input | Action |
+|---|---|
+| WASD | Fly horizontally |
+| Mouse | Look around |
+| Space (held) | Ascend |
+| Left Shift (held) | Descend |
+| Double Space | Toggle flight |
+| Escape | Existing pause menu |
+
+Since Shift is used for descending during flight, provide an alternative acceleration control or a configurable speed modifier.
+
+### Flight behavior
+
+- Smooth acceleration and deceleration.
+- Responsive navigation.
+- Stable camera positioning.
+- Adjustable flight speed.
+- Suitable movement over mountains.
+- No accidental falling while flying.
+- No unintended collisions with terrain.
+- Safe return to walking mode.
+- Correct first-person and third-person behavior.
+- No inventory or save-state corruption.
+
+Flight should be an exploration/development mobility feature, not automatically create or consume simulated resources.
+
+Keep God-mode camera behavior distinct from the mortal traveler.
+
+# 6. TERRAIN RENDER DISTANCE — MAJOR IMPROVEMENT
+
+The user reports that terrain looks attractive after sitting still for approximately a minute, but takes too long to reach that quality.
+
+At medium and high altitude, only a small area often appears sharp while the rest of the visible screen remains blurry.
+
+This destroys the usefulness of the world overview.
+
+### Required correction
+
+Improve terrain streaming so higher-quality detail appears sooner and remains visible over greater distances.
+
+Prioritize the entire visible camera frustum, not merely the center of the screen.
+
+Use:
+
+- Camera frustum coverage.
+- Screen-space error.
+- Camera direction.
+- Camera movement velocity.
+- Zoom direction.
+- World-space terrain distance.
+- Predicted future viewing region.
+- Mesh and texture upload budgets.
+
+Prevent the user from seeing a tiny high-resolution island surrounded by extremely blurry terrain.
+
+Do not force unnecessary detail into surfaces occupying only a few pixels.
+
+Instead, allocate detail according to perceptual and screen-space value.
+
+Improve LOD transitions so mountains maintain recognizable silhouettes across larger distances.
+
+# 7. ADVANCED GRAPHICS SETTINGS
+
+Expand the graphics menu with meaningful quality settings.
+
+Required controls:
+
+- Terrain render distance.
+- Terrain geometry quality.
+- Terrain texture quality.
+- Vegetation render distance.
+- Vegetation density/quality.
+- LOD transition quality.
+- Streaming aggressiveness.
+- Background streaming budget.
+- Cloud rendering toggle.
+- Weather visual effects toggle.
+- Fog toggle and density.
+- Optional FPS counter.
+
+Provide useful presets:
+
+**Balanced:** Normal gameplay with reasonable resource use.
+
+**High Quality:** Greater terrain and vegetation distances and more aggressive preloading.
+
+**Ultra:** Highest supported practical detail, extended view distance, and more generous streaming/cache budgets.
+
+These presets must adjust actual rendering behavior.
+
+Expose limits honestly and do not imply that a GPU can hold full-resolution geometry for a 2,048 km world.
+
+Retain performance safeguards and report any quality setting that exceeds available resources.
+
+# 8. PRELOAD VISIBLE AREA
+
+Add an explicit **Preload Visible Area** option.
+
+The purpose is to let the user wait briefly for a more complete high-quality landscape before taking screenshots or exploring.
+
+### Expected behavior
+
+When activated:
+
+1. Determine the currently visible landscape area.
+2. Select appropriate terrain geometry and texture LODs.
+3. Schedule prioritized terrain generation or cache retrieval.
+4. Preload visible vegetation where appropriate.
+5. Upload resources without freezing the application unnecessarily.
+6. Display actual progress.
+7. Inform the user when the requested target detail is ready.
+8. Retain useful cached resources within configurable budgets.
+
+Do not falsely display completion before rendering resources are installed.
+
+Allow cancellation.
+
+The user must still be able to move normally when the option is not active.
+
+# 9. PRE-GENERATED TERRAIN DISK CACHE
+
+Investigate a persistent deterministic disk cache for already-generated terrain presentation data.
+
+Suitable cached information may include:
+
+- Terrain mesh data.
+- Height sampling results.
+- Material masks.
+- Local geometry detail.
+- Vegetation instance data.
+- Water geometry.
+- Other expensive deterministic presentation products.
+
+Separate canonical simulation data from disposable presentation caches.
+
+A cache must be invalidated when relevant world-generator, terrain, graphics, or rendering identities change.
+
+Use robust versioning, checksums, and safe writes.
+
+Do not cache stale terrain where excavation or other world mutations should alter the result.
+
+Do not allow caching to modify deterministic generation.
+
+Allow rebuilding corrupted or outdated caches safely.
+
+There are no artificial disk-space restrictions for this project.
+
+However, maintain sensible runtime memory and GPU resource budgets.
+
+# 10. MOUNTAIN RANGE SHAPES AND HEIGHT
+
+The user wants mountain ranges to look far more dramatic relative to the world.
+
+Current mountains often appear too short from high altitude.
+
+However, previous exaggerated geometry created white blobs and unnatural vertical walls.
+
+Do not repeat those problems.
+
+### Correct order
+
+First remove square/maze-like geometry artifacts.
+
+Then improve mountain structure.
+
+Then increase dramatic relief.
+
+### Mountain generation goals
+
+- Long, connected mountain ranges.
+- Distinct peaks.
+- Multiple ridgelines.
+- Natural valleys.
+- Deep mountain passes.
+- Broad foothills.
+- Occasional plateaus.
+- Varied elevations.
+- Strong contrast between peaks and valleys.
+- Geological orientation guided by uplift systems.
+- Realistic erosion patterns.
+- No repeated geometric mountain stamps.
+
+Mountains should have dramatic silhouettes from the overview.
+
+Relief exaggeration must be controlled, climate-aware, and biome-appropriate.
+
+Increasing maximum mountain height should not cause nonsensical snow coverage, extreme river trenches, broken climate calculations, or collision problems.
+
+# 11. MOUNTAIN VALLEYS
+
+Include recognizable valleys between major mountain systems.
+
+Support geological variety:
+
+- Broad valleys.
+- Narrow river valleys.
+- Glacial-style valleys where appropriate.
+- Mountain passes.
+- Intermontane basins.
+- Foothill transitions.
+
+Valleys should connect into wider drainage regions and surrounding landscapes.
+
+Do not create random deep square holes in mountain meshes.
+
+Valleys should make the terrain believable and eventually provide plausible routes for settlement, travel, and rivers.
+
+# 12. REPAIR RIVER GEOMETRY
+
+The user supplied an overhead image showing major waterways with sharp bends, angular branches, straight segments, and unnatural directions.
+
+The network resembles geometric cuts rather than flowing rivers.
+
+Fix this.
+
+### Required behavior
+
+Rivers should follow continuous downhill drainage paths while producing smoother and more plausible centerlines.
+
+Improve:
+
+- River centerline interpolation.
+- Directional continuity.
+- Curvature.
+- Flow accumulation.
+- Meandering on flatter terrain.
+- Riverbank matching.
+- Confluence geometry.
+- Mountain-stream routing.
+- Lowland river routing.
+- River entry into lakes and oceans.
+
+Use suitable spline or curve reconstruction only where it does not violate drainage and water-level constraints.
+
+Prevent overshooting into higher terrain, invalid loops, disconnected river segments, and upstream-running water.
+
+Do not simply draw a smooth blue spline over a still-angular canyon.
+
+The underlying channel, water mesh, riverbanks, and drainage routing must agree.
+
+### Desired visual result
+
+From above, rivers should resemble naturally branching networks with long connected courses and gradual bends.
+
+Sharp turns should occur only where supported by terrain constraints.
+
+Lowland rivers may meander.
+
+Mountain streams may remain narrower and more angular where steep slopes justify it.
+
+Keep river geometry deterministic.
+
+# 13. FIX SPORADIC RIVER NETWORKS
+
+The user reports that waterways appear sporadic and strangely placed.
+
+Review the spatial hierarchy of drainage networks.
+
+Ensure:
+
+- Small headwaters collect into larger rivers.
+- Tributaries join logically.
+- Main channels have coherent downstream continuation.
+- Large watersheds remain identifiable.
+- Waterways respect valleys.
+- Rivers do not randomly split into disconnected dead ends.
+- Rivers do not repeatedly jump between coarse grid directions.
+
+A numerically valid downstream network is not automatically a visually convincing river system.
+
+Both conditions must be validated.
+
+# 14. VEGETATION HAS DISAPPEARED
+
+The user reports that nearly all visible vegetation appears to have vanished in the latest build.
+
+Treat this as a major visual regression.
+
+Investigate whether vegetation is absent from the actual ecology or only missing from rendering.
+
+Check:
+
+- Vegetation instance generation.
+- Forest eligibility.
+- Biome selection.
+- Tree density.
+- Mesh instancing.
+- Visibility/culling.
+- LOD thresholds.
+- Terrain sampling.
+- GPU upload.
+- Render-distance settings.
+- Incorrect vertical bounds.
+- Missing shrubs and cacti.
+- Streaming failures.
+- Material/shader errors.
+
+Compare v0.0.6, v0.0.7, and the current v0.0.8 development build.
+
+Restore appropriate vegetation.
+
+Dense forests should look forested.
+
+Grasslands should have natural vegetation.
+
+Deserts should include sparse climate-appropriate plants.
+
+Tundra and alpine zones should remain sparse where appropriate.
+
+Vegetation must appear consistently and promptly at supported view distances.
+
+Do not compensate by randomly scattering trees across all terrain.
+
+# 15. PERMANENT DISTANT MOUNTAIN HORIZON
+
+The user previously requested a persistent backdrop of distant mountains around the edges of the playable world.
+
+This is still missing.
+
+Implement a subtle 360-degree distant mountain horizon that visually replaces obvious empty sky/void near the world boundary.
+
+### Requirements
+
+- Always available where appropriate from ground-level views.
+- Distant mountain silhouettes.
+- Multiple depth layers.
+- Atmospheric fading.
+- Natural sky integration.
+- No obvious square edges.
+- No floating terrain slabs.
+- No hard seam between the simulated world and backdrop.
+- Stable placement relative to camera motion.
+- Suitable performance.
+- No interference with terrain loading or world geometry.
+
+The backdrop is a visual illusion.
+
+Do not misrepresent it as actual traversable geography.
+
+Ensure it does not conceal nearby real terrain or appear as a fake mountain ring from the highest world overview.
+
+Adapt presentation to biome and atmosphere where reasonable.
+
+# 16. REPLACE THOUSANDS OF TINY CLOUDS
+
+The current cloud rendering creates hundreds or thousands of tiny, low-altitude cloud fragments across the map.
+
+They look like white speckles or blotches rather than believable clouds.
+
+The user wants a small number of recognizable, enormous cumulus cloud systems.
+
+### Target
+
+At a typical full-world overview, aim for approximately **four to five major visible cloud formations**, rather than thousands of tiny particles.
+
+These should resemble large individual cumulus clouds or coherent cloud clusters.
+
+Scale visual representation appropriately across the five world sizes.
+
+The number should respond to visible area and weather state; do not enforce a physically nonsensical global total across 2,048 km regardless of scale.
+
+### Visual requirements
+
+- Large rounded cloud masses.
+- Puffy three-dimensional silhouettes.
+- More natural vertical depth.
+- Higher placement above the ground.
+- Soft edges.
+- Recognizable individual formations.
+- Slow natural movement.
+- Soft shadows cast onto terrain.
+- No small repeated white speckles covering the entire world.
+- No square cloud masks.
+- No noisy rectangular atmospheric overlays.
+
+Clouds must look believable from both God mode and ground exploration.
+
+Use an efficient scalable representation appropriate to URP.
+
+Do not spawn massive numbers of independent Unity objects when a more efficient rendering method is available.
+
+# 17. CLOUD SHADOWS
+
+Large cumulus clouds should cast correspondingly large, soft shadows onto the surface.
+
+Shadow positions should correspond to actual visible cloud formations and sunlight direction.
+
+Shadows should move consistently as clouds move.
+
+Avoid repeating tiled shadows.
+
+Avoid cloud shadows appearing when visible cloud rendering is disabled.
+
+The cloud system should still respond to regional weather simulation.
+
+# 18. SEPARATE CLOUD AND WEATHER TOGGLES
+
+Add two independent user settings.
+
+### Render Clouds — On/Off
+
+When Off:
+
+- Hide all visible cloud geometry.
+- Disable cloud shadows.
+- Preserve clear sky and normal terrain visibility.
+- Keep the underlying climate/weather simulation running.
+- Do not change deterministic outcomes.
+
+### Render Weather Effects — On/Off
+
+When Off:
+
+- Hide rain and snow particle effects.
+- Hide optional storm-specific visual effects.
+- Keep the authoritative weather model running.
+- Preserve precipitation, ecology, and simulated environmental consequences.
+
+These must be independent.
+
+Disabling weather effects must not automatically disable clouds.
+
+Disabling clouds must not automatically disable rain effects.
+
+Preserve settings after restarting the game.
+
+Do not silently change saved world climate.
+
+# 19. CLOUD PRESENTATION SETTINGS
+
+Add cloud visual options:
+
+- Off.
+- Sparse.
+- Normal.
+- Overcast.
+
+These control presentation density, not the underlying weather model.
+
+Allow a separate quality setting when useful.
+
+Cloud placement should remain deterministic or presentation-stable for identical world state.
+
+Avoid clouds visibly reshuffling every time the camera moves or the player changes a graphical setting.
+
+# 20. SAVE FAILURE DEFECT
+
+A manual screenshot showed the message:
+
+**“Save failed: Invalid traveler or inventory. Your current world is still open.”**
+
+Investigate this failure.
+
+Inspect traveler validation, inventory consistency, mode switching, coordinate bounds, and recent terrain/world generation changes.
+
+Check whether the save failure is related to:
+
+- An invalid player location.
+- Camera clipping beneath terrain.
+- Non-finite coordinates.
+- Invalid inventory values.
+- Exploration mode transitions.
+- World reloading.
+- Corrupted transient state.
+- Serialization assumptions.
+
+Preserve the last known valid save.
+
+Do not overwrite archives with invalid data.
+
+Provide actionable diagnostic errors.
+
+Fix the root cause where reproducible.
+
+Add a regression test for the confirmed failure.
+
+# 21. NEW VISUAL VALIDATION
+
+Capture screenshots from the actual standalone Windows player.
+
+Required examples:
+
+1. Completely flat grassland showing no rectangular texture pattern.
+2. Alpine mountains without maze-like ridges.
+3. Dramatic mountain range with clear valleys.
+4. Ground-level view across distant mountains.
+5. Forest showing restored vegetation.
+6. Desert showing appropriate shrubs/cacti.
+7. Overhead river system with natural bends.
+8. Smooth river confluence.
+9. Zoom transition from high altitude to ground.
+10. Explore mode flight above terrain.
+11. High-quality preloaded terrain over the complete visible viewport.
+12. Cloud rendering enabled.
+13. Cloud rendering disabled.
+14. Weather effects independently disabled.
+15. Several large cumulus clouds casting shadows.
+16. World boundary with distant horizon backdrop.
+
+Compare results with previous builds where possible.
+
+Keep failure captures.
+
+Do not claim visual completion based solely on automated test results.
+
+# 22. ACCEPTANCE AND PERFORMANCE
+
+Retain and rerun the existing tests.
+
+Add coverage for:
+
+- Terrain continuity and absence of grid-induced height discontinuities.
+- Camera collision and clearance.
+- Zoom limits.
+- Logarithmic zoom response.
+- Gray-screen recovery.
+- Flight controls.
+- Traveler mode transitions.
+- Full-frustum LOD selection.
+- Preload cancellation.
+- Disk-cache integrity and invalidation.
+- Vegetation visibility.
+- River curvature and drainage continuity.
+- Cloud/weather toggles.
+- Save validation.
+
+Test all five world sizes.
+
+Measure streaming latency, frame pacing, resource usage, and render quality at 2560 × 1440.
+
+Do not sacrifice successful existing functionality.
+
+Do not assume the entire world can remain at maximum detail in GPU memory.
+
+Use hierarchical rendering, persistent caching, and smart preloading.
+
+# 23. FINAL PRIORITIES AND IMPLEMENTATION ORDER
+
+Follow this order:
+
+**Phase A — Critical defects**
+
+- Save failure.
+- Gray-screen zoom.
+- Camera passing through terrain.
+- Square/grid/maze patterns.
+
+**Phase B — World visibility**
+
+- Restore missing vegetation.
+- Improve terrain streaming.
+- Add preload-visible-area.
+- Improve graphics settings.
+- Investigate persistent terrain cache.
+
+**Phase C — Terrain realism**
+
+- Natural mountain ridges.
+- Dramatic peaks and valleys.
+- Smooth natural river networks.
+
+**Phase D — Atmosphere and navigation**
+
+- Large cumulus cloud formations.
+- Cloud and weather toggles.
+- Distant mountain horizon.
+- Exponential zoom.
+- Double-space exploration flight.
+- Movement speed improvements.
+
+Coordinate overlapping work across phases, but do not defer critical camera fixes merely to implement decorative cloud rendering.
+
+# 24. DOCUMENTATION
+
+Integrate these requirements into the ongoing v0.0.8 validation and implementation records.
+
+Update relevant sections of:
+
+- `CHANGELOG.md`
+- `Docs/ROADMAP.md`
+- World-generation architecture documentation.
+- Rendering/streaming technical documentation.
+- Alpha v0.0.8 validation report.
+
+Retain all existing validation evidence.
+
+Preserve previous Chronicle books unchanged.
+
+Do not add a duplicate Book VIII; extend the current milestone documentation and complete its Chronicle chapter only with work actually achieved.
+
+# FINAL INSTRUCTION
+
+**The world needs to feel seamless from a few meters above the ground to the highest planetary overview.**
+
+The player should be able to zoom smoothly, fly through landscapes, examine detailed mountains, watch natural rivers flowing between valleys, and see a world covered with believable vegetation.
+
+High-detail terrain should load quickly, persist intelligently, and become visible across the entire relevant camera view.
+
+Clouds should look like enormous atmospheric objects rather than thousands of tiny white dots.
+
+Most importantly, there must be no square terrain patterns, gray-screen zoom failures, camera clipping through the planet, or unexplained disappearance of vegetation.
+
+Preserve all successful v0.0.8 work already completed.
+
+Use the user's screenshots as visual defect references.
+
+Complete the implementation, execute the tests, preserve honest visual evidence, and produce an updated standalone Windows build.
+
+**This is an expansion of Alpha v0.0.8 — The Restoration of the World, not a replacement for its existing requirements.**
