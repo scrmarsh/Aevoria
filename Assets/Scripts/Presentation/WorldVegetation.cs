@@ -309,17 +309,69 @@ namespace Aevoria.Presentation
                 }
                 return Make(vertices,colors,triangles,"Instanced fern fronds and paired leaflets");
             }
-            var v=new List<Vector3>();var c=new List<Color>();var t=new List<int>();bool fern=kind==1;int blades=kind==3?9:fern?7:5;
-            for(int i=0;i<blades;i++)
+            var v=new List<Vector3>();var c=new List<Color>();var t=new List<int>();
+            if(kind==2||kind==6)
             {
-                float a=i*2.4f,h=fern?0.45f:0.55f+(i%3)*0.19f;h*=kind==3?3.2f:kind==2?1.4f:kind==5?.16f:kind==7?1.7f:1;var direction=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));var side=Vector3.Cross(direction,Vector3.up)*(fern?0.24f:0.07f);
-                int start=v.Count;v.Add(side);v.Add(direction*0.45f+Vector3.up*h);v.Add(-side);t.Add(start);t.Add(start+1);t.Add(start+2);
-                c.Add(new Color(0.12f,0.24f,0.035f));c.Add(fern?new Color(0.20f,0.30f,0.07f):new Color(0.31f,0.37f,0.12f));c.Add(new Color(0.12f,0.24f,0.035f));
+                // Mediterranean herbs and salt-tolerant shrubs have woody
+                // branching and small leaves, rather than giant straw blades.
+                var leaf=kind==2?new Color(.20f,.29f,.11f):new Color(.40f,.46f,.28f);
+                for(int stem=0;stem<9;stem++)
+                {
+                    float angle=stem*2.39996f;var direction=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));
+                    var root=direction*.035f;var tip=direction*(.22f+(stem%3)*.065f)+Vector3.up*(.25f+(stem%4)*.085f);
+                    Cone(v,c,t,4,root,tip,.014f,.003f,new Color(.23f,.18f,.09f));
+                    for(int node=1;node<=4;node++)
+                    {
+                        float f=node/5f;var p=Vector3.Lerp(root,tip,f);var side=Vector3.Cross(direction,Vector3.up)*(node%2==0?1:-1);
+                        var shoot=p+side*(.10f+(1-f)*.12f)+Vector3.up*.075f;
+                        Cone(v,c,t,3,p,shoot,.006f,.001f,new Color(.25f,.22f,.12f));
+                        LeafBlade(v,c,t,shoot-side*.07f,shoot+side*.08f,Vector3.up,.035f,leaf*(.85f+f*.3f));
+                        LeafBlade(v,c,t,p,p+direction*.10f+Vector3.up*.08f,side,.025f,leaf);
+                    }
+                }
             }
-            if(kind==4)for(int i=0;i<4;i++)Crown(v,c,t,new Vector3(Mathf.Sin(i*2.4f)*.3f,.65f+i*.08f,Mathf.Cos(i*2.4f)*.3f),.09f,2,5,i);
-            var tint=kind==2?new Color(.54f,.51f,.29f):kind==5?new Color(.48f,.51f,.35f):kind==6?new Color(.58f,.61f,.45f):kind==7?new Color(.61f,.62f,.35f):Color.white;
-            if(kind==2||kind==5||kind==6||kind==7)for(int i=0;i<c.Count;i++)c[i]=tint*(.8f+(i%3)*.1f);
-            if(kind==4)for(int i=15;i<c.Count;i++)c[i]=i%2==0?new Color(.85f,.72f,.25f):new Color(.68f,.50f,.70f);
+            else if(kind==3)
+            {
+                for(int stem=0;stem<7;stem++)
+                {
+                    float angle=stem*2.39996f;var direction=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));var root=direction*.22f;float height=1.2f+(stem%3)*.25f;
+                    Cone(v,c,t,4,root,root+Vector3.up*height,.016f,.008f,new Color(.20f,.29f,.09f));
+                    Cone(v,c,t,5,root+Vector3.up*(height-.12f),root+Vector3.up*(height+.08f),.035f,.022f,new Color(.24f,.16f,.07f));
+                    for(int blade=0;blade<3;blade++){var p=root+Vector3.up*(.2f+blade*.24f);LeafBlade(v,c,t,p,p+direction*.45f+Vector3.up*.35f,Vector3.Cross(direction,Vector3.up),.04f,new Color(.17f,.29f,.07f));}
+                }
+            }
+            else if(kind==5)
+            {
+                for(int patch=0;patch<32;patch++)
+                {
+                    float angle=patch*2.39996f,radius=.55f*Mathf.Sqrt((patch+.5f)/32);var root=new Vector3(Mathf.Cos(angle)*radius,.012f,Mathf.Sin(angle)*radius);
+                    var tip=root+new Vector3(Mathf.Cos(angle+.7f),0,Mathf.Sin(angle+.7f))*.10f+Vector3.up*(.025f+(patch%3)*.008f);
+                    LeafBlade(v,c,t,root,tip,Vector3.up,.035f,new Color(.15f,.25f,.055f)*(1+(patch%3)*.12f));
+                }
+            }
+            else
+            {
+                int blades=kind==7?12:10;
+                for(int blade=0;blade<blades;blade++)
+                {
+                    float angle=blade*2.39996f;var direction=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));var across=Vector3.Cross(direction,Vector3.up);
+                    float height=(kind==7?.55f:.24f)+(blade%4)*(kind==7?.09f:.045f),width=kind==7?.018f:.015f;
+                    var root=direction*.035f;int first=v.Count;
+                    for(int section=0;section<=3;section++)
+                    {
+                        float f=section/3f;var p=root+direction*(f*f*.28f)+Vector3.up*(Mathf.Sin(f*1.25f)*height);
+                        v.Add(p-across*width*(1-f));v.Add(p+across*width*(1-f));var color=Color.Lerp(new Color(.12f,.23f,.035f),kind==7?new Color(.47f,.48f,.24f):new Color(.24f,.34f,.075f),f);
+                        c.Add(color);c.Add(color*1.06f);if(section==0)continue;int previous=first+(section-1)*2,current=first+section*2;
+                        t.Add(previous);t.Add(current);t.Add(previous+1);t.Add(previous+1);t.Add(current);t.Add(current+1);
+                    }
+                }
+                if(kind==4)for(int flower=0;flower<5;flower++)
+                {
+                    float angle=flower*2.39996f;var root=new Vector3(Mathf.Cos(angle)*.28f,0,Mathf.Sin(angle)*.28f);var head=root+Vector3.up*(.32f+(flower%3)*.07f);
+                    Cone(v,c,t,3,root,head,.007f,.003f,new Color(.16f,.27f,.045f));
+                    for(int petal=0;petal<5;petal++){float a=petal*Mathf.PI*2/5;var tip=head+new Vector3(Mathf.Cos(a),.13f,Mathf.Sin(a))*.065f;LeafBlade(v,c,t,head,tip,Vector3.up,.023f,flower%2==0?new Color(.77f,.59f,.13f):new Color(.54f,.31f,.65f));}
+                }
+            }
             return Make(v,c,t,"Instanced habitat ground cover "+kind);
         }
         private static Mesh Rock()

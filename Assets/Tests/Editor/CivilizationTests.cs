@@ -66,7 +66,7 @@ namespace Aevoria.Tests
                 for(int segment=0;segment<route.Points.Count;segment++)
                 {
                     var point=route.Points[segment];Assert.AreEqual(point.X,again.Paths[path].Points[segment].X);Assert.AreEqual(point.Y,again.Paths[path].Points[segment].Y);
-                    foreach(var building in settlement.Buildings)Assert.IsFalse(CivicGeometry.Contains(building,point.X,point.Y,.2));
+                    foreach(var building in settlement.Buildings)Assert.IsFalse(CivicGeometry.Contains(building,point.X,point.Y,.9),"The full road half-width clears the building footprint");
                     if(segment==0)continue;var before=route.Points[segment-1];int count=Math.Max(1,(int)Math.Ceiling(SettlementPaths.Distance(before,point)/2));
                     for(int sample=0;sample<=count;sample++){double t=sample/(double)count,x=before.X+(point.X-before.X)*t,z=before.Y+(point.Y-before.Y)*t;float h=geography.ElevationAt(x,z);Assert.Greater(h,geography.SeaLevel+2);Assert.IsFalse(geography.Hydrology.IsLakeWater(x,z,h));Assert.IsFalse(geography.Hydrology.IsRiverWater(x,z,h));foreach(var building in settlement.Buildings)Assert.IsFalse(CivicGeometry.Contains(building,x,z,.2),"Rounded resident route retains building clearance");}
                 }

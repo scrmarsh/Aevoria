@@ -1,3 +1,19 @@
+# Atlas12/13 review — 2026-10-28, development only
+
+Atlas12 native Full and Interface, Atlas13 Interface completion/log/manifest checks
+pass. Inspected all4 Atlas12 compass headings (needle correct), pause (F3 leak
+removed), Atlas13 Display/Graphics (Back overlap removed), Atlas12 Mediterranean/
+boreal/salt ground, strongest physical dune close, village paths overhead/oblique,
+clouds at2000/20000/60000m. Cloud identity through zoom, toggles preserving weather,
+and time-driven motion are proven by assertions/CSV. Production Atlas revision1
+reload retains the earlier fingerprint. All36 regional collider probes pass.
+
+The world still does not meet the reference/art target. Observed issues include
+straw-like herb/moss prototypes, ball-like crowns, flat/scalloped cloud silhouettes,
+graphic polygonal salt crust, subtle physical dunes, river stripes and joins,
+and unresolved cliff faceting. Atlas14 implements targeted habitat/cloud/water
+refinements; its clean build is not native visual acceptance. Review fresh images.
+
 # Atlas9 review — 2026-10-27, development only
 
 Actual Atlas9 captures inspected: reloaded overhead; Mediterranean, boreal,

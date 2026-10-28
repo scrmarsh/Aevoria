@@ -1,4 +1,10 @@
-# PAUSED BY USER - 2026-10-27
+# ACTIVE RESUMED WORK — 2026-10-28
+
+The user resumed the complete scope and authorized ongoing GitHub commits.
+Read Docs/AEVORIA_RESUME.md for current candidates, evidence and remaining work.
+The initial paused checkpoint below is historical. Official release remains v12.
+
+# HISTORICAL PAUSE - 2026-10-27
 
 See the newest section of Docs/AEVORIA_RESUME.md for authoritative build, test
 and source differences. Atlas5 was intentionally interrupted. Work must remain
@@ -37,7 +43,8 @@ Before edits, 581 source files were copied and hash verified in
 `Archives/Alpha-v0.0.14-Development-BeforeAtlas`; manifest:
 `Docs/Validation/Alpha-v0.0.14/pre-atlas-source-manifest.json`.
 Original user saves, accepted character work, Chronicles and official archives
-are outside this change. No staging or commits. Latest official release is v12;
+are outside this change. Staging/commits were deferred in that initial session;
+the user subsequently authorized GitHub versioning. Latest official release is v12;
 this remains v14 development.
 
 New menu-created worlds select persisted `GeographyProfile.Atlas = 1`.

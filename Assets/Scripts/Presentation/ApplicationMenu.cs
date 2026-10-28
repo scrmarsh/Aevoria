@@ -75,6 +75,7 @@ namespace Aevoria.Presentation
             if(confirmingDisplay && page!=ApplicationPage.Settings) RevertDisplay();
             if(page==ApplicationPage.Settings) {settingsReturn=app.WorldActive?ApplicationPage.Pause:ApplicationPage.Home;draft=app.Settings.Copy();}
             if(page==ApplicationPage.Graphics||page==ApplicationPage.Audio||page==ApplicationPage.Controls||page==ApplicationPage.Display){settingsReturn=previous==ApplicationPage.Settings?ApplicationPage.Settings:app.WorldActive?ApplicationPage.Pause:ApplicationPage.Home;draft=app.Settings.Copy();}
+            if(page==ApplicationPage.Bindings){settingsReturn=ApplicationPage.Settings;if(previous!=ApplicationPage.Controls||draft==null)draft=app.Settings.Copy();}
             capturingBinding=null;Page=page;scroll=Vector2.zero;documentScroll=Vector2.zero;localError="";GUIUtility.keyboardControl=0;
             if(page==ApplicationPage.Load || page==ApplicationPage.Home) RefreshSaves();
             if(page==ApplicationPage.Pause&&previous==ApplicationPage.World&&app.WorldActive&&!capturingPause)StartCoroutine(CapturePauseBackdrop());
@@ -283,8 +284,6 @@ namespace Aevoria.Presentation
         private void DisplaySettings()
         {
             if(draft==null) draft=app.Settings.Copy();Label(90,105,540,50,"Display preferences",heading);
-            if(Button(660,112,250,"Controls and camera",34)){draft=app.Settings.Copy();Show(ApplicationPage.Controls);}
-            if(Button(940,112,250,"Graphics options",34))Show(ApplicationPage.Graphics);
             draft.VSync=GUI.Toggle(new Rect(90,175,460,30),draft.VSync==1,"Vertical sync",toggle)?1:0;
             draft.FrameCap=Mathf.RoundToInt(Slider(90,225,"Engine frame limit",draft.FrameCap,30,360,"0"));
             Label(90,290,500,28,"Display units");var units=(UnitSystem)GUI.SelectionGrid(new Rect(90,333,520,45),(int)draft.Units,new[]{"Metric","Imperial"},2,button);if(units!=draft.Units){draft.Units=units;var current=app.Settings.Copy();current.Units=units;app.ApplySettings(current);}
@@ -464,8 +463,8 @@ namespace Aevoria.Presentation
         private void Graphics()
         {
             if(draft==null)draft=app.Settings.Copy();Label(90,110,900,45,"Graphics and atmosphere",heading);
-            if(Button(660,115,165,"Balanced",32))draft.ApplyGraphicsPreset(0);if(Button(835,115,165,"High Quality",32))draft.ApplyGraphicsPreset(1);if(Button(1010,115,170,"Ultra",32))draft.ApplyGraphicsPreset(2);
-            graphicsScroll=GUI.BeginScrollView(new Rect(90,170,1100,420),graphicsScroll,new Rect(0,0,1060,1200));
+            if(Button(660,145,165,"Balanced",32))draft.ApplyGraphicsPreset(0);if(Button(835,145,165,"High Quality",32))draft.ApplyGraphicsPreset(1);if(Button(1010,145,170,"Ultra",32))draft.ApplyGraphicsPreset(2);
+            graphicsScroll=GUI.BeginScrollView(new Rect(90,195,1100,395),graphicsScroll,new Rect(0,0,1060,1200));
             draft.TerrainDetail=Mathf.RoundToInt(Slider(0,10,"Terrain detail",draft.TerrainDetail,0,3,"0"));
             draft.TerrainDistance=Mathf.RoundToInt(Slider(0,85,"Local terrain view radius",draft.TerrainDistance,2,10,"0 chunks"));
             draft.MountainDetail=Mathf.RoundToInt(Slider(0,160,"Mountain geometry",draft.MountainDetail,0,3,"0"));
@@ -488,7 +487,7 @@ namespace Aevoria.Presentation
             draft.StreamingAggressiveness=Mathf.RoundToInt(Slider(0,880,"Streaming lookahead",draft.StreamingAggressiveness,0,2,"0"));
             draft.BackgroundStreamingBudget=Mathf.RoundToInt(Slider(0,960,"Background terrain workers",draft.BackgroundStreamingBudget,1,4,"0"));
             draft.PresentationCacheMiB=Mathf.RoundToInt(Slider(550,965,"Presentation cache RAM budget",draft.PresentationCacheMiB,64,1024,"0 MiB"));
-            Label(0,1060,1040,90,"Preload Visible Area is available from Pause. It reports installed terrain and vegetation and can be cancelled. Moving the camera cancels that snapshot. Regional and planetary terrain cover distant pixels; full-resolution planetary geometry is not held in GPU memory.",muted);
+            Label(0,1060,1040,90,"Preload Visible Area is available in World and traveler tools. It reports installed terrain and vegetation and can be cancelled. Moving the camera cancels that snapshot. Regional and planetary terrain cover distant pixels; full-resolution planetary geometry is not held in GPU memory.",muted);
             GUI.Label(new Rect(550,450,480,150),"Higher distances and density cost GPU time. Local, regional and planetary meshes remain bounded. Fog off removes atmospheric extinction. Weather simulation continues when cloud rendering is disabled.",body);
             GUI.EndScrollView();if(Button(90,615,480,"Apply graphics")){app.ApplySettings(draft);Show(settingsReturn);}if(Button(660,615,480,"Cancel"))Show(settingsReturn);
         }

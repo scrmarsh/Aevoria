@@ -13,15 +13,21 @@ float CumulusDensity(float3 p,int system)
 {
     float4 c=_AevoriaCloudSystems[system],s=_AevoriaCloudShapes[system];if(s.y<=0)return 0;
     float3 q=(p-c.xyz)/float3(c.w,s.x,c.w);if(any(abs(q)>1.65))return 0;
-    float d=length(q/float3(1,.65,.82));
-    [unroll]for(int j=0;j<5;j++){float a=j*2.39996+s.w;float3 offset=float3(cos(a)*.55,.12+sin(j*1.7)*.25,sin(a)*.45);d=min(d,length((q-offset)/(float3(.64,.75,.61)*(1-j*.035))));}
+    float d=length(q/float3(.72,.62,.58));
+    [unroll]for(int j=0;j<6;j++)
+    {
+        float a=j*2.39996+s.w,variation=.5+.5*sin(j*17.13+s.w*3.7);
+        float3 offset=float3(cos(a)*(.25+variation*.48),-.02+sin(j*1.7+s.w)*.24,sin(a)*(.22+variation*.46));
+        float3 lobe=float3(.38+variation*.23,.43+variation*.25,.35+variation*.22);
+        d=min(d,length((q-offset)/lobe));
+    }
     // Coherent 3D erosion belongs to the advected volume. It breaks repeated
     // cookie-shaped silhouettes without introducing a camera-facing noise sheet.
     float3 phase=float3(s.w*.037,s.w*.071,s.w*.113);
-    float broad=SAMPLE_TEXTURE3D_LOD(_AevoriaCloudNoise,sampler_AevoriaCloudNoise,q*.11+phase,0).r;
-    float fine=SAMPLE_TEXTURE3D_LOD(_AevoriaCloudNoise,sampler_AevoriaCloudNoise,q*.31+phase,0).r;
-    d+=(broad-.5)*.32+(fine-.5)*.10;
-    return (1-smoothstep(.64,.98,d))*s.y;
+    float broad=SAMPLE_TEXTURE3D_LOD(_AevoriaCloudNoise,sampler_AevoriaCloudNoise,q*.19+phase,0).r;
+    float fine=SAMPLE_TEXTURE3D_LOD(_AevoriaCloudNoise,sampler_AevoriaCloudNoise,q*.57+phase,0).r;
+    d+=(broad-.5)*.62+(fine-.5)*.24;
+    return (1-smoothstep(.54,1.04,d))*s.y;
 }
 float RegionalCloudShadow(float3 p,float3 sun)
 {

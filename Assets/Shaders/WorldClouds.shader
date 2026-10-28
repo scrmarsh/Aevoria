@@ -35,10 +35,10 @@ Shader "Aevoria/Clouds"
                 int steps=_AevoriaCloudQuality>1.5?40:24;float stride=(exit-entry)/steps,transmission=1;float3 color=0;Light sun=GetMainLight();
                 [loop]for(int j=0;j<steps;j++)
                 {
-                    float3 p=origin+ray*(entry+(j+.5)*stride);float density=CumulusDensity(p,index),opacity=1-exp(-density*stride/max(100,c.w*.065));
+                    float3 p=origin+ray*(entry+(j+.5)*stride);float density=CumulusDensity(p,index),opacity=1-exp(-density*stride/max(100,c.w*.10));
                     float upper=saturate((p.y-c.y)/max(s.x,1)*.5+.5);
-                    float light=exp(-CumulusDensity(p+sun.direction*min(c.w,s.x)*.25,index)*.9-CumulusDensity(p+sun.direction*min(c.w,s.x)*.65,index)*.4);
-                    float3 cloud=lerp(float3(.28,.35,.44),float3(1,.99,.95),saturate(.15+upper*.45+light*.4))*(1-s.z*.30);
+                    float light=exp(-CumulusDensity(p+sun.direction*min(c.w,s.x)*.18,index)*1.1-CumulusDensity(p+sun.direction*min(c.w,s.x)*.43,index)*.7-CumulusDensity(p+sun.direction*min(c.w,s.x)*.78,index)*.4);
+                    float3 cloud=lerp(float3(.27,.34,.43),float3(1,.99,.95),saturate(.10+upper*.32+light*.58))*(1-s.z*.30);
                     color+=transmission*opacity*cloud;transmission*=1-opacity;if(transmission<.015)break;
                 }
                 float alpha=1-transmission;clip(alpha-.002);color/=max(.001,alpha);

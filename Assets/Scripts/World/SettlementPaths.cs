@@ -32,7 +32,7 @@ namespace Aevoria.World
             }
             public GeoPoint Point(int node)=>new GeoPoint(west+node%N*Step,south+node/N*Step);
             private bool Clear(double x,double z)
-            {foreach(var building in buildings)if(CivicGeometry.Contains(building,x,z,.55))return false;return true;}
+            {foreach(var building in buildings)if(CivicGeometry.Contains(building,x,z,.95))return false;return true;}
             public bool Walkable(int node)
             {
                 if(node<0||node>=cells.Length)return false;if(cells[node]!=0)return cells[node]==2;token.ThrowIfCancellationRequested();var p=Point(node);cells[node]=1;

@@ -1,5 +1,13 @@
 # Current development checkpoint — 2026-10-28
 
+Latest update: Atlas14 built; isolated Water audit running. Atlas12 regional Full
+and Atlas13 Interface audits passed, including actual cloud identity/toggle/motion,
+resident paths,36 collider probes and production reload. Compass headings and
+clean pause/settings layouts inspected. Visual world acceptance remains open.
+Atlas14 contains subsequent habitat/cloud/water/road-width refinements requiring
+new native review. Git preservation now verifies the exact102 accepted hashes
+in both working files and committed blobs; see the latest AEVORIA_RESUME section.
+
 Source is now versioned at https://github.com/scrmarsh/Aevoria on `main`.
 Initial import: `c11ae4c`. Bulk captures, generated players, historical local
 archives and player-save backups remain local; see `GITHUB_WORKFLOW.md`.

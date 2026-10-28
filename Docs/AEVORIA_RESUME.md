@@ -1,5 +1,49 @@
 Cross-account copy-and-paste prompt: `Docs/CODEX_ACCOUNT_HANDOFF_PROMPT.md`.
 
+# ACTIVE CONTINUATION — 2026-10-28, Atlas14 candidate
+
+Work remains active with one agent. GitHub main is connected and receiving
+development commits; f9a3063 adds exact-byte protection for the accepted delivery.
+`py Tools/ValidateGitPreservation.py` passes all102 working AND committed hashes
+(101 protected character delivery files plus Chronicles). Original player saves
+and settings also pass the separate126-file preservation comparison.
+
+Latest clean build: Temp/Alpha014Atlas14/Aevoria.exe. Atlas14-Water is now running
+alone, using the old Atlas0 fixture in an isolated root. Read its real completion
+token and failures ledger, not just its process exit. It includes constant-phase
+directional river waves and canonical channel optical depth; visual review pending.
+
+Completed native reviews:
+- Atlas12-Interface passed production Save & Quit to Home/reload. All4 compass
+  headings inspected: visible needle points correctly. Pause backdrop has no F3.
+- Atlas13-Interface passed; Display and Graphics captures inspected. The Back
+  controls no longer overlap other controls. Settings/World tools remain usable.
+- Atlas12-Regional-Full passed with no limitations: actual ground captures,
+  physical dunes, resident paths CSV/captures, cloud zoom identity/toggles/motion,
+  36 regional collider samples and real production save/reload. Atlas revision1
+  fingerprint remains 7D9F11387F46172D1F836383A78DF0B925D7F9DA67B5A0F47E6E673E65625461.
+  Source fixture remains the earlier Atlas9 revision1 directory recorded below.
+
+Actual Atlas12 images remain visually unaccepted: sparse/simple crowns and
+straw-like shrubs/moss, flat cloud blobs, river stripes/triangular transitions,
+plain pavement-like salt crust, weak dune relief and unresolved rock facets.
+Cloud physical stability is established; cloud visual quality is not.
+
+Atlas14 adds branching herb/salt shrubs, curved grass, reed stems/seed heads,
+small moss leaves and petal flowers (same habitat slots), full .95m building
+clearance for .85m half-width road strips, and asymmetrical/eroded cloud lobes
+with stronger volume self-shadowing. Two relevant Unity tests PASS (new mesh
+finite/bounds and full-width deterministic safe roads); build passed. Native
+review of these latest rendering refinements is still required after Water.
+
+Recipe library6 unchanged;38 CPU recipe checks and the earlier8 GPU/UI/road
+editor checks pass. Atlas12 complete development player size160323288 bytes,
+305696 bytes above the measured procedural baseline. No texture-library savings
+claim. Official release remains v12; do not package v14 as finished.
+
+Source differs from Atlas14 only by an explanatory water comment and tooling/
+documentation/Git byte-preservation rules. No further geography changes yet.
+
 # ACTIVE CONTINUATION — 2026-10-28, GitHub authorized
 
 Latest update: initial commit c11ae4c pushed and remote main verified. Atlas12

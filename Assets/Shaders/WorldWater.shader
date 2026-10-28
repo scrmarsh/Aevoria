@@ -96,7 +96,11 @@ Shader "Aevoria/Water"
                     {
                         float ratio=saturate((bank.x+channel.x)/max(.001,channel.x));
                         float bed=bank.y-channel.y+(channel.y-.12)*ratio*ratio;
-                        riverColumn=max(0,i.world.y-bed);
+                        // A crossing ribbon's interpolated level belongs to
+                        // that mesh owner. Use the canonical nearest channel
+                        // level for optics so junction triangles cannot change
+                        // the apparent depth; geometry still owns occlusion.
+                        riverColumn=max(0,bank.y+.035-bed);
                     }
                 }
                 float inlandOptics=max(_InlandWater,estuary);
@@ -141,10 +145,14 @@ Shader "Aevoria/Water"
                 // Keep both wave phases anchored in the same world lattice;
                 // flow steers their amplitudes and temporal advection only.
                 float warp=sin(i.world.x*.017+i.world.z*.031)*1.4;
-                float2 riverPhase=float2(i.world.x*.34+warp,i.world.z*.31-warp)-_Time.y*(.6+energy*3)*i.flow;
+                float2 riverPhase=float2(i.world.x*.34+warp,i.world.z*.31-warp);
                 float2 riverFilter=1-smoothstep(.8,3,fwidth(riverPhase));
                 float2 flowWeight=abs(i.flow)+.2;flowWeight/=flowWeight.x+flowWeight.y;
-                float riverWave=dot(sin(riverPhase)*riverFilter,flowWeight);
+                // Blend fixed-frequency forward/backward waves. Multiplying
+                // elapsed time by a varying flow vector also accumulated dense
+                // phase bands at bends as the session became longer.
+                float2 flowingWave=lerp(sin(riverPhase+_Time.y*.9),sin(riverPhase-_Time.y*.9),saturate(i.flow*.5+.5));
+                float riverWave=dot(flowingWave*riverFilter,flowWeight);
                 float pixelMetres=max(length(ddx(i.world)),length(ddy(i.world)));
                 float oceanFilter=1-smoothstep(.8,3,pixelMetres*.12);
                 float wave=lerp(sin(i.world.x*.095+sin(i.world.z*.02)*3+_Time.y*.65)*sin(i.world.z*.071-_Time.y*.4)*oceanFilter,riverWave,river)*detailFade*(1-ice*.98);
