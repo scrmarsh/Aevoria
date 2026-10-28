@@ -37,6 +37,7 @@
 !/Docs/Validation/Alpha-v0.0.14/References/Aevoria_Fantasy_Atlas_Overhead.png
 *.blend1
 *.blend2
+!SourceAssets/**/*.blend1
 __pycache__/
 .env
 .env.*

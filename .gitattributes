@@ -6,3 +6,20 @@
 *.asset text eol=lf
 *.unity text eol=lf
 *.md text eol=lf
+
+# Accepted character delivery and historical Chronicle hashes are byte contracts.
+# Keep their original line endings as well as their authored content.
+SourceAssets/** -text
+Assets/Resources/Characters/** -text
+Assets/Resources/Equipment/** -text
+Assets/Scripts/Presentation/AuthoredEquipment012.cs -text
+Assets/Scripts/Presentation/CharacterDialogue.cs -text
+Assets/Scripts/Presentation/EquipmentGrip012.cs -text
+Assets/Scripts/Presentation/ExperimentalExplorer.cs -text
+Assets/Scripts/Presentation/HumanoidPresentation.Authored.cs -text
+Assets/Scripts/Presentation/HumanoidPresentation.cs -text
+Assets/Scripts/Presentation/HumanoidPresentation.Motion012.cs -text
+Assets/Scripts/Presentation/RomanSoldier.cs -text
+Assets/Scripts/World/CharacterProfiles.cs -text
+Assets/Shaders/CharacterSurface.shader -text
+Docs/THE_CHRONICLES_OF_AEVORIA.md -text

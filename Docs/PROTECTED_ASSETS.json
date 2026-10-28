@@ -1,0 +1,413 @@
+{
+  "scope": "Accepted character delivery and Chronicles; original bytes from the pre-Genesis preservation baseline. These files require explicit authorization before changes.",
+  "files": [
+    {
+      "file": "Assets/Resources/Characters/Doctor012.json",
+      "sha256": "C6A4AB78AF2860A597FD33992F8A42C639E22B46BBCB8271B5CC17E4D0BFBFC8"
+    },
+    {
+      "file": "Assets/Resources/Characters/Doctor012.json.meta",
+      "sha256": "C7D2E4E5CBDB351D1C8EDB8D678031771A0FB5F7F2E1C8B718968642A3FC015F"
+    },
+    {
+      "file": "Assets/Resources/Characters/Doctor012_LOD1.json",
+      "sha256": "0430D581D1B10A688FD03481DC9F25CCD038125D26C853056A5280F2F9806127"
+    },
+    {
+      "file": "Assets/Resources/Characters/Doctor012_LOD1.json.meta",
+      "sha256": "E69B6F05DD637BBCF48103BF7D8A1CADFE0D908516FB14972527D186AF9E3AA3"
+    },
+    {
+      "file": "Assets/Resources/Characters/Doctor012_LOD2.json",
+      "sha256": "8916879C35D62A4B6275560526E9FAC2EEAAD69092FA981A5F6B726A1B2E7147"
+    },
+    {
+      "file": "Assets/Resources/Characters/Doctor012_LOD2.json.meta",
+      "sha256": "BB3276117E66A8E1C7FDD751AD2C8874103C9BD59FC88966D70EFF223F255D09"
+    },
+    {
+      "file": "Assets/Resources/Characters/DoctorReference.png",
+      "sha256": "02A770527BE9F2E185609729E09968EC50E0F1C5C292C6F649EB8BA92F4AE586"
+    },
+    {
+      "file": "Assets/Resources/Characters/DoctorReference.png.meta",
+      "sha256": "C05E7698D6D6251D9E1B3E98A6A2E02285104FC73EAEF1F71143A9AADE6191B4"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Crouch.anim",
+      "sha256": "30E237A3DD3043C6D77EE3B183A716387C82EF0E8EDAB84E46A9E74F29116675"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Crouch.anim.meta",
+      "sha256": "515A2B49E0D04997E915A38B66A2366CA45FF33FC1DD0A3CACBA1E8ECBCCBED0"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/CrouchWalk.anim",
+      "sha256": "21EF1BD002C16D4D3416BFAA1B93004FC01149F5BBD7ADA54F89F86A1716E273"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/CrouchWalk.anim.meta",
+      "sha256": "895BC7DA880F3090CE82C0A17D64AAFF9FA378B89C21ED1D4E755335C008C996"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Flight.anim",
+      "sha256": "A6F9810E829E41D232E0EF36B478C88ABECE1DFC7166C607AAC1ECB059306449"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Flight.anim.meta",
+      "sha256": "7F8F9009D125E8B30B952F6997D6D2DEF7C66169ACA5DF3279DCE412C01F5992"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Freefall.anim",
+      "sha256": "4C63FF09BF479FDF08407F64AC2F982D110D0FACB16A05638E88B09C3F075FBB"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Freefall.anim.meta",
+      "sha256": "02DA9D0CB9F2AD8FE2A0497029C38286441524622249853A3E36B1E29BCA1846"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Idle.anim",
+      "sha256": "49061B0803807D600BAAB450CAD5FEDE571BAD0F747A747CFB49F97E76AEA4EA"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Idle.anim.meta",
+      "sha256": "BFEF62C67B3FFF4F3A98F4240E393673A9F91FC03207857341FC58BFDF39383E"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Jump.anim",
+      "sha256": "E2AC267FCE5A208FEA093DEC4F47936046568A5E32CF8F3928E5574635D60280"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Jump.anim.meta",
+      "sha256": "A25F3EE0AFDAA03744B51D60FDC04387FE0653AB9562929F76EC2CB893154CFD"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Mining.anim",
+      "sha256": "721F6A27EB734D74BE7635700F24A11F783A3FBC665E6F9CEF100B9309AE2F2E"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Mining.anim.meta",
+      "sha256": "1AFC9F9E8D6F25019191EC569CF691A4E5B82BCC011EFCA31CB9BCDE9FD57594"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Run.anim",
+      "sha256": "923582540CBEED51B8801AC8DDBECD933DB6D88B5F1F4A166DF32009FBA35A5E"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Run.anim.meta",
+      "sha256": "D52F8E9233A8A395B0243DA43AE2AF9A7500D85ABF864505203AA7661C0AFCF1"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Walk.anim",
+      "sha256": "800252D68B8F6B4F2F4A08BA718C2227D6A33132C9E506A87B35A1CE5A837FD6"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012/Walk.anim.meta",
+      "sha256": "1A2F720A045B028596FD56553DEE8A489A8038DD392DCA1815433FD66BFF4E25"
+    },
+    {
+      "file": "Assets/Resources/Characters/Motion012.meta",
+      "sha256": "ECC286D0A1BEFBE92A92538978537D166F93D79CC1EFE176804F0B9B7AA5C6A2"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Axe012.json",
+      "sha256": "11C149B76157E5608B6C36369A95AEBDCBEC839C16AF796E7BB2B5361B52A826"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Axe012.json.meta",
+      "sha256": "4E1CFA95388DAB9B4EB6344C3A5120820FD5B39DE880F8BF76C7594B6ED1AAFC"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Cane012.json",
+      "sha256": "96C9125E4BB6B812730AE2133D96B783205C0E4D8BD242786D11746C1C86ECBD"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Cane012.json.meta",
+      "sha256": "A69834D6AEE8D593E384A2CBDAC1B6650EED2EC84551EA48A1AFF4FBC866FF3E"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Crate012.json",
+      "sha256": "D07035AB4F740AD83D2513F3AA3F5B24CC51DDF72C2D1A7EAAC7D6695EAD3A8C"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Crate012.json.meta",
+      "sha256": "9DAF8ED7F84E7D3684EF01A31BADD3B45E0C8CB309BA5FFCE384034BD6FB1D5B"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Pickaxe012.json",
+      "sha256": "0B4B5C8217A62A3FAF5604D8DC77EC7846C7EACA3A5D7C7240297C140A2E3544"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Pickaxe012.json.meta",
+      "sha256": "06AFCC99ACF4AD315C0AD23CB8F0D2D4E7FC4C2DA1828F73B6F1BBBBE6F6FD31"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Shovel012.json",
+      "sha256": "226A746EB8A4E133B8B784DCBFCE7B0474E966DB9150548B28AE4E881CB58940"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Shovel012.json.meta",
+      "sha256": "F8B833A65840D533297103C054D0AE7F0484D060D07AD793F39A4D85E791427D"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Stick012.json",
+      "sha256": "431FE9BF857474846E833F2674E17D4C7D9212DF9759AF7D1D9358C7F105C86C"
+    },
+    {
+      "file": "Assets/Resources/Equipment/Stick012.json.meta",
+      "sha256": "03B3EE7299A92195877E19E9C15100DC95B72EA1C5992A97186E3E539D6D6882"
+    },
+    {
+      "file": "Assets/Scripts/Presentation/AuthoredEquipment012.cs",
+      "sha256": "1D17B05DA6419A2174DAF67FD2195D3EBE1EDF01AED3E4ABC9F0AFB1966971C0"
+    },
+    {
+      "file": "Assets/Scripts/Presentation/CharacterDialogue.cs",
+      "sha256": "BEDB9FF3E30945A1FB99A242A04D7B961CD74C05D21B1B7CE9C102BE21F67D9A"
+    },
+    {
+      "file": "Assets/Scripts/Presentation/EquipmentGrip012.cs",
+      "sha256": "0C81DEAC256DB91A101427E2306692F8EBAF482421ABD4EE2F5659B87F0CB8A0"
+    },
+    {
+      "file": "Assets/Scripts/Presentation/ExperimentalExplorer.cs",
+      "sha256": "D5528B54A0C5B6DEA9577B6554C8B301F48DCDA2D7D5F670689E2BD4B68B5913"
+    },
+    {
+      "file": "Assets/Scripts/Presentation/HumanoidPresentation.Authored.cs",
+      "sha256": "0C0A9CA3DE995E42F6C57942F98EE30360FF1EE1AAAAF99DCC2A6BB6008E7084"
+    },
+    {
+      "file": "Assets/Scripts/Presentation/HumanoidPresentation.cs",
+      "sha256": "0C17F729F59091C59E06B9B24B104A42D1FCD50BB3AF163915CC4FBC9CBBED9F"
+    },
+    {
+      "file": "Assets/Scripts/Presentation/HumanoidPresentation.Motion012.cs",
+      "sha256": "ED767B3B0F730BD70B82D28CFA0F341EDFF42063C20E2EAD779AAC8828CDDAAE"
+    },
+    {
+      "file": "Assets/Scripts/Presentation/RomanSoldier.cs",
+      "sha256": "24EFA499BC0B72AAF75C03F445EE9BDA69E212DF0AA84EBC0A09F8762D37819C"
+    },
+    {
+      "file": "Assets/Scripts/World/CharacterProfiles.cs",
+      "sha256": "597AD9BCFD3E496C068B8FE59EB73B6016400AABDFE75BB3D5A057C4F2C7CD9E"
+    },
+    {
+      "file": "Assets/Shaders/CharacterSurface.shader",
+      "sha256": "B8644ED2E42DDB06744B655C31E7469155C3742EC3E49C5150B5D09548C3BC5F"
+    },
+    {
+      "file": "SourceAssets/Characters/Doctor-skin.json",
+      "sha256": "5CFCAE3A1992B4D13317271BA3D971904634CD02C914E30BEDEFBEDE846A2A02"
+    },
+    {
+      "file": "SourceAssets/Characters/Doctor.blend",
+      "sha256": "AD7782279126D9B14AFB04A2CA2A7E5F915A08673C37A02E9F14FAFA98F1115D"
+    },
+    {
+      "file": "SourceAssets/Characters/Doctor.blend1",
+      "sha256": "084AD767578B7D85A6E16FCE1FE7449B3F275C5EF8129F9ECEFB9F28C237A91C"
+    },
+    {
+      "file": "SourceAssets/Characters/Explorer-skin.json",
+      "sha256": "BB6C1C4FAB9A84599FB04CF6421BBEA7074882258E5E890567FB169827B5DC05"
+    },
+    {
+      "file": "SourceAssets/Characters/Explorer.blend",
+      "sha256": "62CC8CF8A91C1B5ED0EA16F2AFA1146CE2E931C8A9753C054695A7485164A14B"
+    },
+    {
+      "file": "SourceAssets/Characters/Explorer.blend1",
+      "sha256": "CDC8BDD502EDBA394408285279A27EC573896B9B81545ACD599F9663864DC8A9"
+    },
+    {
+      "file": "SourceAssets/Characters/InitialProcedural/Doctor-skin.json",
+      "sha256": "B5B8857B184908E8CBB1FB4B81F867C32B63FD6C5C0C7932814A163E37B2ADE4"
+    },
+    {
+      "file": "SourceAssets/Characters/InitialProcedural/Doctor.blend",
+      "sha256": "084AD767578B7D85A6E16FCE1FE7449B3F275C5EF8129F9ECEFB9F28C237A91C"
+    },
+    {
+      "file": "SourceAssets/Characters/InitialProcedural/Explorer-skin.json",
+      "sha256": "6A62D788B64369A729E3BA85D96F2C58EA43692970413CB856EC768B33594578"
+    },
+    {
+      "file": "SourceAssets/Characters/InitialProcedural/Explorer.blend",
+      "sha256": "CDC8BDD502EDBA394408285279A27EC573896B9B81545ACD599F9663864DC8A9"
+    },
+    {
+      "file": "SourceAssets/Characters/InitialProcedural/Roman-skin.json",
+      "sha256": "9453B9F330F0EC9FF49D8DDC6F2BE92D1E54C2995C28FC6C41D6DC915C467891"
+    },
+    {
+      "file": "SourceAssets/Characters/InitialProcedural/Roman.blend",
+      "sha256": "D4C29ADAF38DA761DE946E04356698293B19969D682C3577F0250EF7B1E72B70"
+    },
+    {
+      "file": "SourceAssets/Characters/README.md",
+      "sha256": "7C50DD918151F23CA777C2CD415C436D69F999B55AAAE3BEE13C8D929EF3D9D2"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/Doctor012-audit.json",
+      "sha256": "3A00F7766C4CABF1EDF1D7A69713ED64E00F21F129706CB4EDCF729D61BF601F"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/Doctor012.blend",
+      "sha256": "BEC0D2C5E11C0393D1D17532C7344FD176896BB8A922A1BEC82B9620BCED3831"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/Doctor012.blend1",
+      "sha256": "611E89F950AF23F6486D9B4B1794022FFDCA66D79215C9405EECF0D52FDF87B4"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/Doctor012_LOD1.blend",
+      "sha256": "87240C6ECAA73C80D5063FD6172797E259C937317094755DB85C8084D8349708"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/Doctor012_LOD1.blend1",
+      "sha256": "18234E6520B9371D36A719BC395E6734A504644E8D0F789B384387C29423FC67"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/Doctor012_LOD2.blend",
+      "sha256": "91AE515C2DE34490C05AD18F0B2E8C3451D4A0696ED3DEE2B68E956BB73DB2A9"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/Doctor012_LOD2.blend1",
+      "sha256": "146AF9302E5199B22089E71524A6E4F954F910ACB7652B02538D423754C8AEE4"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/base.obj",
+      "sha256": "8E761E6624B8F54536409135D1636DA63B32486A90D4897F84E121D144F6FB4C"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/caucasian-male-old.target",
+      "sha256": "B0D2B1D58CBA0358AF59833740E70229265F7DA1C20A11240F4123B7192CFD6D"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/caucasian-male-young.target",
+      "sha256": "70E228BA7164737DAE664454394536FC5935FA48D333C1A97D77E2DC6EACC5F5"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/commit.txt",
+      "sha256": "82C043C0CE6BE2CD4E9A739AD61C218293CA87D5161D0DED2A6F0DDBD6C353A6"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/LICENSE.ASSETS.md",
+      "sha256": "F6089CBA01CB570A24712B41AB8A586CCD3CC5EF53DC266CA50B95C288956D2C"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/LICENSE.md",
+      "sha256": "EDD99571CA62698F78C943FD4FFFB159A413C315FA0D4819D3CEC5CADAF8B4F1"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/nose-hump-incr.target",
+      "sha256": "87F167E76CC908E8F28FED8623CF55E737F59499E8338CFE78F5D635382A5191"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/nose-scale-depth-incr.target",
+      "sha256": "6BB03C3065E048D6E9ABBCFA58961BFBE1753A307BE0D3DE477CAC6AEAF5F750"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/MakeHuman/nose-scale-vert-incr.target",
+      "sha256": "B87163E4272D77BCDB7B51328504167F71A7A47B630DC9B13DA9C68E0F06C20F"
+    },
+    {
+      "file": "SourceAssets/Characters/Remaster012/PROVENANCE.md",
+      "sha256": "5EB8858EA08BF55EE76019697628D3039ACACADDC32223110CF07BEAFA93B1AC"
+    },
+    {
+      "file": "SourceAssets/Characters/Roman-skin.json",
+      "sha256": "9453B9F330F0EC9FF49D8DDC6F2BE92D1E54C2995C28FC6C41D6DC915C467891"
+    },
+    {
+      "file": "SourceAssets/Characters/Roman.blend",
+      "sha256": "30C04E1864F63809BA2547821463C8ACCED6474C57C8840823DF8466D15DC4A7"
+    },
+    {
+      "file": "SourceAssets/Characters/Roman.blend1",
+      "sha256": "D4C29ADAF38DA761DE946E04356698293B19969D682C3577F0250EF7B1E72B70"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Axe012-audit.json",
+      "sha256": "6AACB9775ED534062BFEE8527B741FB3D8E494704ED7533272E07BA77EA65AF0"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Axe012.blend",
+      "sha256": "B60D64402771F9129421A256185C2BC628A5347B472DA927DB6FB0358AE9AA82"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Axe012.blend1",
+      "sha256": "ABE4E15EC98E25FB773FB76CBDF4F18F07B8DCD0A12D64DF8F20AC185C78FF28"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Cane012-audit.json",
+      "sha256": "F2E7F067401BA42A9ECF6D51BB276209C8233D93B95AF7002CF04F82862DB31C"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Cane012.blend",
+      "sha256": "95093FC9B075F633E5FEA8FB2BB2B72FFB9ED8EB00659AA0F5F53423A2C628F9"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Cane012.blend1",
+      "sha256": "EEF333210846B61A019524472BABBD6BAE58675114FB22B3DF15B90704A9FAD4"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Crate012-audit.json",
+      "sha256": "4B0BB119C3360AFD6CE4F60FE7A6ADC16D9823BF7BBD31B3E9671B559C2123A3"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Crate012.blend",
+      "sha256": "336E54D63B125FE8AF11E2A780A77B827AD252908BA977418FA27C0A677FE0E2"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Crate012.blend1",
+      "sha256": "D9BEE6A448DFC4EA04ECA919A6D609DE224AFE7533EDCB6782D8A0AA132D2C96"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Pickaxe012-audit.json",
+      "sha256": "9C7467CC73D4E09F7A302942D36AB908FB9225DF9BC06E5F1FE1DEEB3894D536"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Pickaxe012.blend",
+      "sha256": "18EE909C415E8A1531087A848DF957067EB584FF95276FD379DD16A57A610473"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Pickaxe012.blend1",
+      "sha256": "03D5C00A0E9BCB429C397DF5F3198DEC00F53C11525D317596A0B8CEFDE0507D"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/README.md",
+      "sha256": "9FAA64A51F0E2EA055B920B470705CCDFDC134BDE4F16FD3CF4B16B23FBC6A12"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Shovel012-audit.json",
+      "sha256": "DF6C5B2500E94D591F693186410F0ECFE87E1EA6AAB8FE1BABD225793B08B019"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Shovel012.blend",
+      "sha256": "DF12EB13F408F551F3DD65B6AB7DACA7A7230BA7C695F86AE1987E3A1FDA1814"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Shovel012.blend1",
+      "sha256": "78E9A384FFBE9231D3EB5FAA9C937A6EA11D32756C4AED44641EE73F5EF35B79"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Stick012-audit.json",
+      "sha256": "C98E0BAE1D8EC59AB71442ACFB1FD5CD1C691E6277C319FB031DF062719863AA"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Stick012.blend",
+      "sha256": "43D3ADD39A9495D118325D975F40FF97C3787FB0B8ABAECDA4991CB5595BDFEE"
+    },
+    {
+      "file": "SourceAssets/Equipment/Remaster012/Stick012.blend1",
+      "sha256": "C2C4E04E76932FC49647FB9A2E63E9910B20A271DCB48D69ED2284408C68E832"
+    },
+    {
+      "file": "Docs/THE_CHRONICLES_OF_AEVORIA.md",
+      "sha256": "91F80EC779C78E4FFDD35CF9553929A0595BBAA05E4779EC896463F494A950D1"
+    }
+  ]
+}
