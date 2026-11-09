@@ -279,7 +279,7 @@ namespace Aevoria.Presentation
                 float ceiling=(float)(Geography.Surface?.MaximumElevation??(c.Terrain.Mountains*2+c.Terrain.Elevation+2000));
                 const float floor=-6000;
                 var bounds=new Bounds(new Vector3(p.x,(ceiling+floor)*.5f,p.z),new Vector3((float)side,ceiling-floor,(float)side));
-                bool visible=GeometryUtility.TestPlanesAABB(planes,bounds);
+                bool visible=WorldOrigin.InFrustum(planes,bounds);
                 if(!visible && Math.Max(Math.Abs(x),Math.Abs(y))>2) continue;
                 var surfaceCenter=new Vector3(p.x,Geography.ElevationAt(p.x,p.z),p.z);
                 float distance=Mathf.Max(20,Vector3.Distance(predicted,surfaceCenter));

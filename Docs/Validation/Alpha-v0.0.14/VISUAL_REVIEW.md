@@ -1,3 +1,53 @@
+# Atlas16 resumed native review - November 8, 2026
+
+Evidence: `Atlas16-Resumed-Habitats-SeedMatched`. The run reports the Habitats
+completion token, exit0, no failure ledger, and a completed capture manifest.
+Native completion/runtime/shader/capture-file checks pass. Loaded Atlas revision1
+fingerprint remains7D9F11387F46172D1F836383A78DF0B925D7F9DA67B5A0F47E6E673E65625461.
+This is focused habitat/cloud evidence, without a new save/reload or collider run.
+
+Inspected Mediterranean, boreal, forest, desert and salt ground captures; physical
+dunes at350m; village paths oblique; clouds at2000/20000/60000m and ground-sky.
+Mediterranean shrubs and forest cover repeat visibly, crowns remain simple,
+conifer boughs are broad polygonal sheets, salt contraction polygons remain too
+regular, and close dune relief is subtle. Overhead clouds remain flattened white
+masses. These views do not meet final visual acceptance.
+
+`Miniature-atlas-clouds-ground-sky.png` is inside a village building: roof/walls
+occlude the intended sky. Reject it as sky evidence. The automated manifest's
+empty limitations list does not detect this framing defect. Next audit must use
+an unobstructed outdoor point and verify sky visibility before capturing.
+
+All130 original player save/settings files and102 working/HEAD protected hashes
+passed fresh after-review checks. Short3-second habitat frame windows are in
+`summary.json`; sustained performance and GPU-pass attribution remain open.
+No release acceptance or new Unity test/build claim is made by this review.
+
+# Atlas14/15 evidence recovered on 2026-10-30
+
+Atlas14-Water passed its completion/log/manifest checks and retained the Atlas0
+fixture fingerprint. Its inspected close river view still has angular confluences,
+triangular bank transitions and visible wave bands; technical completion is not
+water visual acceptance.
+
+Atlas14-Habitat-Clouds is rejected: exit4, a nonempty failures ledger and no
+completed manifest. It timed out in Ready. Atlas15 adds readiness diagnostics,
+a focused Habitats mode and explicit profile windows. Atlas15-Normal-Radius-Profile
+passes native checks and loads the v13 fixture with its original fingerprint.
+Inspected radius8 diffuse normals are smooth, but the lit view still has facets;
+filtered normals alone do not resolve the defect. The albedo diagnostic also
+contains triangular patches. Do not claim that wider normal filtering fixes it.
+
+Atlas15 15-second windows at2560x1440 report median delayed Unity GPU frame times
+of30.04ms (mountain high),9.12ms (legacy cliff) and20.94ms (Genesis cliff).
+These are short static diagnostic windows, not final sustained performance or
+GPU-pass attribution. The current shader cost remains a material open issue.
+
+Atlas16 source includes the geographic-to-local frustum correction in streaming.
+Seven Unity origin/GPU tests and38 recipe checks pass. Native revalidation of the
+habitat timeout is next. Recipe library7 identity is
+63D4419E0B5AA6944D731097E1B696265B92978EA25928B2353D065F35243FC1.
+
 # Atlas12/13 review — 2026-10-28, development only
 
 Atlas12 native Full and Interface, Atlas13 Interface completion/log/manifest checks

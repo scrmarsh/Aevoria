@@ -21,6 +21,7 @@ namespace Aevoria.Presentation
         public static Vector3 Relative(Vector3 geographic)=>geographic-Offset;
         public static Vector3 Geographic(Transform value)=>Geographic(value.position);
         public static Bounds Relative(Bounds geographic)=>new Bounds(Relative(geographic.center),geographic.size);
+        public static bool InFrustum(Plane[] localCameraPlanes,Bounds geographic)=>GeometryUtility.TestPlanesAABB(localCameraPlanes,Relative(geographic));
         public static void Follow(Vector3 geographic)
         {
             var local=Relative(geographic);if(Mathf.Abs(local.x)<2048&&Mathf.Abs(local.z)<2048)return;

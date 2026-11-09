@@ -1,3 +1,126 @@
+# VERIFIED DEVELOPMENT CHECKPOINT - 2026-11-08, Atlas16
+
+The resumed seed-matched Habitats run completed with exit0 and
+`AEVORIA014_HABITAT_REVIEW_COMPLETE`. Native completion, runtime/shader log and
+all manifest capture-file checks pass. Evidence remains local in
+`Docs/Validation/Alpha-v0.0.14/Atlas16-Resumed-Habitats-SeedMatched`.
+The loaded revision1 fingerprint remains
+7D9F11387F46172D1F836383A78DF0B925D7F9DA67B5A0F47E6E673E65625461.
+This focused run does not perform a new production save/reload or collider audit.
+
+Inspected five habitat ground views, physical dune close, village oblique and
+cloud views at2000/20000/60000m. Ground detail remains sparse/repetitive, forest
+crowns and conifer branches are simple, salt cracks remain too regular, and
+cloud masses still look flat from above. The ground-sky image is inside a
+village building and is INVALID as sky evidence, despite terrain readiness and
+an empty automated limitations list. No visual acceptance is claimed.
+
+Next: select an unobstructed ground-sky capture point outside building footprints,
+verify sky visibility before capture, rebuild and rerun that native view in a
+fresh directory. Then continue habitat/material art refinement. River joins,
+cliff faceting, all-size/high-relief coverage, sustained performance/audio and
+release acceptance remain open. Official release remains v12.
+
+Fresh after-review preservation passes all130 player save/settings files with
+no additions or changes (`atlas16-resumed-20261108-preservation-after.json`).
+Working and HEAD protected character/Chronicle hashes also pass all102 entries.
+The summary records short3-second habitat timing windows; these are diagnostic,
+not sustained performance acceptance. Historical7 Unity origin/GPU checks and
+the earlier38 recipe checks were not rerun in this review.
+
+# ACTIVE RESUMED WORK - 2026-11-08, Atlas16
+
+The user resumed the Atlas update. Continue with one agent. Official release
+remains v12; this is unfinished v14 development.
+
+The existing clean Atlas16 player is undergoing a fresh isolated Habitats review
+in `Docs/Validation/Alpha-v0.0.14/Atlas16-Resumed-Habitats-SeedMatched`.
+It loads a copy of the documented Atlas revision1 fixture using its actual
+`aevoria-001` seed. The first resumed launch used the runner's default seed;
+the native identity guard correctly rejected it (exit4). Rejected evidence is
+retained in `Atlas16-Resumed-Habitats`; it is not a rendering failure.
+
+Fresh read-only baseline: `atlas16-resumed-20261108-player-files.json`, all130
+player save/settings files. Initial preservation and all102 protected working/
+committed character/Chronicle hashes pass. The38 recipe checks pass on current
+source. Do not replace or restore player files from historical baselines.
+
+Next: inspect the completed habitat/cloud captures and native manifest, rerun
+preservation, then commit the verified development checkpoint. The prior7 Unity
+origin/GPU checks and clean build are historical Atlas16 evidence, not new runs.
+
+# HISTORICAL PAUSE - 2026-10-30, Atlas16
+
+The user explicitly requested pause. Stop implementation, builds, tests and
+publication until resumed. The Atlas16 native Habitats player was deliberately
+stopped; its interruption record distinguishes this from a runtime failure.
+No commit or push was made in this continuation; all source edits remain local.
+
+Latest completed build: `Temp/Alpha014Atlas16/Aevoria.exe` (clean build succeeded).
+Seven Unity origin/GPU tests and38 recipe checks passed. Source matches this
+candidate's runtime code; the named preservation-snapshot option and docs are
+subsequent tooling changes. The first Editor stalled after compilation; the
+retry passed. No task-created player or validation Editor remains running.
+
+Atlas16-Habitats is INCOMPLETE, not accepted. Mediterranean, boreal and forest
+captures were produced and the Mediterranean/boreal ground views inspected.
+Terrain/water settled for these views. Trees remain simple and ground cover
+sparse/uniform; no visual acceptance is claimed. Inspect the interruption record
+for the exact available captures. Resume with a fresh native evidence directory;
+never infer completion from partial captures or a process exit.
+
+All102 protected character/Chronicle working and committed hashes passed.
+The old126 save/settings files were unchanged, with4 files from a new player
+world added since the historical snapshot. A fresh read-only130-file baseline is
+`atlas16-player-files.json`; pause-time verification passes all130 files. Use
+`--player-snapshot atlas16-player-files.json` for subsequent checks. No original
+player files or historical builds were edited.
+
+On resume: finish Atlas16 habitat/cloud native review, inspect the remaining
+surfaces and clouds, verify preservation, then commit the verified development
+checkpoint. The complete Genesis/Atlas art, water joins, cliff faceting,
+performance/audio, all-size/high-relief validation and release remain open.
+Official release remains v12.
+
+# ACTIVE CONTINUATION - 2026-10-30, Atlas16
+
+The user explicitly resumed Atlas work. Use one agent. Official release remains
+v12; the complete Genesis/Atlas update is still unfinished.
+
+Latest clean candidate: `Temp/Alpha014Atlas16/Aevoria.exe`; native Habitats audit
+is running alone in `Docs/Validation/Alpha-v0.0.14/Atlas16-Habitats`. Its isolated
+fixture is copied from the previously accepted Atlas revision1 saved world:
+D:/AevoriaValidation/Prototype011-179a58339c2542748caa060e00e4e7bd/Worlds/3de1effb2e214054b30cac40ebb1b3d6.
+Read actual completion token, failures ledger and manifest before accepting it.
+
+Recovered state newer than the prior handoff:
+- Atlas14-Water passed native automation; inspected close water still has angular
+  junction/bank transitions and visible bands. Visual water acceptance is open.
+- Atlas14-Habitat-Clouds failed Ready (exit4); preserve it as rejected evidence.
+- Atlas15-Normal-Radius-Profile passed native checks and real v13 fixture loading.
+  Wider normal filtering does not remove cliff facets. Its short15-second GPU
+  windows show substantial Genesis cost; final sustained performance remains open.
+- Source contained uncommitted habitat/profiling/readiness diagnostics, library7
+  surface refinement and a terrain-frustum coordinate correction. Atlas16 now
+  compiles these together. Local camera planes must test origin-relative bounds;
+  testing absolute geographic bounds incorrectly excludes visible terrain.
+- Seven Unity origin/material GPU checks pass (`atlas16-origin-gpu-tests.xml`),
+  including the actual large-coordinate frustum regression.38 recipe checks pass
+  (`material-recipe-checks-atlas16.json`), library7 identity:
+  63D4419E0B5AA6944D731097E1B696265B92978EA25928B2353D065F35243FC1.
+- Initial Editor compiled then stalled before tests; its log is retained. A fresh
+  validation Editor completed all7 checks. No Unity Hub process was touched.
+- All102 protected working/Git hashes pass. The previous126 save/settings files
+  still match;4 files belonging to a newly created player world were added since
+  the old snapshot. None were changed/restored. New read-only baseline includes
+  all130 files (`atlas16-player-files.json`); the preservation tool now accepts a
+  named `--player-snapshot` without replacing historical snapshots.
+
+Next: finish native Atlas16 habitat/cloud inspection, verify the130-file baseline
+again, and commit a verified development checkpoint. Vegetation art, river joins,
+cliff facets, all-size/high-relief native coverage, performance/audio and final
+release remain open. Do not silently migrate old geography or call this finished.
+
 Cross-account copy-and-paste prompt: `Docs/CODEX_ACCOUNT_HANDOFF_PROMPT.md`.
 
 # ACTIVE CONTINUATION — 2026-10-28, Atlas14 candidate

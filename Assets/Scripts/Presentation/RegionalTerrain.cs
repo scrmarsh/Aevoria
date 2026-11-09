@@ -23,6 +23,7 @@ namespace Aevoria.Presentation
         public int RequestPreload(){preloadQueued=true;return ++preloadVersion;}
         public void CancelPreload()=>preloadQueued=false;
         private Data installed;
+        public string PreparationStatus=>"grid="+requestedN+";spacing="+requestedStep+";worker="+(worker==null?"none":worker.Status.ToString())+";installing="+installing;
         public bool TryTriangle(float x,float z,out Vector3 a,out Vector3 b,out Vector3 c,out Vector3 weights)
         {
             a=b=c=weights=Vector3.zero;if(installed==null)return false;var d=installed;float gx=(x-d.Origin.x)/d.Step,gz=(z-d.Origin.y)/d.Step;

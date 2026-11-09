@@ -6,6 +6,7 @@ float4 _AevoriaOverviewGrid;float _AevoriaOverviewReady;
 TEXTURE2D(_AevoriaRegionalHeight);TEXTURE2D(_AevoriaRegionalNormals);
 SAMPLER(sampler_AevoriaRegionalNormals);
 float4 _AevoriaRegionalRect,_AevoriaRegionalGrid;float _AevoriaRegionalReady;
+float _AevoriaNormalReviewRadius;
 float _AevoriaDigCount;float4 _AevoriaDigRects[16];
 TEXTURE3D(_AevoriaSolidCoverage);float4 _AevoriaSolidGrid;float _AevoriaSolidReady,_AevoriaSolidCells;
 float _AevoriaBoundarySeaLevel;
@@ -14,22 +15,25 @@ float3 WorldShadingNormal(float3 p,float3 meshNormal,float excavationDepth)
     if(_AevoriaRegionalReady<.5||excavationDepth>.3)return meshNormal;
     float2 g=(p.xz-_AevoriaRegionalRect.xy)/_AevoriaRegionalGrid.xy;
     float edge=min(min(g.x,g.y),min(_AevoriaRegionalGrid.z-g.x,_AevoriaRegionalGrid.w-g.y));
-    if(edge<=2)return meshNormal;
+    // Zero is the ordinary rendering path. Wider radii are opt-in matched-pose
+    // diagnostics to distinguish coarse normal-field structure from lighting.
+    float radius=clamp(_AevoriaNormalReviewRadius,1,8);
+    if(edge<=2*radius)return meshNormal;
     // Cubic B-spline reconstruction of the existing physical mesh-normal field.
     // Four bilinear taps remove the diagonal interpolation creases without
     // moving a vertex, changing a collider, or inventing a new height field.
-    float2 f=frac(g),f2=f*f,f3=f2*f;
+    float2 f=frac(g/radius),f2=f*f,f3=f2*f;
     float2 w0=(1-3*f+3*f2-f3)/6,w1=(4-6*f2+3*f3)/6;
     float2 w2=(1+3*f+3*f2-3*f3)/6,w3=f3/6;
-    float2 a=w0+w1,b=w2+w3,cell=floor(g);
-    float2 low=(cell-1+w1/a+.5)/(_AevoriaRegionalGrid.zw+1);
-    float2 high=(cell+1+w3/b+.5)/(_AevoriaRegionalGrid.zw+1);
+    float2 a=w0+w1,b=w2+w3,cell=floor(g/radius)*radius;
+    float2 low=(cell-radius+w1/a*radius+.5)/(_AevoriaRegionalGrid.zw+1);
+    float2 high=(cell+radius+w3/b*radius+.5)/(_AevoriaRegionalGrid.zw+1);
     float3 s00=SAMPLE_TEXTURE2D_LOD(_AevoriaRegionalNormals,sampler_AevoriaRegionalNormals,low,0).xyz;
     float3 s10=SAMPLE_TEXTURE2D_LOD(_AevoriaRegionalNormals,sampler_AevoriaRegionalNormals,float2(high.x,low.y),0).xyz;
     float3 s01=SAMPLE_TEXTURE2D_LOD(_AevoriaRegionalNormals,sampler_AevoriaRegionalNormals,float2(low.x,high.y),0).xyz;
     float3 s11=SAMPLE_TEXTURE2D_LOD(_AevoriaRegionalNormals,sampler_AevoriaRegionalNormals,high,0).xyz;
     float3 reconstructed=(s00*a.x+s10*b.x)*a.y+(s01*a.x+s11*b.x)*b.y;
-    return normalize(lerp(meshNormal,normalize(reconstructed),smoothstep(2,6,edge)*(1-smoothstep(.04,.3,excavationDepth))));
+    return normalize(lerp(meshNormal,normalize(reconstructed),smoothstep(2*radius,6*radius,edge)*(1-smoothstep(.04,.3,excavationDepth))));
 }
 float4 OverviewWeights(float2 world,out int2 cell)
 {

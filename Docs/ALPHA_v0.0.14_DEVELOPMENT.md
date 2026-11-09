@@ -1,3 +1,32 @@
+# Atlas16 review checkpoint - 2026-11-08
+
+The fresh seed-matched Habitats run completed and passes native log/manifest
+checks. The loaded revision1 fingerprint is unchanged. All130 player files and
+102 protected character/Chronicle hashes pass preservation. No new build or
+Unity test run was needed for this evidence review.
+
+Visual acceptance remains open. The ground-sky capture is occluded by a village
+building and cannot establish cloud appearance from the ground. Fix that audit
+pose next. Inspected habitat ground views still show repeated sparse cover and
+simple trees; salt crust and overhead cloud shapes need further art work.
+See `AEVORIA_RESUME.md` and the visual review for scope. Official release is v12.
+
+# ACTIVE RESUMED WORK - 2026-11-08
+
+Atlas work is active again. Fresh isolated Atlas16 habitat/cloud review is in
+progress; see `AEVORIA_RESUME.md` for the exact fixture and evidence directory.
+Current38 recipe checks and initial130-file player/102-file protected-asset
+preservation pass. Visual acceptance and release remain open; official release
+remains v12.
+
+# HISTORICAL PAUSE - 2026-10-30
+
+Atlas16 clean build and7 Unity origin/GPU checks plus38 recipe checks passed.
+Native habitat review was deliberately interrupted at the user's pause request;
+partial captures are not acceptance. Source remains uncommitted in this workspace.
+Read the newest `Docs/AEVORIA_RESUME.md` section before resuming. Official release
+remains v12; Atlas/Genesis visual and release work is unfinished.
+
 # Current development checkpoint — 2026-10-28
 
 Latest update: Atlas14 built; isolated Water audit running. Atlas12 regional Full

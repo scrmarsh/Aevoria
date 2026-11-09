@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildDirectory,[Parameter(Mandatory=$true)][string]$OutputDirectory,[string]$Seed='shaping-continents',[ValidateRange(0,16000)][int]$Relief=3600,[ValidateSet('Miniature','Small','Medium','Large','Colossal')][string]$WorldSize='Miniature',[switch]$Motion,[switch]$Contacts,[switch]$Zoom,[switch]$RegionalCoverage,[switch]$Atlas,[ValidateRange(0,1)][int]$AtlasRevision=0,[ValidateSet('Prototype','Water','Coast','Full','Climate','Materials','Interface')][string]$Review='Prototype')
+param([Parameter(Mandatory=$true)][string]$BuildDirectory,[Parameter(Mandatory=$true)][string]$OutputDirectory,[string]$Seed='shaping-continents',[ValidateRange(0,16000)][int]$Relief=3600,[ValidateSet('Miniature','Small','Medium','Large','Colossal')][string]$WorldSize='Miniature',[switch]$Motion,[switch]$Contacts,[switch]$Zoom,[switch]$RegionalCoverage,[switch]$Atlas,[ValidateRange(0,1)][int]$AtlasRevision=0,[ValidateSet('Prototype','Water','Coast','Full','Climate','Materials','Interface','Habitats')][string]$Review='Prototype',[ValidateRange(3,120)][int]$ProfileSeconds=3)
 $ErrorActionPreference='Stop'
 if($AtlasRevision -gt 0 -and !$Atlas){throw 'An Atlas terrain revision requires -Atlas'}
 $build=[IO.Path]::GetFullPath($BuildDirectory);$evidence=[IO.Path]::GetFullPath($OutputDirectory)
@@ -20,6 +20,8 @@ if($Review -eq 'Prototype'){$arguments+='-aevoria011MountainPrototype'}elseif($R
 if($Atlas){$arguments+=@('-aevoria014Atlas','-aevoria014AtlasRevision',[string]$AtlasRevision)}
 if($Review -eq 'Materials'){$arguments+='-aevoria014MaterialsOnly'}
 if($Review -eq 'Interface'){$arguments+='-aevoria014InterfaceOnly'}
+if($ProfileSeconds -gt 3){$arguments+=@('-aevoria014ProfileSeconds',[string]$ProfileSeconds)}
+if($Review -eq 'Habitats'){if(!$Atlas){throw 'Habitat review requires -Atlas'};$arguments+='-aevoria014HabitatsOnly'}
 if($baselineId){$arguments+=@('-aevoria014LoadBaseline',$baselineId)}
 if($Review -eq 'Climate'){$arguments+='-aevoria013ClimateOnly'}
 if($Motion){$arguments+='-aevoria011Motion'}

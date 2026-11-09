@@ -12,6 +12,8 @@ root = Path(__file__).resolve().parents[1]
 evidence = root / 'Docs/Validation/Alpha-v0.0.14'
 parser = argparse.ArgumentParser()
 parser.add_argument('--snapshot', action='store_true')
+parser.add_argument('--player-snapshot', default='atlas-resume-player-files.json',
+                    help='Named player-data baseline within the validation directory; use a fresh name on each resume')
 parser.add_argument('--output', required=True)
 args = parser.parse_args()
 
@@ -24,7 +26,9 @@ def digest(path):
 
 baseline = json.loads((root / 'Docs/Validation/Alpha-v0.0.13/baseline.json').read_text(encoding='utf-8-sig'))
 player_root = Path(json.loads((root / 'Archives/PreGenesis-PlayerSaves/preservation-manifest.json').read_text())['source'])
-snapshot = evidence / 'atlas-resume-player-files.json'
+snapshot = evidence / args.player_snapshot
+if Path(args.player_snapshot).name != args.player_snapshot:
+    parser.error('--player-snapshot must be a filename within the validation directory')
 player_files = list((player_root / 'Worlds').rglob('*'))
 player_files += [player_root / name for name in ('settings.xml', 'settings.xml.bak')]
 current = {p.relative_to(player_root).as_posix(): digest(p) for p in player_files if p.is_file()}
@@ -39,6 +43,7 @@ chronicles = digest(root / 'Docs/THE_CHRONICLES_OF_AEVORIA.md') == baseline['chr
 report = dict(protectedCharacterFiles=len(baseline['protectedCharacters']), changedCharacters=characters,
               chroniclesUnchanged=chronicles, playerFilesCompared=len(saved), changedPlayerFiles=changed,
               addedPlayerFiles=added, playerRoot=str(player_root),
+              playerSnapshot=snapshot.name,
               scope='Saved worlds and settings only; disposable PresentationCache, Unity caches and logs are excluded. Intentional Atlas geography changes are outside this assertion.')
 report['result'] = 'Passed' if not characters and chronicles and not changed and not added else 'ReviewRequired'
 with (evidence / args.output).open('x', encoding='utf-8') as stream:

@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$EvidenceDirectory,[string]$SuccessToken='AEVORIA011_MOUNTAIN_PROTOTYPE_COMPLETE')
+param([Parameter(Mandatory=$true)][string]$EvidenceDirectory,[string]$SuccessToken='AEVORIA011_MOUNTAIN_PROTOTYPE_COMPLETE',[string[]]$RequiredViews=@())
 $ErrorActionPreference='Stop'
 $evidence=[IO.Path]::GetFullPath($EvidenceDirectory)
 $log=[IO.File]::ReadAllText((Join-Path $evidence 'player.log'))
@@ -13,8 +13,9 @@ $viewsFile=Join-Path $evidence 'views.json';$views=$null
 if(-not(Test-Path -LiteralPath $viewsFile)){$problems.Add('View manifest is absent')}else{
     $views=Get-Content -LiteralPath $viewsFile -Raw | ConvertFrom-Json
     if(@($views.views).Count -lt 5){$problems.Add('Expected five native views')}
+    foreach($name in $RequiredViews){if($name -notin @($views.views.name)){$problems.Add('Required native view is absent from manifest: '+$name)}}
     foreach($view in $views.views){$imagePath=Join-Path $evidence ($view.size+'-'+$view.name+'.png');if(-not(Test-Path -LiteralPath $imagePath)){$problems.Add('Missing native capture: '+$view.name)}elseif((Get-Item -LiteralPath $imagePath).Length -lt 10000){$problems.Add('Empty/truncated capture: '+$view.name)}}
 }
-[ordered]@{automatedChecksPassed=($problems.Count -eq 0);visualAcceptance='Requires separate inspection of native views and moving samples';problems=@($problems);checkedUtc=[DateTime]::UtcNow.ToString('O')} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidence 'native-review-checks.json') -Encoding UTF8
+[ordered]@{automatedChecksPassed=($problems.Count -eq 0);visualAcceptance='Requires separate inspection of native views and moving samples';requiredViews=$RequiredViews;problems=@($problems);checkedUtc=[DateTime]::UtcNow.ToString('O')} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidence 'native-review-checks.json') -Encoding UTF8
 if($problems.Count -gt 0){throw ($problems -join '; ')}
 Write-Output 'PASS: native audit completion, shader/runtime log and capture manifest checks; visual acceptance remains separate'

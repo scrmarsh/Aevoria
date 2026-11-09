@@ -173,7 +173,7 @@ GenesisSurface GenesisGround(float3 local,float footprint,float moisture,float t
     float micro=GenesisNoise(warped,id,2,scales.z,0,seed^0xc2b2ae35u,3);
     micro=lerp(micro,.5,smoothstep(.18,.7,footprint*scales.z));
     float tone=saturate(.2+macro*.5+meso*.35);
-    GenesisSurface r;r.albedo=lerp(dark.rgb,light.rgb,tone);r.height=(meso-.5)*.08+(micro-.5)*.025;
+    GenesisSurface r;r.albedo=lerp(dark.rgb,light.rgb,tone)*(1+(micro-.5)*.20);r.height=(meso-.5)*.08+(micro-.5)*.025;
     r.roughness=dark.a;r.occlusion=1;
     if(id==6) // Damp soil, small mineral grains and erosion patches.
     {
@@ -208,8 +208,8 @@ GenesisSurface GenesisGround(float3 local,float footprint,float moisture,float t
     if(id==11) // Efflorescent salt crust with irregular polygonal contraction.
     {
         float edge=GenesisCellular(warped,float3(0,1,0),id,scales.y,seed,footprint);
-        float crack=(1-smoothstep(.025,.065,edge))*(1-smoothstep(.15,.6,footprint));
-        r.albedo*=1-crack*.32;r.height-=crack*.018;r.occlusion=1-crack*.12;
+        float crack=(1-smoothstep(.010,.030,edge))*(1-smoothstep(.10,.4,footprint));
+        r.albedo*=1-crack*.22;r.height-=crack*.030;r.occlusion=1-crack*.12;
     }
     if(id==12) // Fine snow crystals disappear before they can shimmer overhead.
     {

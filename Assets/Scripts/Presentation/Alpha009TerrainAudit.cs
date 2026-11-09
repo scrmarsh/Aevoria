@@ -75,6 +75,14 @@ namespace Aevoria.Presentation
                     yield return InterfaceReview(peak);File.WriteAllText(Path.Combine(output,"views.json"),JsonUtility.ToJson(evidence,true));
                     Require(errors==0,"Interface review without runtime errors");app.ReturnToMenu();yield return null;Debug.Log("AEVORIA014_INTERFACE_REVIEW_COMPLETE");Application.Quit();yield break;
                 }
+                if(AevoriaBootstrap.HasFlag("-aevoria014HabitatsOnly"))
+                {
+                    Require(geo.Configuration.Terrain.Profile==GeographyProfile.Atlas,"Habitat review requires Atlas geography");
+                    yield return HabitatReview();yield return RegionalPresentation();
+                    File.WriteAllText(Path.Combine(output,"views.json"),JsonUtility.ToJson(evidence,true));
+                    Require(errors==0&&evidence.views.Count>=8,"Representative habitat review completed without runtime errors");
+                    app.ReturnToMenu();yield return null;Debug.Log("AEVORIA014_HABITAT_REVIEW_COMPLETE");Application.Quit();yield break;
+                }
                 if(AevoriaBootstrap.HasFlag("-aevoria014Atlas")&&!AevoriaBootstrap.HasFlag("-aevoria009WaterOnly")&&!AevoriaBootstrap.HasFlag("-aevoria014MaterialsOnly"))
                 {
                     Require(geo.Configuration.Terrain.Profile==GeographyProfile.Atlas,"Atlas profile generated");
@@ -245,6 +253,16 @@ namespace Aevoria.Presentation
                 Shader.SetGlobalFloat("_AevoriaTerrainDiagnostic",0);yield return Capture("materials-lit-without-ao");
             }
             finally{foreach(var feature in ambientFeatures)feature.SetActive(true);Shader.SetGlobalFloat("_AevoriaTerrainDiagnostic",0);}
+            try
+            {
+                foreach(float radius in new[]{2f,4f,8f})
+                {
+                    Shader.SetGlobalFloat("_AevoriaNormalReviewRadius",radius);Shader.SetGlobalFloat("_AevoriaTerrainDiagnostic",14);
+                    yield return Capture("materials-normal-radius-"+radius);
+                    Shader.SetGlobalFloat("_AevoriaTerrainDiagnostic",0);yield return Capture("materials-lit-radius-"+radius);
+                }
+            }
+            finally{Shader.SetGlobalFloat("_AevoriaNormalReviewRadius",0);Shader.SetGlobalFloat("_AevoriaTerrainDiagnostic",0);}
             var sun=RenderSettings.sun;
             if(sun!=null)
             {
@@ -358,6 +376,22 @@ namespace Aevoria.Presentation
                 }
             }
         }
+        private IEnumerator HabitatReview()
+        {
+            var geo=app.Terrain.Geography;
+            foreach(var biome in new[]{Biome.MediterraneanWoodland,Biome.BorealForest,Biome.Forest,Biome.Desert,Biome.SaltFlat})
+            {
+                int region=Best((p,h,s)=>h<=5||s.Biome!=biome||Slope(p,32)>.22?-1:biome==Biome.Forest||biome==Biome.BorealForest||biome==Biome.MediterraneanWoodland?geo.Ecosystem.ForestPotential(p.X,p.Y):1/(.01+Slope(p,128)));
+                if(region<0){evidence.limitations.Add("Habitat review: no suitable "+biome);continue;}
+                var centre=app.Ecology.EnvironmentAt(region).Center;
+                app.Controller.SetView(centre,25,32,100);yield return Ready();yield return Capture("habitat-"+biome+"-near");
+                if(!app.Explorer.EnterAt(centre)){evidence.limitations.Add("Habitat review: no safe Explorer spawn near "+biome);continue;}
+                app.Explorer.SetFirstPerson(true);app.Living.Traveler.Yaw=25;app.Living.Traveler.Pitch=14;yield return Ready();float deadline=Time.realtimeSinceStartup+120;
+                while((!app.Explorer.Ready||!app.Terrain.Vegetation.NearCoverReady)&&Time.realtimeSinceStartup<deadline)yield return null;
+                Require(app.Explorer.Ready&&app.Terrain.Vegetation.NearCoverReady,"Representative ground and understory prepared");
+                yield return Capture("habitat-"+biome+"-ground");yield return Measure("habitat-"+biome+"-ground");app.Living.Traveler.Yaw=115;yield return null;yield return Capture("habitat-"+biome+"-turned");app.Explorer.Exit();
+            }
+        }
         private IEnumerator RegionalPresentation()
         {
             var geo=app.Terrain.Geography;
@@ -382,6 +416,13 @@ namespace Aevoria.Presentation
             yield return Capture("atlas-village-paths-overhead");app.Controller.SetView(centre,110,30,180);yield return Ready();yield return Capture("atlas-village-paths-oblique");
             var original=app.Settings.Copy();var settings=original.Copy();settings.CloudQuality=2;settings.CloudDensity=3;settings.RenderClouds=true;settings.RenderWeatherEffects=false;app.ApplySettings(settings,false);
             string weather=Aevoria.Persistence.ArchiveCodec.Hash(Aevoria.Persistence.ArchiveCodec.Encode(app.Living.Atmosphere.Capture()));
+            if(app.Explorer.EnterAt(centre))
+            {
+                app.Explorer.SetFirstPerson(true);app.Living.Traveler.Yaw=60;app.Living.Traveler.Pitch=-18;yield return Ready();float groundDeadline=Time.realtimeSinceStartup+120;
+                while(!app.Explorer.Ready&&Time.realtimeSinceStartup<groundDeadline)yield return null;
+                Require(app.Explorer.Ready,"Ground-level sky review has safe terrain support");yield return Capture("atlas-clouds-ground-sky");app.Explorer.Exit();
+            }
+            else evidence.limitations.Add("Cloud review: no safe village ground-level sky inspection point");
             Vector4[] anchors=null,shapes=null;
             foreach(float range in new[]{2000f,20000f,60000f})
             {
@@ -443,15 +484,20 @@ namespace Aevoria.Presentation
             // SetView can run before either streaming Update has observed the
             // new pose. The previous view's ready flag is not sufficient.
             yield return null;yield return null;
-            float end=Time.realtimeSinceStartup+120,stable=-1;
+            float began=Time.realtimeSinceStartup,end=began+120,stable=-1,nextStatus=began;
             while(Time.realtimeSinceStartup<end)
             {
                 if(app.Terrain.IsReady&&app.Waters.IsReady)
                 {if(stable<0)stable=Time.realtimeSinceStartup;if(Time.realtimeSinceStartup-stable>=1)yield break;}
                 else stable=-1;
+                if(Time.realtimeSinceStartup>=nextStatus)
+                {
+                    nextStatus=Time.realtimeSinceStartup+1;
+                    File.AppendAllText(Path.Combine(output,"readiness.txt"),FormattableString.Invariant($"time={Time.realtimeSinceStartup:R};wait={Time.realtimeSinceStartup-began:R};range={app.Controller.Distance:R};focus={app.Controller.Focus};terrain={app.Terrain.IsReady};water={app.Waters.IsReady};pending={app.Terrain.PendingChunks};active={app.Terrain.ActiveChunks};regional={app.Terrain.Regional.Ready};{app.Terrain.Regional.PreparationStatus}\n"));
+                }
                 yield return null;
             }
-            Require(false,"Terrain and water remained settled for review");
+            Require(false,"Terrain and water did not settle for review: terrain="+app.Terrain.IsReady+";water="+app.Waters.IsReady+";pending="+app.Terrain.PendingChunks+";regional="+app.Terrain.Regional.PreparationStatus);
         }
         private IEnumerator Capture(string name,float waterWidth=0)
         {
@@ -465,11 +511,23 @@ namespace Aevoria.Presentation
         }
         private IEnumerator Measure(string name)
         {
+            float duration=3;if(float.TryParse(AevoriaBootstrap.Argument("-aevoria014ProfileSeconds"),NumberStyles.Float,CultureInfo.InvariantCulture,out float requested))duration=Mathf.Clamp(requested,3,120);
+            var timings=new FrameTiming[1];bool gpuAvailable=false;
+            using var trace=new PerformanceTrace();trace.Reset();
+            yield return null;yield return null;
             using(var csv=new StreamWriter(Path.Combine(output,sizeName+"-"+name+"-frames.csv")))
             {
-                csv.WriteLine("frame,engineLoopMs,renderCallbacks,width,height,workingSetMiB,privateMiB");float end=Time.realtimeSinceStartup+3;int frame=0,previous=renders;
-                while(Time.realtimeSinceStartup<end){yield return null;var process=System.Diagnostics.Process.GetCurrentProcess();csv.WriteLine(string.Format(CultureInfo.InvariantCulture,"{0},{1:F5},{2},{3},{4},{5:F3},{6:F3}",frame++,Time.unscaledDeltaTime*1000,renders-previous,Screen.width,Screen.height,process.WorkingSet64/1048576.0,process.PrivateMemorySize64/1048576.0));process.Dispose();previous=renders;}
+                csv.WriteLine("frame,engineLoopMs,renderCallbacks,width,height,workingSetMiB,privateMiB,cpuFrameMs,gpuFrameMs,timingAvailable");float end=Time.realtimeSinceStartup+duration;int frame=0,previous=renders;
+                while(Time.realtimeSinceStartup<end)
+                {
+                    yield return null;FrameTimingManager.CaptureFrameTimings();bool available=FrameTimingManager.GetLatestTimings(1,timings)>0;
+                    double cpu=available&&timings[0].cpuFrameTime>0?timings[0].cpuFrameTime:double.NaN,gpu=available&&timings[0].gpuFrameTime>0?timings[0].gpuFrameTime:double.NaN;gpuAvailable|=!double.IsNaN(gpu);
+                    trace.Record(Time.unscaledDeltaTime*1000,app.Terrain.LastUpdateMilliseconds,app.Terrain.OwnedMeshes);
+                    var process=System.Diagnostics.Process.GetCurrentProcess();csv.WriteLine(string.Format(CultureInfo.InvariantCulture,"{0},{1:F5},{2},{3},{4},{5:F3},{6:F3},{7:F5},{8:F5},{9}",frame++,Time.unscaledDeltaTime*1000,renders-previous,Screen.width,Screen.height,process.WorkingSet64/1048576.0,process.PrivateMemorySize64/1048576.0,cpu,gpu,available?1:0));process.Dispose();previous=renders;
+                }
             }
+            trace.Write(Path.Combine(output,sizeName+"-"+name+"-work.csv"));
+            if(!gpuAvailable)evidence.limitations.Add(name+": platform did not return a positive GPU frame timing; engine-loop timing is not a GPU measurement.");
         }
         private IEnumerator Coast()
         {

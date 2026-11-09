@@ -6,6 +6,23 @@ namespace Aevoria.Tests
 {
     public sealed class WorldOriginTests
     {
+        [Test]public void TerrainFrustumDecisionsRemainStableAcrossRebases()
+        {
+            WorldOrigin.Reset();var obj=new GameObject("rebased terrain frustum");var camera=obj.AddComponent<Camera>();camera.nearClipPlane=.1f;camera.farClipPlane=10000;camera.aspect=16f/9;
+            try
+            {
+                foreach(var position in new[]{new Vector3(-40000,3000,60000),new Vector3(900000,500,-800000)})
+                {
+                    WorldOrigin.Reset();obj.transform.SetPositionAndRotation(position,Quaternion.Euler(35,25,0));
+                    var visible=new Bounds(position+obj.transform.forward*1000,Vector3.one*80);var hidden=new Bounds(position-obj.transform.forward*1000,Vector3.one*80);
+                    var before=GeometryUtility.CalculateFrustumPlanes(camera);Assert.IsTrue(WorldOrigin.InFrustum(before,visible));Assert.IsFalse(WorldOrigin.InFrustum(before,hidden));
+                    WorldOrigin.Follow(position);var after=GeometryUtility.CalculateFrustumPlanes(camera);
+                    Assert.IsFalse(GeometryUtility.TestPlanesAABB(after,visible),"Raw geographic bounds are invalid in the local camera frame");
+                    Assert.IsTrue(WorldOrigin.InFrustum(after,visible),"Visible terrain remains a streaming candidate after origin translation");Assert.IsFalse(WorldOrigin.InFrustum(after,hidden));
+                }
+            }
+            finally{Object.DestroyImmediate(obj);WorldOrigin.Reset();}
+        }
         [Test]public void TopDownSmallStepsStayContinuousAtLargeCoordinates()
         {
             WorldOrigin.Reset();var obj=new GameObject("precise top-down movement");obj.AddComponent<Camera>();var map=obj.AddComponent<MapCamera>();
