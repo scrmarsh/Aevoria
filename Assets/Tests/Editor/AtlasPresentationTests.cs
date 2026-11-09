@@ -9,6 +9,20 @@ namespace Aevoria.Tests
 {
     public sealed class AtlasPresentationTests
     {
+        [Test] public void GroundSkyReviewRejectsAnOverheadRoof()
+        {
+            var cameraObject=new GameObject("Sky review camera");var roof=GameObject.CreatePrimitive(PrimitiveType.Cube);
+            try
+            {
+                var camera=cameraObject.AddComponent<Camera>();cameraObject.transform.SetPositionAndRotation(new Vector3(50000,1000,50000),Quaternion.Euler(-18,60,0));camera.aspect=16f/9;
+                roof.transform.position=cameraObject.transform.position+Vector3.up*3;roof.transform.localScale=new Vector3(80,1,80);Physics.SyncTransforms();
+                var check=typeof(Alpha009TerrainAudit).GetMethod("SkyViewClear",BindingFlags.NonPublic|BindingFlags.Static);var args=new object[]{camera,0};
+                Assert.IsFalse((bool)check.Invoke(null,args),"A terrain-supported pose under a roof must not pass sky review");Assert.Greater((int)args[1],0);
+                roof.transform.position+=Vector3.right*500;Physics.SyncTransforms();args[1]=0;
+                Assert.IsTrue((bool)check.Invoke(null,args),"An open outdoor upper view must pass");Assert.AreEqual(0,(int)args[1]);
+            }
+            finally{UnityEngine.Object.DestroyImmediate(roof);UnityEngine.Object.DestroyImmediate(cameraObject);}
+        }
         [Test] public void AllPanelShapesContainTheEntireWorld()
         {
             foreach(WorldSize size in new[]{WorldSize.Miniature,WorldSize.Small,WorldSize.Medium,WorldSize.Large,WorldSize.Colossal})

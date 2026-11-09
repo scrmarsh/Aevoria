@@ -1,3 +1,28 @@
+# Atlas17 outdoor sky correction - November 8, 2026
+
+`Atlas17-Outdoor-Sky` passes native completion, clean process exit, runtime/shader
+log and capture-manifest checks. All 25 images are present; the required-view list
+includes all five habitat ground views and six cloud views. Loaded revision1
+fingerprint matches Atlas16. Zoom identity, weather-preserving rendering toggles
+and the 120-frame motion trace completed. No new save/reload or collider gate is
+claimed by this focused route.
+
+Inspected `Miniature-atlas-clouds-ground-sky.png`: the camera is now outdoors with
+visible sky, trees and clouds; village walls/roof no longer obscure the image.
+`cloud-sky-visibility.txt` records zero blocked rays out of nine, 200m ray length,
+8m civic-footprint clearance, X=-3178.8778076171875 and Z=7058.6013793945313.
+The audit framing correction is accepted. These finite physics probes do not
+prove every rendered pixel is unobstructed; the actual image was also inspected.
+
+Cloud art remains unaccepted: the ground view shows broad flat undersides and
+soft indistinct lobes. Trees remain simple and understory repeats. Refine cloud
+shape and lighting against this ground pose and matched overhead views next.
+
+Four focused editor tests pass, including an actual overhead-roof raycast
+regression and open-view control. Clean Atlas17 build passed. Original 130
+save/settings files and 102 working/HEAD protected hashes remain unchanged.
+The source world-generation assembly matches Atlas16 byte for byte.
+
 # Atlas16 resumed native review - November 8, 2026
 
 Evidence: `Atlas16-Resumed-Habitats-SeedMatched`. The run reports the Habitats

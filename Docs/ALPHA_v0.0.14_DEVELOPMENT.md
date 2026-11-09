@@ -1,3 +1,22 @@
+# Atlas17 outdoor sky correction - 2026-11-08
+
+The native audit now selects a pose beyond the village buildings, validates the
+actual spawn against all civic footprints with an 8m margin, and requires nine
+clear upper-view rays. A roof-occlusion regression test covers the earlier defect.
+All four focused Atlas presentation tests pass. Atlas17 clean build succeeded
+(160144559 bytes); its world assembly is byte-identical to Atlas16.
+
+`Atlas17-Outdoor-Sky` completed exit0 with 25 captures, the Habitats completion
+token and passing runtime/manifest checks. The sky image is visually confirmed
+outdoors, and the visibility record reports zero blocked rays. Atlas revision1
+loaded fingerprint is unchanged; cloud zoom/toggle/motion checks pass. All 130
+player files and 102 protected hashes pass fresh preservation checks.
+
+The camera defect is fixed. Flat cloud appearance and habitat art remain open;
+the next rendering pass should use this valid ground view and matched overhead
+views. No new save/reload, full performance or release acceptance is implied.
+Official release remains v12. See `AEVORIA_RESUME.md` for exact continuation.
+
 # Atlas16 review checkpoint - 2026-11-08
 
 The fresh seed-matched Habitats run completed and passes native log/manifest

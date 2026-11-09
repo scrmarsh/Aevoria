@@ -416,13 +416,31 @@ namespace Aevoria.Presentation
             yield return Capture("atlas-village-paths-overhead");app.Controller.SetView(centre,110,30,180);yield return Ready();yield return Capture("atlas-village-paths-oblique");
             var original=app.Settings.Copy();var settings=original.Copy();settings.CloudQuality=2;settings.CloudDensity=3;settings.RenderClouds=true;settings.RenderWeatherEffects=false;app.ApplySettings(settings,false);
             string weather=Aevoria.Persistence.ArchiveCodec.Hash(Aevoria.Persistence.ArchiveCodec.Encode(app.Living.Atmosphere.Capture()));
-            if(app.Explorer.EnterAt(centre))
+            // The settlement centre can be inside a dwelling. Terrain support
+            // alone does not establish that a first-person sky view is outdoors.
+            GeoPoint skyPoint=default;bool foundSkyPoint=false;double villageRadius=40;
+            foreach(var building in village.Buildings)villageRadius=Math.Max(villageRadius,Math.Max(Math.Abs(building.X-village.X),Math.Abs(building.Z-village.Z))+20);
+            for(int ring=0;ring<4&&!foundSkyPoint;ring++)for(int direction=0;direction<16&&!foundSkyPoint;direction++)
+            {
+                double angle=direction*Math.PI/8,radius=villageRadius+40+ring*40;
+                var candidate=new GeoPoint(centre.X+Math.Cos(angle)*radius,centre.Y+Math.Sin(angle)*radius);
+                if(!geo.Configuration.Contains(candidate)||!OutsideBuildings(candidate,8)||Slope(candidate,8)>.2)continue;
+                if(!app.Explorer.EnterAt(candidate))continue;
+                var actual=new GeoPoint(app.Living.Traveler.X,app.Living.Traveler.Z);
+                if(OutsideBuildings(actual,8)){skyPoint=actual;foundSkyPoint=true;}else app.Explorer.Exit();
+            }
+            Require(foundSkyPoint,"Cloud review requires an outdoor spawn outside all settlement building footprints");
+            if(foundSkyPoint)
             {
                 app.Explorer.SetFirstPerson(true);app.Living.Traveler.Yaw=60;app.Living.Traveler.Pitch=-18;yield return Ready();float groundDeadline=Time.realtimeSinceStartup+120;
                 while(!app.Explorer.Ready&&Time.realtimeSinceStartup<groundDeadline)yield return null;
-                Require(app.Explorer.Ready,"Ground-level sky review has safe terrain support");yield return Capture("atlas-clouds-ground-sky");app.Explorer.Exit();
+                Require(app.Explorer.Ready,"Ground-level sky review has safe terrain support");
+                yield return new WaitForEndOfFrame();Physics.SyncTransforms();
+                var skyCamera=Camera.main;bool skyClear=SkyViewClear(skyCamera,out int blockedRays);
+                File.WriteAllText(Path.Combine(output,"cloud-sky-visibility.txt"),FormattableString.Invariant($"x={skyPoint.X:R}\nz={skyPoint.Y:R}\nbuildingMarginMeters=8\nblockedSkyRays={blockedRays}\ncheckedSkyRays=9\nrayLengthMeters=200\n"));
+                Require(OutsideBuildings(new GeoPoint(app.Living.Traveler.X,app.Living.Traveler.Z),8)&&skyClear,"Ground-level sky view must be outside buildings with nine unobstructed upper-view rays");
+                yield return Capture("atlas-clouds-ground-sky");app.Explorer.Exit();
             }
-            else evidence.limitations.Add("Cloud review: no safe village ground-level sky inspection point");
             Vector4[] anchors=null,shapes=null;
             foreach(float range in new[]{2000f,20000f,60000f})
             {
@@ -441,6 +459,19 @@ namespace Aevoria.Presentation
                 for(int frame=0;frame<120;frame++){yield return null;var positions=Shader.GetGlobalVectorArray("_AevoriaCloudSystems");var coverage=Shader.GetGlobalVectorArray("_AevoriaCloudShapes");csv.WriteLine(FormattableString.Invariant($"{frame},{app.Clock.State.Tick},{clouds.PresentedTick:R},{positions[0].x:R},{positions[0].y:R},{positions[0].z:R},{coverage[0].y:R},{environment.VisibleCloudSystems}"));}
             }
             app.Clock.Pause();app.Clock.SetSpeed(1);app.ApplySettings(original,false);
+        }
+        private bool OutsideBuildings(GeoPoint point,double margin)
+        {
+            foreach(var settlement in app.Society.Settlements)foreach(var building in settlement.Buildings)
+                if(CivicGeometry.Contains(building,point.X,point.Y,margin))return false;
+            return true;
+        }
+        private static bool SkyViewClear(Camera camera,out int blockedRays)
+        {
+            blockedRays=0;if(camera==null){blockedRays=9;return false;}
+            foreach(float x in new[]{.2f,.5f,.8f})foreach(float y in new[]{.6f,.75f,.9f})
+                if(Physics.Raycast(camera.ViewportPointToRay(new Vector3(x,y,0)),200,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore))blockedRays++;
+            return blockedRays==0;
         }
         private IEnumerator RegionalContacts(int peak)
         {

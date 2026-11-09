@@ -1,3 +1,42 @@
+# VERIFIED CONTINUATION - 2026-11-08, Atlas17 outdoor sky review
+
+The user asked to continue. Atlas17 changes only the native audit and its editor
+regression test: ground-sky poses are selected beyond the village extent, both
+requested and actual spawn positions exclude all civic footprints with an 8m
+margin, and nine upper-view physics rays must be clear before capturing.
+`cloud-sky-visibility.txt` records the selected point and ray results.
+
+All four AtlasPresentationTests passed, including roof rejection/open-sky
+acceptance (`atlas17-sky-tests.xml`). Clean player build passed
+(`atlas17-unity-build.log`, 160144559 bytes). Candidate:
+`Temp/Alpha014Atlas17/Aevoria.exe`. Its world assembly matches Atlas16 exactly.
+
+Native Habitats review completed in `Atlas17-Outdoor-Sky` on an isolated copy
+of the documented revision1 fixture, seed `aevoria-001`: exit0, Habitats completion
+token, no failure ledger, all 25 capture files present. Native log/manifest checks
+pass, explicitly requiring all five habitat ground views and six cloud views.
+Loaded fingerprint remains
+7D9F11387F46172D1F836383A78DF0B925D7F9DA67B5A0F47E6E673E65625461.
+Cloud identity through paused zoom, rendering toggles preserving weather, and
+120 motion samples completed. This focused route does not add save/reload or
+regional collider acceptance.
+
+The ground-sky image was inspected: the camera is outdoors, the village building
+no longer obscures the image, and all nine upper-view rays are clear. Selected
+point: X=-3178.8778076171875, Z=7058.6013793945313. The camera correction is
+verified; cloud art is not accepted. The image exposes flat cloud undersides,
+soft indistinct lobes, simple trees and sparse repeating ground cover.
+
+Before and after preservation passes all 130 files against
+`atlas17-player-files.json`; all 102 working/HEAD protected hashes also pass.
+No original save/settings file changed or was added. Atlas16 remains retained.
+Official release remains v12; v14 is development only.
+
+Next: refine cloud shape and lighting using this valid ground view and matched
+overhead views, retaining formation identity through zoom. Then continue habitat
+art, river joins, cliff facets, sustained performance/audio and all-size/high-relief
+acceptance. No task-created Editor or player remains running after this review.
+
 # VERIFIED DEVELOPMENT CHECKPOINT - 2026-11-08, Atlas16
 
 The resumed seed-matched Habitats run completed with exit0 and
